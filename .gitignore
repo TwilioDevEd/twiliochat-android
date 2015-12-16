@@ -29,3 +29,6 @@ proguard/
 
 # Log Files
 *.log
+
+# Key file
+/app/src/main/res/values/keys.xml
