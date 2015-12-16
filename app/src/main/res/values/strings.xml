@@ -4,6 +4,10 @@
     <!-- Strings related to login -->
     <string name="title_activity_login">Login</string>
     <string name="title_activity_main_chat">General Channel</string>
+    <string name="username_placeholder">username</string>
+    <string name="password_placeholder">password</string>
+    <string name="full_name_placeholder">full name</string>
+    <string name="email_placeholder">email address</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
