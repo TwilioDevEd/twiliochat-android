@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <ListView
+        android:id="@+id/listMessages"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:transcriptMode="alwaysScroll"
+        android:layout_above="@+id/divider"
+        android:padding="0dip"
+        android:divider="@null"
+        android:dividerHeight="0dp" android:stackFromBottom="true" tools:listitem="@layout/message_left"/>
+
+    <RelativeLayout
+        android:id="@+id/divider"
+        android:layout_width="fill_parent"
+        android:layout_height="1dip"
+        android:background="@color/off_white"
+        android:layout_above="@+id/relSendMessage" />
+
+    <RelativeLayout
+        android:id="@+id/relSendMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:background="@android:color/white"
+        android:paddingLeft="10dp"
+        android:layout_alignParentBottom="true">
+
+
+        <EditText
+            android:layout_marginBottom="-4dp"
+            android:id="@+id/messageBodyField"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/message_elipses"
+            android:textSize="14sp"
+            android:textColor="@android:color/black"
+            android:layout_marginRight="10dp"
+            android:layout_alignTop="@+id/sendButton"
+            android:background="@android:color/white"
+            android:layout_alignBottom="@+id/sendButton"
+            android:layout_toLeftOf="@+id/sendButton"/>
+
+        <Button
+            android:id="@+id/sendButton"
+            android:layout_width="72dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_margin="4dp"
+            android:background="@drawable/button_send" />
+    </RelativeLayout>
+
+
+</RelativeLayout>

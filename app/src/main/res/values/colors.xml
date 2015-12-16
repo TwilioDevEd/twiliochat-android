@@ -3,4 +3,8 @@
     <color name="colorPrimary">#672318</color>
     <color name="colorPrimaryDark">#641914</color>
     <color name="colorAccent">#F88E80</color>
+    <color name="sinch_purple">#ff63029d</color>
+    <color name="off_white">#fffafafa</color>
+    <color name="dark_gray">#ffb3b3b3</color>
+    <color name="very_dark_gray">#636363</color>
 </resources>

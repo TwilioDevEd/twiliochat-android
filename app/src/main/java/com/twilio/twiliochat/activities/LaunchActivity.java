@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.parse.ParseUser;
+
 public class LaunchActivity extends Activity {
 
     @Override
@@ -25,6 +27,11 @@ public class LaunchActivity extends Activity {
     /** return Class name of Activity to show **/
     private Class<?> getLaunchClass()
     {
-        return LoginActivity.class;
+        ParseUser currentUser = ParseUser.getCurrentUser();
+        if (currentUser != null) {
+            return MainChatActivity.class;
+        } else {
+            return LoginActivity.class;
+        }
     }
 }
