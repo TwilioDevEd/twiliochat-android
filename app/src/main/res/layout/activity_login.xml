@@ -5,77 +5,125 @@
     android:layout_height="match_parent"
     android:background="@drawable/home_bg">
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/imageViewLogo"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/landing_logo"
+        android:contentDescription="@string/logo_text" />
+
+    <Button
+        style="@style/LoginButton"
+        android:text="@string/create_account_button_text"
+        android:id="@+id/buttonCreateAccount"
+        android:layout_above="@+id/linearLayoutTextFields"
+        android:layout_centerHorizontal="true" />
 
     <LinearLayout
+        style="@style/LoginElementSideMargin"
         android:orientation="vertical"
-        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/login_tf_group_gray"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp">
+        android:layout_above="@+id/buttonLogin"
+        android:id="@+id/linearLayoutTextFields">
 
         <LinearLayout
+            style="@style/LoginFormLayout"
             android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@+id/button2"
-            android:layout_centerHorizontal="true">
+            android:layout_marginTop="7dp">
+
+            <ImageView
+                style="@style/LoginTextEditImage"
+                android:background="@drawable/username_field_bg"
+                android:contentDescription="@string/image_text"/>
 
             <EditText
+                style="@style/LoginTextEdit"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:hint="@string/username_placeholder"
                 android:id="@+id/editTextUsername"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp" />
+                android:inputType="textPersonName"/>
         </LinearLayout>
-        <EditText
+        <LinearLayout
+            style="@style/LoginFormLayout"
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPassword"
-            android:hint="@string/password_placeholder"
-            android:id="@+id/editTextPassword"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp" />
+            android:layout_height="match_parent">
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textPersonName"
-            android:hint="@string/full_name_placeholder"
-            android:ems="10"
-            android:id="@+id/editText"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"/>
+            <ImageView
+                style="@style/LoginTextEditImage"
+                android:background="@drawable/password_field_bg"
+                android:contentDescription="@string/image_text" />
 
-        <EditText
+            <EditText
+                style="@style/LoginTextEdit"
+                android:layout_width="match_parent"
+                android:inputType="textPassword"
+                android:hint="@string/password_placeholder"
+                android:id="@+id/editTextPassword" />
+        </LinearLayout>
+        <LinearLayout
+            style="@style/LoginFormLayout"
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"
-            android:hint="@string/email_placeholder"
-            android:id="@+id/editText2"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"/>
+            android:layout_height="match_parent"
+            android:id="@+id/layoutFullName"
+            android:visibility="gone">
+
+            <ImageView
+                style="@style/LoginTextEditImage"
+                android:background="@drawable/username_field_bg"
+                android:contentDescription="@string/image_text"/>
+
+            <EditText
+                style="@style/LoginTextEdit"
+                android:layout_width="match_parent"
+                android:inputType="textPersonName"
+                android:hint="@string/full_name_placeholder"
+                android:ems="10"
+                android:id="@+id/editTextFullName"/>
+        </LinearLayout>
+        <LinearLayout
+            style="@style/LoginFormLayout"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/layoutEmail"
+            android:visibility="gone">
+
+            <ImageView
+                style="@style/LoginTextEditImage"
+                android:background="@drawable/username_field_bg"
+                android:contentDescription="@string/image_text"/>
+
+            <EditText
+                style="@style/LoginTextEdit"
+                android:layout_width="match_parent"
+                android:inputType="textEmailAddress"
+                android:hint="@string/email_placeholder"
+                android:id="@+id/editTextEmail" />
+        </LinearLayout>
     </LinearLayout>
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Login"
+        style="@style/LoginButton"
+        android:text="@string/login_button_text"
         android:id="@+id/buttonLogin"
         android:background="@color/login_button_background"
-        android:textColor="@android:color/white"
         android:layout_above="@+id/buttonForgotPassword"
-        android:layout_centerHorizontal="true" />
+        android:layout_marginBottom="10dp"/>
     <Button
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Forgot your pasword?"
+        style="@style/LoginButton"
+        android:layout_height="20dp"
+        android:text="@string/forgot_password_button_text"
         android:id="@+id/buttonForgotPassword"
-        android:background="@android:color/transparent"
         android:textColor="@android:color/white"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="15dp"/>
+        android:layout_marginBottom="10dp"
+        android:textSize="15sp"/>
 </RelativeLayout>

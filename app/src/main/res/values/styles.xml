@@ -18,4 +18,38 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="LoginElementSideMargin">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:layout_marginRight">20dp</item>
+        <item name="android:layout_centerHorizontal">true</item>
+    </style>
+    <style name="LoginFormButton" parent="LoginElementSideMargin">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="LoginFormLayout">
+        <item name="android:layout_marginBottom">7dp</item>
+    </style>
+    
+    <style name="LoginButton" parent="LoginFormButton">
+        <item name="android:textColor">@color/login_red_text</item>
+        <item name="android:layout_height">40dp</item>
+    </style>
+
+    <style name="LoginTextEdit">
+        <item name="android:layout_marginRight">7dp</item>
+        <item name="android:layout_height">45dp</item>
+        <item name="android:background">@color/login_text_edit_background</item>
+    </style>
+
+    <style name="LoginTextEditImage">
+        <item name="android:layout_height">45dp</item>
+        <item name="android:layout_marginLeft">7dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+
 </resources>
