@@ -18,10 +18,19 @@ import com.parse.LogInCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
+import com.parse.SignUpCallback;
 import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.util.AlertDialogHandler;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class LoginActivity extends AppCompatActivity {
+    private final String USERNAME_FORM_FIELD = "username";
+    private final String PASSWORD_FORM_FIELD = "password";
+    private final String FULLNAME_FORM_FIELD = "fullName";
+    private final String EMAIL_FORM_FIELD = "email";
+
     private LinearLayout fullNameLayout;
     private LinearLayout emailLayout;
     private LinearLayout formLayout;
@@ -42,16 +51,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        fullNameLayout = (LinearLayout) findViewById(R.id.layoutFullName);
-        emailLayout = (LinearLayout) findViewById(R.id.layoutEmail);
-        formLayout = (LinearLayout) findViewById(R.id.linearLayoutTextFields);
-        createAccountButton = (Button) findViewById(R.id.buttonCreateAccount);
-        loginButton = (Button) findViewById(R.id.buttonLogin);
-        forgotPasswordButton = (Button) findViewById(R.id.buttonForgotPassword);
-        usernameEditText = (EditText) findViewById(R.id.editTextUsername);
-        passwordEditText = (EditText) findViewById(R.id.editTextPassword);
-        fullNameEditText = (EditText) findViewById(R.id.editTextFullName);
-        emailEditText = (EditText) findViewById(R.id.editTextEmail);
+        setUIComponents();
 
         createAccountButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,6 +64,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (isSigningUp) {
+                    register();
                     return;
                 }
                 login();
@@ -78,8 +79,20 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    private void setUIComponents() {
+        fullNameLayout = (LinearLayout) findViewById(R.id.layoutFullName);
+        emailLayout = (LinearLayout) findViewById(R.id.layoutEmail);
+        formLayout = (LinearLayout) findViewById(R.id.linearLayoutTextFields);
+        createAccountButton = (Button) findViewById(R.id.buttonCreateAccount);
+        loginButton = (Button) findViewById(R.id.buttonLogin);
+        forgotPasswordButton = (Button) findViewById(R.id.buttonForgotPassword);
+        usernameEditText = (EditText) findViewById(R.id.editTextUsername);
+        passwordEditText = (EditText) findViewById(R.id.editTextPassword);
+        fullNameEditText = (EditText) findViewById(R.id.editTextFullName);
+        emailEditText = (EditText) findViewById(R.id.editTextEmail);
+    }
+
     private void toggleIsSigningUp() {
-        Resources resources = getResources();
         int createAccountStringId;
         int loginStringId;
         int desiredVisibility;
@@ -98,36 +111,90 @@ public class LoginActivity extends AppCompatActivity {
         }
         fullNameLayout.setVisibility(desiredVisibility);
         emailLayout.setVisibility(desiredVisibility);
-        createAccountButton.setText(resources.getText(createAccountStringId));
-        loginButton.setText(loginStringId);
+        createAccountButton.setText(getStringResource(createAccountStringId));
+        loginButton.setText(getStringResource(loginStringId));
+    }
+
+    private void register() {
+        Map<String, String> formInput = getFormInput();
+        if (formInput.size() < 4) {
+            displayAllFieldsRequiredMessage();
+            return;
+        }
+        startStatusDialogWithMessage(getStringResource(R.string.register_user_progress_message));
+        ParseUser user = new ParseUser();
+        user.setUsername(formInput.get(USERNAME_FORM_FIELD));
+        user.setPassword(formInput.get(PASSWORD_FORM_FIELD));
+        user.setEmail(formInput.get(EMAIL_FORM_FIELD));
+        user.put(FULLNAME_FORM_FIELD, formInput.get(FULLNAME_FORM_FIELD));
+
+        user.signUpInBackground(new SignUpCallback() {
+            @Override
+            public void done(ParseException e) {
+                stopStatusDialog();
+                if (e != null) {
+                    AlertDialogHandler.displayAlertWithMessage(e.getLocalizedMessage(), context);
+                    return;
+                }
+                showMainChatActivity();
+            }
+        });
     }
 
     private void login() {
-        String username = usernameEditText.getText().toString();
-        String password = passwordEditText.getText().toString();
+        Map<String, String> formInput = getFormInput();
+        if (formInput.size() < 2) {
+            displayAllFieldsRequiredMessage();
+            return;
+        }
 
-        startBackgroundActionWithMessage("signing in...");
-        ParseUser.logInInBackground(username, password, new LogInCallback() {
+        startStatusDialogWithMessage(getStringResource(R.string.login_user_progress_message));
+        ParseUser.logInInBackground(formInput.get(USERNAME_FORM_FIELD), formInput.get(PASSWORD_FORM_FIELD), new LogInCallback() {
             public void done(ParseUser user, ParseException e) {
+                stopStatusDialog();
                 if (user != null) {
-                    if (progressDialog.isShowing()) {
-                        progressDialog.dismiss();
-                    }
                     showMainChatActivity();
                 } else {
-                    if (progressDialog.isShowing()) {
-                        progressDialog.dismiss();
-                    }
                     AlertDialogHandler.displayAlertWithMessage(e.getLocalizedMessage(), context);
-                    setFormEnabled(true);
                 }
             }
         });
     }
 
-    private void startBackgroundActionWithMessage(String message) {
+    private Map<String, String> getFormInput() {
+        String username = usernameEditText.getText().toString();
+        String password = passwordEditText.getText().toString();
+        String fullName = fullNameEditText.getText().toString();
+        String email = emailEditText.getText().toString();
+
+        Map<String, String> formInput = new HashMap<>();
+
+        if (username.length() > 0) { formInput.put(USERNAME_FORM_FIELD, username); }
+        if (password.length() > 0) { formInput.put(PASSWORD_FORM_FIELD, password); }
+
+        if (isSigningUp) {
+            if (fullName.length() > 0) { formInput.put(FULLNAME_FORM_FIELD, fullName); }
+            if (email.length() > 0) { formInput.put(EMAIL_FORM_FIELD, email); }
+        }
+
+        return formInput;
+    }
+
+    private void displayAllFieldsRequiredMessage() {
+        String message = getStringResource(R.string.login_all_fields_required);
+        AlertDialogHandler.displayAlertWithMessage(message, context);
+    }
+
+    private void startStatusDialogWithMessage(String message) {
         setFormEnabled(false);
         showActivityIndicator(message);
+    }
+
+    private void stopStatusDialog() {
+        if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+        setFormEnabled(true);
     }
 
     private void setFormEnabled(Boolean enabled) {
@@ -151,5 +218,10 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(launchIntent);
 
         finish();
+    }
+
+    private String getStringResource(int id) {
+        Resources resources = getResources();
+        return resources.getString(id);
     }
 }
