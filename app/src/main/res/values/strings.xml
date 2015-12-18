@@ -14,6 +14,17 @@
     <string name="login_user_progress_message">signing in...</string>
     <string name="register_user_progress_message">registering user...</string>
 
+    <!-- Strings related to forgot password -->
+    <string name="forgot_password_message">
+        That\'s okay. Just enter your email and we\'ll send you a link to reset your password.
+    </string>
+    <string name="forgot_password_send_button_text">Send</string>
+    <string name="forgot_password_go_back_button_text">\u003c Go back</string>
+    <string name="forgot_password_email_required">
+        You must provide a registered email address to start the recovery process
+    </string>
+    <string name="forgot_password_progress_message">recovering password...</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 

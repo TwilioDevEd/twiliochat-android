@@ -33,6 +33,7 @@
             android:name=".activities.MainChatActivity"
             android:label="@string/title_activity_main_chat"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".activities.ForgotPasswordActivity"></activity>
     </application>
 
 </manifest>

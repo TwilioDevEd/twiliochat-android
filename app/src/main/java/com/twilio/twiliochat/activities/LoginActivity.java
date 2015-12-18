@@ -5,10 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,7 +13,6 @@ import android.widget.LinearLayout;
 
 import com.parse.LogInCallback;
 import com.parse.ParseException;
-import com.parse.ParseObject;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 import com.twilio.twiliochat.R;
@@ -26,14 +22,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
+    final Context context = this;
     private final String USERNAME_FORM_FIELD = "username";
     private final String PASSWORD_FORM_FIELD = "password";
     private final String FULLNAME_FORM_FIELD = "fullName";
     private final String EMAIL_FORM_FIELD = "email";
-
+    private ProgressDialog progressDialog;
     private LinearLayout fullNameLayout;
     private LinearLayout emailLayout;
-    private LinearLayout formLayout;
     private Button createAccountButton;
     private Button loginButton;
     private Button forgotPasswordButton;
@@ -41,10 +37,6 @@ public class LoginActivity extends AppCompatActivity {
     private EditText passwordEditText;
     private EditText fullNameEditText;
     private EditText emailEditText;
-
-    ProgressDialog progressDialog;
-    final Context context = this;
-
     private Boolean isSigningUp = false;
 
     @Override
@@ -74,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
         forgotPasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                showForgotPasswordActivity();
             }
         });
     }
@@ -82,7 +74,6 @@ public class LoginActivity extends AppCompatActivity {
     private void setUIComponents() {
         fullNameLayout = (LinearLayout) findViewById(R.id.layoutFullName);
         emailLayout = (LinearLayout) findViewById(R.id.layoutEmail);
-        formLayout = (LinearLayout) findViewById(R.id.linearLayoutTextFields);
         createAccountButton = (Button) findViewById(R.id.buttonCreateAccount);
         loginButton = (Button) findViewById(R.id.buttonLogin);
         forgotPasswordButton = (Button) findViewById(R.id.buttonForgotPassword);
@@ -103,8 +94,7 @@ public class LoginActivity extends AppCompatActivity {
             loginStringId = R.string.register_button_text;
             desiredVisibility = View.VISIBLE;
 
-        }
-        else {
+        } else {
             createAccountStringId = R.string.create_account_button_text;
             loginStringId = R.string.login_button_text;
             desiredVisibility = View.GONE;
@@ -169,12 +159,20 @@ public class LoginActivity extends AppCompatActivity {
 
         Map<String, String> formInput = new HashMap<>();
 
-        if (username.length() > 0) { formInput.put(USERNAME_FORM_FIELD, username); }
-        if (password.length() > 0) { formInput.put(PASSWORD_FORM_FIELD, password); }
+        if (username.length() > 0) {
+            formInput.put(USERNAME_FORM_FIELD, username);
+        }
+        if (password.length() > 0) {
+            formInput.put(PASSWORD_FORM_FIELD, password);
+        }
 
         if (isSigningUp) {
-            if (fullName.length() > 0) { formInput.put(FULLNAME_FORM_FIELD, fullName); }
-            if (email.length() > 0) { formInput.put(EMAIL_FORM_FIELD, email); }
+            if (fullName.length() > 0) {
+                formInput.put(FULLNAME_FORM_FIELD, fullName);
+            }
+            if (email.length() > 0) {
+                formInput.put(EMAIL_FORM_FIELD, email);
+            }
         }
 
         return formInput;
@@ -218,6 +216,12 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(launchIntent);
 
         finish();
+    }
+
+    private void showForgotPasswordActivity() {
+        Intent launchIntent = new Intent();
+        launchIntent.setClass(getApplicationContext(), ForgotPasswordActivity.class);
+        startActivity(launchIntent);
     }
 
     private String getStringResource(int id) {

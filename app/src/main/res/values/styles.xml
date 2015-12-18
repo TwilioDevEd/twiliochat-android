@@ -67,7 +67,7 @@
         <item name="android:layout_centerVertical">true</item>
     </style>
 
-    <style name="LoginTextView">
+    <style name="LoginTextView" parent="LoginElementSideMargin">
         <item name="android:textColor">@android:color/white</item>
     </style>
 
