@@ -8,6 +8,8 @@
     <string name="password_placeholder">password</string>
     <string name="full_name_placeholder">full name</string>
     <string name="email_placeholder">email address</string>
+    <string name="twilio_first_line">A simple chat app built using the</string>
+    <string name="twilio_second_line">Twilio IP Messaging API</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
