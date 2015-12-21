@@ -123,7 +123,7 @@ public class LoginActivity extends AppCompatActivity {
             public void done(ParseException e) {
                 stopStatusDialog();
                 if (e != null) {
-                    AlertDialogHandler.displayAlertWithMessage(e.getLocalizedMessage(), context);
+                    showAlertWithMessage(e.getLocalizedMessage());
                     return;
                 }
                 showMainChatActivity();
@@ -145,7 +145,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (user != null) {
                     showMainChatActivity();
                 } else {
-                    AlertDialogHandler.displayAlertWithMessage(e.getLocalizedMessage(), context);
+                    showAlertWithMessage(e.getLocalizedMessage());
                 }
             }
         });
@@ -180,7 +180,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void displayAllFieldsRequiredMessage() {
         String message = getStringResource(R.string.login_all_fields_required);
-        AlertDialogHandler.displayAlertWithMessage(message, context);
+        showAlertWithMessage(message);
     }
 
     private void startStatusDialogWithMessage(String message) {
@@ -227,5 +227,9 @@ public class LoginActivity extends AppCompatActivity {
     private String getStringResource(int id) {
         Resources resources = getResources();
         return resources.getString(id);
+    }
+
+    private void showAlertWithMessage(String message) {
+        AlertDialogHandler.displayAlertWithMessage(message, context);
     }
 }

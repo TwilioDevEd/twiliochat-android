@@ -24,6 +24,9 @@
         You must provide a registered email address to start the recovery process
     </string>
     <string name="forgot_password_progress_message">recovering password...</string>
+    <string name="forgot_password_success_message">
+        We have sent you an email to start the password recovery process
+    </string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

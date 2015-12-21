@@ -2,9 +2,11 @@ package com.twilio.twiliochat.activities;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -65,9 +67,14 @@ public class ForgotPasswordActivity extends AppCompatActivity {
             public void done(ParseException e) {
                 stopStatusDialog();
                 if (e == null) {
-                    // An email was successfully sent with reset instructions.
+                    AlertDialogHandler.displayAlertWithHandler("success", context, new DialogInterface.OnClickListener(){
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            finish();
+                        }
+                    });
                 } else {
-                    // Something went wrong. Look at the ParseException to see what's up.
+                    showAlertWithMessage(e.getLocalizedMessage());
                 }
             }
         });
@@ -121,5 +128,9 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     private String getStringResource(int id) {
         Resources resources = getResources();
         return resources.getString(id);
+    }
+
+    private void showAlertWithMessage(String message) {
+        AlertDialogHandler.displayAlertWithMessage(message, context);
     }
 }
