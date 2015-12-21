@@ -32,6 +32,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="logout_text">Logout</string>
 
+    <string name="logout_prompt_message">Are you sure you want to logout?</string>
     <string name="action_leave_channel">Leave channel</string>
     <string name="message_elipses">Message...</string>
     <string name="logo_text">logo</string>

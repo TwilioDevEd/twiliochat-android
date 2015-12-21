@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    android:layout_height="match_parent">
 
     <ListView
-        android:id="@+id/listMessages"
+        android:id="@+id/listViewMessages"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:transcriptMode="alwaysScroll"
         android:layout_above="@+id/divider"
         android:padding="0dip"
         android:divider="@null"
-        android:dividerHeight="0dp" android:stackFromBottom="true" tools:listitem="@layout/message_left"/>
+        android:dividerHeight="0dp"
+        android:stackFromBottom="true"
+        tools:listitem="@layout/message"/>
 
     <RelativeLayout
         android:id="@+id/divider"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="1dip"
         android:background="@color/off_white"
         android:layout_above="@+id/relSendMessage" />
@@ -32,25 +33,27 @@
 
         <EditText
             android:layout_marginBottom="-4dp"
-            android:id="@+id/messageBodyField"
+            android:id="@+id/editTextMessage"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="@string/message_elipses"
             android:textSize="14sp"
             android:textColor="@android:color/black"
             android:layout_marginRight="10dp"
-            android:layout_alignTop="@+id/sendButton"
+            android:layout_alignTop="@+id/buttonSend"
             android:background="@android:color/white"
-            android:layout_alignBottom="@+id/sendButton"
-            android:layout_toLeftOf="@+id/sendButton"/>
+            android:layout_alignBottom="@+id/buttonSend"
+            android:layout_toLeftOf="@+id/buttonSend"/>
 
         <Button
-            android:id="@+id/sendButton"
+            android:id="@+id/buttonSend"
             android:layout_width="72dp"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
             android:layout_margin="4dp"
-            android:background="@drawable/button_send" />
+            android:background="@android:color/transparent"
+            android:textColor="@color/colorAccent"
+            android:text="Send"/>
     </RelativeLayout>
 
 

@@ -1,6 +1,11 @@
 package com.twilio.twiliochat.activities;
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
+import android.sax.TextElementListener;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.view.View;
@@ -12,10 +17,26 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.TextView;
 
+import com.parse.ParseUser;
 import com.twilio.twiliochat.R;
+import com.twilio.twiliochat.messaging.Message;
+import com.twilio.twiliochat.messaging.MessageAdapter;
+import com.twilio.twiliochat.util.AlertDialogHandler;
 
 public class MainChatActivity extends AppCompatActivity {
+    Context context;
+    Button logoutButton;
+    Button sendButton;
+    TextView usernameTextView;
+    ListView messagesListView;
+    EditText messageTextEdit;
+
+    MessageAdapter messageAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +52,33 @@ public class MainChatActivity extends AppCompatActivity {
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+
+        context = this;
+        logoutButton = (Button) findViewById(R.id.buttonLogout);
+        sendButton = (Button) findViewById(R.id.buttonSend);
+        usernameTextView = (TextView) findViewById(R.id.textViewUsername);
+        messagesListView = (ListView) findViewById(R.id.listViewMessages);
+        messageTextEdit = (EditText) findViewById(R.id.editTextMessage);
+
+        messageAdapter = new MessageAdapter(this);
+        messagesListView.setAdapter(messageAdapter);
+
+        setUsernameTextView();
+
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                promptLogout();
+            }
+        });
+
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Message message = new Message(messageTextEdit.getText().toString());
+                messageAdapter.addMessage(message);
+            }
+        });
     }
 
     @Override
@@ -64,5 +112,34 @@ public class MainChatActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private String getStringResource(int id) {
+        Resources resources = getResources();
+        return resources.getString(id);
+    }
+
+    private void promptLogout() {
+        String message = getStringResource(R.string.logout_prompt_message);
+        AlertDialogHandler.displayCancellableAlertWithHandler(message, context, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ParseUser.logOut();
+                showLoginActivity();
+            }
+        });
+    }
+
+    private void showLoginActivity() {
+        Intent launchIntent = new Intent();
+        launchIntent.setClass(getApplicationContext(), LoginActivity.class);
+        startActivity(launchIntent);
+
+        finish();
+    }
+
+    private void setUsernameTextView() {
+        String username = ParseUser.getCurrentUser().getUsername();
+        usernameTextView.setText(username);
     }
 }
