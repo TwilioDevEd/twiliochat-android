@@ -50,7 +50,7 @@
     </style>
     
     <style name="LoginButton" parent="LoginFormButton">
-        <item name="android:textColor">@color/login_red_text</item>
+        <item name="android:textColor">@color/twilio_red_text</item>
         <item name="android:layout_height">40dp</item>
     </style>
 
@@ -76,6 +76,14 @@
         <item name="android:typeface">monospace</item>
         <item name="android:textSize">10sp</item>
         <item name="android:background">@color/colorPrimary</item>
+    </style>
+
+    <style name="MenuHeaderItem">
+        <item name="android:layout_height">40dp</item>
+    </style>
+
+    <style name="MenuHeader" parent="MenuHeaderItem">
+        <item name="android:textSize">12sp</item>
     </style>
 
 </resources>

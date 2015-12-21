@@ -73,6 +73,7 @@ public class ForgotPasswordActivity extends AppCompatActivity {
                             finish();
                         }
                     });
+                    return;
                 } else {
                     showAlertWithMessage(e.getLocalizedMessage());
                 }
