@@ -6,44 +6,45 @@
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
     <RelativeLayout
-        android:paddingTop="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
         android:layout_gravity="center_vertical"
-        android:layout_centerVertical="true">
+        android:paddingTop="25dp">
 
         <ImageView
-            style="@style/MenuHeader"
             android:id="@+id/imageViewUserIcon"
+            style="@style/MenuHeader"
             android:layout_width="wrap_content"
-            android:src="@drawable/ic_user"
+            android:layout_marginLeft="20dp"
             android:gravity="center"
-            android:layout_marginLeft="20dp"/>
+            android:src="@drawable/ic_user" />
 
         <TextView
-            style="@style/MenuHeader"
             android:id="@+id/textViewUsername"
+            style="@style/MenuHeader"
             android:layout_width="wrap_content"
-            android:text="@string/username_placeholder"
-            android:gravity="center"
             android:layout_marginLeft="10dp"
-            android:textColor="@color/menu_username_color"
             android:layout_toRightOf="@+id/imageViewUserIcon"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
+            android:gravity="center"
+            android:text="@string/username_placeholder"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="@color/menu_username_color" />
 
         <Button
-            style="@style/MenuHeader"
             android:id="@+id/buttonLogout"
+            style="@style/MenuHeader"
             android:layout_width="wrap_content"
-            android:background="@android:color/transparent"
-            android:text="@string/logout_text"
             android:layout_alignParentRight="true"
             android:layout_marginRight="15dp"
-            android:textColor="@color/twilio_red_text"/>
+            android:background="@android:color/transparent"
+            android:text="@string/logout_text"
+            android:textColor="@color/twilio_red_text" />
     </RelativeLayout>
+
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/user_panel_line"/>
+        android:background="@drawable/user_panel_line" />
 </RelativeLayout>

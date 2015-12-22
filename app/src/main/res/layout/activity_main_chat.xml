@@ -17,8 +17,8 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:fitsSystemWindows="true"
-        android:background="@drawable/home_bg">
+        android:background="@drawable/home_bg"
+        android:fitsSystemWindows="true">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -26,31 +26,32 @@
 
             <include
                 android:id="@+id/toolbar"
-                layout="@layout/nav_header_main_chat"/>
+                layout="@layout/nav_header_main_chat" />
 
             <ScrollView
                 android:id="@+id/scroller"
-                android:layout_below="@+id/toolbar"
-                android:layout_above="@+id/button"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scrollbars="none"
-                android:layout_weight="1">
+                android:layout_above="@+id/button"
+                android:layout_below="@+id/toolbar"
+                android:layout_weight="1"
+                android:scrollbars="none">
+
                 <TableLayout
                     android:id="@+id/tableLayoutChannels"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical"/>
+                    android:orientation="vertical" />
             </ScrollView>
 
             <Button
-                android:layout_centerHorizontal="true"
+                android:id="@+id/button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:background="@drawable/add_channel_button"
+                android:layout_centerHorizontal="true"
                 android:layout_marginBottom="15dp"
-                android:id="@+id/button"/>
+                android:background="@drawable/add_channel_button" />
         </RelativeLayout>
 
     </android.support.design.widget.NavigationView>

@@ -8,30 +8,30 @@ import com.parse.ParseUser;
 
 public class LaunchActivity extends Activity {
 
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
 
-        // launch a different activity
-        Intent launchIntent = new Intent();
-        Class<?> launchActivity;
+    // launch a different activity
+    Intent launchIntent = new Intent();
+    Class<?> launchActivity;
 
-        launchActivity = getLaunchClass();
-        launchIntent.setClass(getApplicationContext(), launchActivity);
-        startActivity(launchIntent);
+    launchActivity = getLaunchClass();
+    launchIntent.setClass(getApplicationContext(), launchActivity);
+    startActivity(launchIntent);
 
-        finish();
+    finish();
+  }
+
+  /**
+   * return Class name of Activity to show
+   **/
+  private Class<?> getLaunchClass() {
+    ParseUser currentUser = ParseUser.getCurrentUser();
+    if (currentUser != null) {
+      return MainChatActivity.class;
+    } else {
+      return LoginActivity.class;
     }
-
-    /** return Class name of Activity to show **/
-    private Class<?> getLaunchClass()
-    {
-        ParseUser currentUser = ParseUser.getCurrentUser();
-        if (currentUser != null) {
-            return MainChatActivity.class;
-        } else {
-            return LoginActivity.class;
-        }
-    }
+  }
 }

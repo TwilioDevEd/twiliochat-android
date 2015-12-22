@@ -14,17 +14,17 @@ import com.parse.Parse;
 import com.parse.ParseACL;
 
 public class ParseApplication extends Application {
-    @Override
-    public void onCreate() {
-        super.onCreate();
+  @Override
+  public void onCreate() {
+    super.onCreate();
 
-        // Enable Local Datastore.
-        Parse.enableLocalDatastore(this);
+    // Enable Local Datastore.
+    Parse.enableLocalDatastore(this);
 
-        // Add your initialization code here
-        Parse.initialize(this);
+    // Add your initialization code here
+    Parse.initialize(this);
 
-        ParseACL defaultACL = new ParseACL();
-        ParseACL.setDefaultACL(defaultACL, true);
-    }
+    ParseACL defaultACL = new ParseACL();
+    ParseACL.setDefaultACL(defaultACL, true);
+  }
 }
