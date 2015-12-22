@@ -17,7 +17,7 @@ public class MessageAdapter extends BaseAdapter {
     private LayoutInflater layoutInflater;
     public MessageAdapter(Activity activity) {
         layoutInflater = activity.getLayoutInflater();
-        messages = new ArrayList<Message>();
+        messages = new ArrayList<>();
     }
 
     public void addMessage(Message message) {
@@ -47,7 +47,7 @@ public class MessageAdapter extends BaseAdapter {
             convertView = layoutInflater.inflate(res, viewGroup, false);
         }
         Message message = messages.get(i);
-        TextView txtMessage = (TextView) convertView.findViewById(R.id.txtMessage);
+        TextView txtMessage = (TextView) convertView.findViewById(R.id.textViewMessage);
         txtMessage.setText(message.getTextBody());
         return convertView;
     }

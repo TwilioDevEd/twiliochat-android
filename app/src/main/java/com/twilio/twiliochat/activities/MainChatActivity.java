@@ -75,10 +75,12 @@ public class MainChatActivity extends AppCompatActivity {
         sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Message message = new Message(messageTextEdit.getText().toString());
-                messageAdapter.addMessage(message);
+                sendMessage();
             }
         });
+        for (int i=0;i<20;i++){
+            messageAdapter.addMessage(new Message("prueba"));
+        }
     }
 
     @Override
@@ -114,6 +116,16 @@ public class MainChatActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void sendMessage() {
+        String messageText = getTextInput();
+        if (messageText.length() == 0) {
+            return;
+        }
+        Message message = new Message(messageText);
+        messageAdapter.addMessage(message);
+        clearTextInput();
+    }
+
     private String getStringResource(int id) {
         Resources resources = getResources();
         return resources.getString(id);
@@ -141,5 +153,13 @@ public class MainChatActivity extends AppCompatActivity {
     private void setUsernameTextView() {
         String username = ParseUser.getCurrentUser().getUsername();
         usernameTextView.setText(username);
+    }
+
+    private String getTextInput() {
+        return messageTextEdit.getText().toString();
+    }
+
+    private void clearTextInput() {
+        messageTextEdit.setText("");
     }
 }

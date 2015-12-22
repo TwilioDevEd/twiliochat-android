@@ -13,4 +13,6 @@
     <color name="twilio_red_text">#F88E80</color>
     <color name="login_text_edit_background">#E0E1E2</color>
     <color name="menu_username_color">#380604</color>
+    <color name="message_date_color">#BA9E9E</color>
+    <color name="message_text_color">#5B4F51</color>
 </resources>

@@ -83,7 +83,8 @@
     </style>
 
     <style name="MenuHeader" parent="MenuHeaderItem">
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
 </resources>
