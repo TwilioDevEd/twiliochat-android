@@ -7,7 +7,6 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
-import android.telephony.TelephonyManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,6 +19,9 @@ import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 import com.twilio.twiliochat.R;
+import com.twilio.twiliochat.application.TwilioChatApplication;
+import com.twilio.twiliochat.ipmessaging.IPMessagingClient;
+import com.twilio.twiliochat.ipmessaging.LoginListener;
 import com.twilio.twiliochat.util.AlertDialogHandler;
 
 import java.util.HashMap;
@@ -44,11 +46,15 @@ public class LoginActivity extends AppCompatActivity {
   private EditText emailEditText;
   private Boolean isSigningUp = false;
 
+  private IPMessagingClient messagingClient;
+
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_login);
     setUIComponents();
+
+    messagingClient = TwilioChatApplication.get().getIPMessagingClient();
 
     createAccountButton.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -147,16 +153,17 @@ public class LoginActivity extends AppCompatActivity {
     ParseUser.logInInBackground(formInput.get(USERNAME_FORM_FIELD), formInput.get(PASSWORD_FORM_FIELD), new LogInCallback() {
       public void done(ParseUser user, ParseException e) {
         if (user != null) {
-          String android_id = Settings.Secure.getString(context.getContentResolver(),
-              Settings.Secure.ANDROID_ID);
-          Map<String, String> params = new HashMap<>();
-          params.put("device", android_id);
-          ParseCloud.callFunctionInBackground(TOKEN_KEY, params, new FunctionCallback<Object>() {
+          ParseCloud.callFunctionInBackground(TOKEN_KEY, getTokenRequestParams(), new FunctionCallback<Object>() {
             @Override
             public void done(Object object, ParseException e) {
+              if (e != null) {
+                stopStatusDialog();
+                showAlertWithMessage(e.getLocalizedMessage());
+                return;
+              }
               Map<String, String> result = (HashMap<String, String>) object;
               String token = result.get(TOKEN_KEY);
-              showMainChatActivity();
+              initializeMessagingClient(token);
             }
           });
         }
@@ -191,8 +198,32 @@ public class LoginActivity extends AppCompatActivity {
         formInput.put(EMAIL_FORM_FIELD, email);
       }
     }
-
     return formInput;
+  }
+
+  private void initializeMessagingClient(String token) {
+    messagingClient.connectClient(token, new LoginListener() {
+      @Override
+      public void onLoginStarted() {
+
+      }
+
+      @Override
+      public void onLoginFinished() {
+        System.out.println("Client Connected");
+        showMainChatActivity();
+      }
+
+      @Override
+      public void onLoginError(String errorMessage) {
+
+      }
+
+      @Override
+      public void onLogoutFinished() {
+
+      }
+    });
   }
 
   private void displayAllFieldsRequiredMessage() {
@@ -248,6 +279,15 @@ public class LoginActivity extends AppCompatActivity {
 
   private void showAlertWithMessage(String message) {
     AlertDialogHandler.displayAlertWithMessage(message, context);
+  }
+
+  private Map<String, String> getTokenRequestParams() {
+    String android_id = Settings.Secure.getString(context.getContentResolver(),
+        Settings.Secure.ANDROID_ID);
+    Map<String, String> params = new HashMap<>();
+    params.put("device", android_id);
+
+    return params;
   }
 
   private String getAccessToken() {

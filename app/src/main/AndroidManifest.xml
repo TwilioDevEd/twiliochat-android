@@ -4,9 +4,12 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
-        android:name=".parse.ParseApplication"
+        android:name=".application.TwilioChatApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -34,6 +37,9 @@
             android:label="@string/title_activity_main_chat"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activities.ForgotPasswordActivity"></activity>
+        <service
+            android:name="com.twilio.ipmessaging.TwilioIPMessagingClientService"
+            android:exported="false" />
     </application>
 
 </manifest>
