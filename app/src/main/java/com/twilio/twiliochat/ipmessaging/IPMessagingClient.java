@@ -35,7 +35,7 @@ public class IPMessagingClient implements IPMessagingClientListener, TwilioAcces
   }
 
   public void conectClient() {
-    
+
   }
 
   @Override

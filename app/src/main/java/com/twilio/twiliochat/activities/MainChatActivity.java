@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -15,25 +16,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.parse.ParseUser;
 import com.twilio.twiliochat.R;
-import com.twilio.twiliochat.messaging.Message;
-import com.twilio.twiliochat.messaging.MessageAdapter;
+import com.twilio.twiliochat.fragments.MainChatFragment;
 import com.twilio.twiliochat.util.AlertDialogHandler;
 
 public class MainChatActivity extends AppCompatActivity {
   Context context;
   Button logoutButton;
-  Button sendButton;
   TextView usernameTextView;
-  ListView messagesListView;
-  EditText messageTextEdit;
-
-  MessageAdapter messageAdapter;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -50,15 +43,15 @@ public class MainChatActivity extends AppCompatActivity {
 
     NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
 
+    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+
+    MainChatFragment fragment = new MainChatFragment();
+    fragmentTransaction.add(R.id.fragment_container, fragment);
+    fragmentTransaction.commit();
+
     context = this;
     logoutButton = (Button) findViewById(R.id.buttonLogout);
-    sendButton = (Button) findViewById(R.id.buttonSend);
     usernameTextView = (TextView) findViewById(R.id.textViewUsername);
-    messagesListView = (ListView) findViewById(R.id.listViewMessages);
-    messageTextEdit = (EditText) findViewById(R.id.editTextMessage);
-
-    messageAdapter = new MessageAdapter(this);
-    messagesListView.setAdapter(messageAdapter);
 
     setUsernameTextView();
 
@@ -66,13 +59,6 @@ public class MainChatActivity extends AppCompatActivity {
       @Override
       public void onClick(View v) {
         promptLogout();
-      }
-    });
-
-    sendButton.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        sendMessage();
       }
     });
   }
@@ -110,16 +96,6 @@ public class MainChatActivity extends AppCompatActivity {
     return super.onOptionsItemSelected(item);
   }
 
-  private void sendMessage() {
-    String messageText = getTextInput();
-    if (messageText.length() == 0) {
-      return;
-    }
-    Message message = new Message(messageText);
-    messageAdapter.addMessage(message);
-    clearTextInput();
-  }
-
   private String getStringResource(int id) {
     Resources resources = getResources();
     return resources.getString(id);
@@ -147,13 +123,5 @@ public class MainChatActivity extends AppCompatActivity {
   private void setUsernameTextView() {
     String username = ParseUser.getCurrentUser().getUsername();
     usernameTextView.setText(username);
-  }
-
-  private String getTextInput() {
-    return messageTextEdit.getText().toString();
-  }
-
-  private void clearTextInput() {
-    messageTextEdit.setText("");
   }
 }
