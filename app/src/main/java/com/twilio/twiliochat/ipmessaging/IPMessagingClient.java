@@ -1,12 +1,11 @@
 package com.twilio.twiliochat.ipmessaging;
 
-import android.app.PendingIntent;
 import android.content.Context;
-import android.content.Intent;
-import android.os.Handler;
-import android.os.Looper;
-import android.util.Log;
+import android.provider.Settings;
 
+import com.parse.FunctionCallback;
+import com.parse.ParseCloud;
+import com.parse.ParseException;
 import com.twilio.common.TwilioAccessManager;
 import com.twilio.common.TwilioAccessManagerFactory;
 import com.twilio.common.TwilioAccessManagerListener;
@@ -16,15 +15,15 @@ import com.twilio.ipmessaging.IPMessagingClientListener;
 import com.twilio.ipmessaging.TwilioIPMessagingClient;
 import com.twilio.ipmessaging.TwilioIPMessagingSDK;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class IPMessagingClient implements IPMessagingClientListener, TwilioAccessManagerListener {
   private String capabilityToken;
-  private long nativeClientParam;
   private TwilioIPMessagingClient ipMessagingClient;
-  private Channel[] channels;
   private Context context;
   private TwilioAccessManager accessManager;
-  private Handler loginListenerHandler;
-  private String urlString;
+  private final String TOKEN_KEY = "token";
 
   public IPMessagingClient(Context context) {
     this.context = context;
@@ -39,11 +38,22 @@ public class IPMessagingClient implements IPMessagingClientListener, TwilioAcces
 
   public void setCapabilityToken(String capabilityToken) {
     this.capabilityToken = capabilityToken;
+    if (this.accessManager != null) {
+      this.accessManager.updateToken(capabilityToken);
+    }
   }
 
-  public void connectClient(final String capabilityToken, final LoginListener listener) {
-    this.capabilityToken = capabilityToken;
-    this.loginListenerHandler = setupListenerHandler();
+  public void setClientListener(IPMessagingClientListener listener) {
+    if (this.ipMessagingClient != null) {
+      this.ipMessagingClient.setListener(listener);
+    }
+  }
+
+  public TwilioIPMessagingClient getIpMessagingClient() {
+    return this.ipMessagingClient;
+  }
+
+  public void connectClient(final LoginListener listener) {
     TwilioIPMessagingSDK.setLogLevel(android.util.Log.DEBUG);
     if(!TwilioIPMessagingSDK.isInitialized()) {
       TwilioIPMessagingSDK.initializeSDK(context, new Constants.InitListener()
@@ -51,7 +61,7 @@ public class IPMessagingClient implements IPMessagingClientListener, TwilioAcces
         @Override
         public void onInitialized()
         {
-          createClientWithAccessManager(capabilityToken, listener);
+          createClientWithAccessManager(listener);
         }
 
         @Override
@@ -62,16 +72,40 @@ public class IPMessagingClient implements IPMessagingClientListener, TwilioAcces
       });
     }
     else {
-      createClientWithAccessManager(capabilityToken, listener);
+      createClientWithAccessManager(listener);
     }
   }
 
-  private void createClientWithAccessManager(final String capabilityToken, final LoginListener listener) {
-    this.accessManager = TwilioAccessManagerFactory.createAccessManager(capabilityToken, new TwilioAccessManagerListener() {
+  private void createClientWithAccessManager(final LoginListener listener) {
+    fetchAccessToken(new FetchTokenListener() {
+      @Override
+      public void fetchTokenSuccess(String token) {
+        initializeClientWithToken(token, listener);
+      }
+
+      @Override
+      public void fetchTokenFailure(ParseException e) {
+        listener.onLoginError(e.getLocalizedMessage());
+      }
+    });
+  }
+
+  private void initializeClientWithToken(String token, final LoginListener listener) {
+    this.accessManager = TwilioAccessManagerFactory.createAccessManager(token, new TwilioAccessManagerListener() {
       @Override
       public void onAccessManagerTokenExpire(TwilioAccessManager twilioAccessManager) {
         System.out.println("token expired.");
-        //new GetCapabilityTokenAsyncTask().execute(BasicIPMessagingClient.this.urlString);
+        fetchAccessToken(new FetchTokenListener() {
+          @Override
+          public void fetchTokenSuccess(String token) {
+            IPMessagingClient.this.accessManager.updateToken(token);
+          }
+
+          @Override
+          public void fetchTokenFailure(ParseException e) {
+            System.out.println("Error trying to fetch token: " + e.getLocalizedMessage());
+          }
+        });
       }
 
       @Override
@@ -85,37 +119,32 @@ public class IPMessagingClient implements IPMessagingClientListener, TwilioAcces
       }
     });
 
-    ipMessagingClient = TwilioIPMessagingSDK.createIPMessagingClientWithAccessManager(accessManager, this);
-    if(ipMessagingClient != null) {
-      ipMessagingClient.setListener(this);
-      //Intent intent = new Intent(context,ChannelActivity.class);
-      //PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-      //ipMessagingClient.setIncomingIntent(pendingIntent);
-      this.loginListenerHandler.post(new Runnable() {
-        @Override
-        public void run() {
-          if (listener != null) {
-            listener.onLoginFinished();
-          }
-        }
-      });
-    } else {
-      listener.onLoginError("ipMessagingClientWithAccessManager is null");
-    }
+    ipMessagingClient = TwilioIPMessagingSDK.createIPMessagingClientWithAccessManager(this.accessManager, this);
   }
 
-  private Handler setupListenerHandler() {
-    Looper looper;
-    Handler handler;
-    if((looper = Looper.myLooper()) != null) {
-      handler = new Handler(looper);
-    } else if((looper = Looper.getMainLooper()) != null) {
-      handler = new Handler(looper);
-    } else {
-      handler = null;
-      throw new IllegalArgumentException("Channel Listener must have a Looper.");
-    }
-    return handler;
+  private void fetchAccessToken(final FetchTokenListener listener) {
+    ParseCloud.callFunctionInBackground(TOKEN_KEY, getTokenRequestParams(), new FunctionCallback<Object>() {
+      @Override
+      public void done(Object object, ParseException e) {
+        if (e != null) {
+          listener.fetchTokenFailure(e);
+          return;
+        }
+        Map<String, String> result = (HashMap<String, String>) object;
+        String token = result.get(TOKEN_KEY);
+        IPMessagingClient.this.capabilityToken = capabilityToken;
+        listener.fetchTokenSuccess(token);
+      }
+    });
+  }
+
+  private Map<String, String> getTokenRequestParams() {
+    String android_id = Settings.Secure.getString(context.getContentResolver(),
+        Settings.Secure.ANDROID_ID);
+    Map<String, String> params = new HashMap<>();
+    params.put("device", android_id);
+
+    return params;
   }
 
   @Override

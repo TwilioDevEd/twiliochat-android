@@ -19,14 +19,26 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.parse.ParseUser;
+import com.twilio.ipmessaging.Channel;
+import com.twilio.ipmessaging.Constants;
+import com.twilio.ipmessaging.IPMessagingClientListener;
 import com.twilio.twiliochat.R;
+import com.twilio.twiliochat.application.TwilioChatApplication;
 import com.twilio.twiliochat.fragments.MainChatFragment;
+import com.twilio.twiliochat.ipmessaging.IPMessagingClient;
 import com.twilio.twiliochat.util.AlertDialogHandler;
 
-public class MainChatActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+public class MainChatActivity extends AppCompatActivity implements IPMessagingClientListener {
   Context context;
   Button logoutButton;
   TextView usernameTextView;
+  IPMessagingClient client;
+  private List<Channel> channels = new ArrayList<Channel>();
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +73,9 @@ public class MainChatActivity extends AppCompatActivity {
         promptLogout();
       }
     });
+
+    client = TwilioChatApplication.get().getIPMessagingClient();
+    client.setClientListener(this);
   }
 
   @Override
@@ -123,5 +138,69 @@ public class MainChatActivity extends AppCompatActivity {
   private void setUsernameTextView() {
     String username = ParseUser.getCurrentUser().getUsername();
     usernameTextView.setText(username);
+  }
+
+  /*private void populateChannels(String channelId) {
+    if (this.channels != null) {
+      if (client != null && client.getIpMessagingClient() != null) {
+        channelsObject = basicClient.getIpMessagingClient().getChannels();
+        if (channelsObject != null) {
+          channelsObject.loadChannelsWithListener(new Constants.StatusListener() {
+            @Override
+            public void onError() {
+              logger.d("Failed to loadChannelsWithListener");
+            }
+
+            @Override
+            public void onSuccess() {
+              logger.d("Successfully loadChannelsWithListener.");
+              if (channels != null) {
+                channels.clear();
+              }
+              if (channelsObject != null) {
+                channelArray = channelsObject.getChannels();
+                setupListenersForChannel(channelArray);
+                if (ChannelActivity.this.channels != null && channelArray != null) {
+                  ChannelActivity.this.channels
+                      .addAll(new ArrayList<Channel>(Arrays.asList(channelArray)));
+                  Collections.sort(ChannelActivity.this.channels, new CustomChannelComparator());
+                  adapter.notifyDataSetChanged();
+                }
+              }
+            }
+          });
+        }
+      }
+    }
+  }*/
+
+  @Override
+  public void onChannelAdd(Channel channel) {
+
+  }
+
+  @Override
+  public void onChannelChange(Channel channel) {
+
+  }
+
+  @Override
+  public void onChannelDelete(Channel channel) {
+
+  }
+
+  @Override
+  public void onError(int i, String s) {
+
+  }
+
+  @Override
+  public void onAttributesChange(String s) {
+
+  }
+
+  @Override
+  public void onChannelHistoryLoaded(Channel channel) {
+
   }
 }

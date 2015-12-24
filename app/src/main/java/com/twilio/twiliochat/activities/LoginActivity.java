@@ -12,9 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-import com.parse.FunctionCallback;
 import com.parse.LogInCallback;
-import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
@@ -33,7 +31,6 @@ public class LoginActivity extends AppCompatActivity {
   private final String PASSWORD_FORM_FIELD = "password";
   private final String FULLNAME_FORM_FIELD = "fullName";
   private final String EMAIL_FORM_FIELD = "email";
-  private final String TOKEN_KEY = "token";
   private ProgressDialog progressDialog;
   private LinearLayout fullNameLayout;
   private LinearLayout emailLayout;
@@ -153,19 +150,7 @@ public class LoginActivity extends AppCompatActivity {
     ParseUser.logInInBackground(formInput.get(USERNAME_FORM_FIELD), formInput.get(PASSWORD_FORM_FIELD), new LogInCallback() {
       public void done(ParseUser user, ParseException e) {
         if (user != null) {
-          ParseCloud.callFunctionInBackground(TOKEN_KEY, getTokenRequestParams(), new FunctionCallback<Object>() {
-            @Override
-            public void done(Object object, ParseException e) {
-              if (e != null) {
-                stopStatusDialog();
-                showAlertWithMessage(e.getLocalizedMessage());
-                return;
-              }
-              Map<String, String> result = (HashMap<String, String>) object;
-              String token = result.get(TOKEN_KEY);
-              initializeMessagingClient(token);
-            }
-          });
+          initializeMessagingClient();
         }
         else {
           stopStatusDialog();
@@ -201,8 +186,8 @@ public class LoginActivity extends AppCompatActivity {
     return formInput;
   }
 
-  private void initializeMessagingClient(String token) {
-    messagingClient.connectClient(token, new LoginListener() {
+  private void initializeMessagingClient() {
+    messagingClient.connectClient(new LoginListener() {
       @Override
       public void onLoginStarted() {
 
@@ -216,7 +201,8 @@ public class LoginActivity extends AppCompatActivity {
 
       @Override
       public void onLoginError(String errorMessage) {
-
+        stopStatusDialog();
+        showAlertWithMessage(errorMessage);
       }
 
       @Override
