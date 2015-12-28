@@ -48,6 +48,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
   private ListView channelsListView;
   private ChannelAdapter channelAdapter;
   private ChannelManager channelManager;
+  private MainChatFragment chatFragment;
 
   private String defaultChannelName;
 
@@ -68,8 +69,8 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
 
     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
-    MainChatFragment fragment = new MainChatFragment();
-    fragmentTransaction.add(R.id.fragment_container, fragment);
+    chatFragment = new MainChatFragment();
+    fragmentTransaction.add(R.id.fragment_container, chatFragment);
     fragmentTransaction.commit();
 
     context = this;

@@ -11,11 +11,18 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.twilio.ipmessaging.Channel;
+import com.twilio.ipmessaging.ChannelListener;
+import com.twilio.ipmessaging.Member;
+import com.twilio.ipmessaging.Message;
+import com.twilio.ipmessaging.Messages;
 import com.twilio.twiliochat.R;
-import com.twilio.twiliochat.messaging.Message;
 import com.twilio.twiliochat.messaging.MessageAdapter;
+import com.twilio.twiliochat.messaging.MessageMock;
 
-public class MainChatFragment extends Fragment {
+import java.util.Map;
+
+public class MainChatFragment extends Fragment implements ChannelListener {
   Context context;
   Activity mainActivity;
   Button sendButton;
@@ -23,6 +30,9 @@ public class MainChatFragment extends Fragment {
   EditText messageTextEdit;
 
   MessageAdapter messageAdapter;
+  Channel currentChannel;
+  Messages messages;
+  Message[] messagesArray;
 
   public MainChatFragment() {
   }
@@ -30,6 +40,17 @@ public class MainChatFragment extends Fragment {
   public static MainChatFragment newInstance() {
     MainChatFragment fragment = new MainChatFragment();
     return fragment;
+  }
+
+  public Channel getCurrentChannel() {
+    return currentChannel;
+  }
+
+  public void setCurrentChannel(Channel currentChannel) {
+    this.currentChannel = currentChannel;
+    this.currentChannel.setListener(this);
+    this.messages = this.currentChannel.getMessages();
+    messagesArray = this.messages.getMessages();
   }
 
   @Override
@@ -74,7 +95,7 @@ public class MainChatFragment extends Fragment {
     if (messageText.length() == 0) {
       return;
     }
-    Message message = new Message(messageText);
+    MessageMock message = new MessageMock(messageText);
     messageAdapter.addMessage(message);
     clearTextInput();
   }
@@ -85,5 +106,55 @@ public class MainChatFragment extends Fragment {
 
   private void clearTextInput() {
     messageTextEdit.setText("");
+  }
+
+  @Override
+  public void onMessageAdd(com.twilio.ipmessaging.Message message) {
+
+  }
+
+  @Override
+  public void onMessageChange(com.twilio.ipmessaging.Message message) {
+
+  }
+
+  @Override
+  public void onMessageDelete(com.twilio.ipmessaging.Message message) {
+
+  }
+
+  @Override
+  public void onMemberJoin(Member member) {
+
+  }
+
+  @Override
+  public void onMemberChange(Member member) {
+
+  }
+
+  @Override
+  public void onMemberDelete(Member member) {
+
+  }
+
+  @Override
+  public void onAttributesChange(Map<String, String> map) {
+
+  }
+
+  @Override
+  public void onTypingStarted(Member member) {
+
+  }
+
+  @Override
+  public void onTypingEnded(Member member) {
+
+  }
+
+  @Override
+  public void onChannelHistoryLoaded(Channel channel) {
+
   }
 }

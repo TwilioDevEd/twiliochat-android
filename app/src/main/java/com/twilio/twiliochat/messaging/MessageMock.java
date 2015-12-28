@@ -1,15 +1,15 @@
 package com.twilio.twiliochat.messaging;
 
-public class Message {
+public class MessageMock {
   private String id;
   private String textBody;
   private String sender;
 
-  public Message() {
+  public MessageMock() {
 
   }
 
-  public Message(String textBody) {
+  public MessageMock(String textBody) {
     this.textBody = textBody;
   }
 

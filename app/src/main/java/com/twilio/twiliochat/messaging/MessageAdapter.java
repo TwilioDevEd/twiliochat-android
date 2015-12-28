@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MessageAdapter extends BaseAdapter {
-  private List<Message> messages;
+  private List<MessageMock> messages;
   private LayoutInflater layoutInflater;
 
   public MessageAdapter(Activity activity) {
@@ -21,7 +21,7 @@ public class MessageAdapter extends BaseAdapter {
     messages = new ArrayList<>();
   }
 
-  public void addMessage(Message message) {
+  public void addMessage(MessageMock message) {
     messages.add(message);
     notifyDataSetChanged();
   }
@@ -47,7 +47,7 @@ public class MessageAdapter extends BaseAdapter {
       int res = R.layout.message;
       convertView = layoutInflater.inflate(res, viewGroup, false);
     }
-    Message message = messages.get(i);
+    MessageMock message = messages.get(i);
     TextView txtMessage = (TextView) convertView.findViewById(R.id.textViewMessage);
     txtMessage.setText(message.getTextBody());
     return convertView;
