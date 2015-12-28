@@ -266,18 +266,4 @@ public class LoginActivity extends AppCompatActivity {
   private void showAlertWithMessage(String message) {
     AlertDialogHandler.displayAlertWithMessage(message, context);
   }
-
-  private Map<String, String> getTokenRequestParams() {
-    String android_id = Settings.Secure.getString(context.getContentResolver(),
-        Settings.Secure.ANDROID_ID);
-    Map<String, String> params = new HashMap<>();
-    params.put("device", android_id);
-
-    return params;
-  }
-
-  private String getAccessToken() {
-    Map<String, String> params = new HashMap<>();
-    return "";
-  }
 }

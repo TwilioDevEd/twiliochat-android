@@ -28,29 +28,28 @@
                 android:id="@+id/toolbar"
                 layout="@layout/nav_header_main_chat" />
 
-            <ScrollView
-                android:id="@+id/scroller"
+            <ListView
+                android:id="@+id/listViewChannels"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_above="@+id/button"
                 android:layout_below="@+id/toolbar"
-                android:layout_weight="1"
-                android:scrollbars="none">
+                android:scrollbars="none"
+                android:divider="@null"
+                android:dividerHeight="0dp"
+                android:padding="0dp"
+                tools:listitem="@layout/channel">
 
-                <TableLayout
-                    android:id="@+id/tableLayoutChannels"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical" />
-            </ScrollView>
+            </ListView>
 
             <Button
                 android:id="@+id/button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_centerHorizontal="true"
+                android:layout_marginLeft="@dimen/channel_list_left_margin"
                 android:layout_marginBottom="15dp"
+                android:layout_marginTop="15dp"
                 android:background="@drawable/add_channel_button" />
         </RelativeLayout>
 

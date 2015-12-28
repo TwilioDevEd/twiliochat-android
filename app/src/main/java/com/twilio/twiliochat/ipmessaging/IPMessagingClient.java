@@ -85,7 +85,9 @@ public class IPMessagingClient implements IPMessagingClientListener, TwilioAcces
 
       @Override
       public void fetchTokenFailure(ParseException e) {
-        listener.onLoginError(e.getLocalizedMessage());
+        if (listener != null) {
+          listener.onLoginError(e.getLocalizedMessage());
+        }
       }
     });
   }
@@ -120,6 +122,9 @@ public class IPMessagingClient implements IPMessagingClientListener, TwilioAcces
     });
 
     ipMessagingClient = TwilioIPMessagingSDK.createIPMessagingClientWithAccessManager(this.accessManager, this);
+    if (listener != null) {
+      listener.onLoginFinished();
+    }
   }
 
   private void fetchAccessToken(final FetchTokenListener listener) {
