@@ -1,6 +1,7 @@
 package com.twilio.twiliochat.ipmessaging;
 
 import android.content.Context;
+import android.os.Handler;
 import android.provider.Settings;
 
 import com.parse.FunctionCallback;
@@ -18,18 +19,19 @@ import com.twilio.ipmessaging.TwilioIPMessagingSDK;
 import java.util.HashMap;
 import java.util.Map;
 
-public class IPMessagingClient implements IPMessagingClientListener, TwilioAccessManagerListener {
+public class IPMessagingClientManager implements IPMessagingClientListener, TwilioAccessManagerListener {
   private String capabilityToken;
   private TwilioIPMessagingClient ipMessagingClient;
   private Context context;
   private TwilioAccessManager accessManager;
   private final String TOKEN_KEY = "token";
+  private final Handler handler = new Handler();
 
-  public IPMessagingClient(Context context) {
+  public IPMessagingClientManager(Context context) {
     this.context = context;
   }
 
-  public IPMessagingClient() {
+  public IPMessagingClientManager() {
   }
 
   public String getCapabilityToken() {
@@ -100,7 +102,7 @@ public class IPMessagingClient implements IPMessagingClientListener, TwilioAcces
         fetchAccessToken(new FetchTokenListener() {
           @Override
           public void fetchTokenSuccess(String token) {
-            IPMessagingClient.this.accessManager.updateToken(token);
+            IPMessagingClientManager.this.accessManager.updateToken(token);
           }
 
           @Override
@@ -137,7 +139,7 @@ public class IPMessagingClient implements IPMessagingClientListener, TwilioAcces
         }
         Map<String, String> result = (HashMap<String, String>) object;
         String token = result.get(TOKEN_KEY);
-        IPMessagingClient.this.capabilityToken = capabilityToken;
+        IPMessagingClientManager.this.capabilityToken = capabilityToken;
         listener.fetchTokenSuccess(token);
       }
     });

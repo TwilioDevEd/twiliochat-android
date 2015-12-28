@@ -30,13 +30,12 @@ import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.application.TwilioChatApplication;
 import com.twilio.twiliochat.fragments.MainChatFragment;
 import com.twilio.twiliochat.ipmessaging.ChannelAdapter;
-import com.twilio.twiliochat.ipmessaging.IPMessagingClient;
+import com.twilio.twiliochat.ipmessaging.ChannelManager;
+import com.twilio.twiliochat.ipmessaging.IPMessagingClientManager;
+import com.twilio.twiliochat.ipmessaging.LoadChannelListener;
 import com.twilio.twiliochat.ipmessaging.LoginListener;
 import com.twilio.twiliochat.util.AlertDialogHandler;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -45,12 +44,10 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
   Activity mainActivity;
   private Button logoutButton;
   private TextView usernameTextView;
-  private IPMessagingClient client;
+  private IPMessagingClientManager client;
   private ListView channelsListView;
-  private List<Channel> channels = new ArrayList<>();
-  private Channels channelsObject;
-  private Channel[] channelArray;
   private ChannelAdapter channelAdapter;
+  private ChannelManager channelManager;
 
   private String defaultChannelName;
 
@@ -79,6 +76,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
     mainActivity = this;
     logoutButton = (Button) findViewById(R.id.buttonLogout);
     usernameTextView = (TextView) findViewById(R.id.textViewUsername);
+    channelManager = ChannelManager.getInstance();
 
     defaultChannelName = getStringResource(R.string.default_channel_name);
     setUsernameTextView();
@@ -132,49 +130,21 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
   }
 
   private void populateChannels() {
-    client.setClientListener(MainChatActivity.this);
-    channelsListView = (ListView) findViewById(R.id.listViewChannels);
-    channelAdapter = new ChannelAdapter(mainActivity, this.channels);
-    channelsListView.setAdapter(channelAdapter);
-    channelsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+    channelManager.setChannelListener(this);
+    channelManager.populateChannels(new LoadChannelListener() {
       @Override
-      public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+      public void onChannelsFinishedLoading(List<Channel> channels) {
+        channelsListView = (ListView) findViewById(R.id.listViewChannels);
+        channelAdapter = new ChannelAdapter(mainActivity, channels);
+        channelsListView.setAdapter(channelAdapter);
+        channelsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+          @Override
+          public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+          }
+        });
       }
     });
-    getChannels();
-  }
-
-  private void getChannels() {
-    if (this.client == null) {
-      return;
-    }
-
-    channelsObject = client.getIpMessagingClient().getChannels();
-    if (channelsObject != null) {
-      channelsObject.loadChannelsWithListener(new Constants.StatusListener() {
-        @Override
-        public void onError() {
-          System.out.println("Failed to loadChannelsWithListener");
-        }
-
-        @Override
-        public void onSuccess() {
-          System.out.println("Successfully loadChannelsWithListener.");
-          if (channels != null) {
-            channels.clear();
-          }
-
-          channelArray = channelsObject.getChannels();
-          //setupListenersForChannel(channelArray);
-          if (MainChatActivity.this.channels != null && channelArray != null) {
-            MainChatActivity.this.channels.addAll(Arrays.asList(channelArray));
-            Collections.sort(MainChatActivity.this.channels, new CustomChannelComparator());
-            channelAdapter.notifyDataSetChanged();
-          }
-        }
-      });
-    }
   }
 
   private void setChannel(int position) {
@@ -206,11 +176,6 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
       @Override
       public void onLoginError(String errorMessage) {
         AlertDialogHandler.displayAlertWithMessage("Client connection error", context);
-      }
-
-      @Override
-      public void onLogoutFinished() {
-
       }
     });
   }

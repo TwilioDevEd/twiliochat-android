@@ -6,6 +6,4 @@ public interface LoginListener {
   public void onLoginFinished();
 
   public void onLoginError(String errorMessage);
-
-  public void onLogoutFinished();
 }

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -18,7 +17,7 @@ import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.application.TwilioChatApplication;
-import com.twilio.twiliochat.ipmessaging.IPMessagingClient;
+import com.twilio.twiliochat.ipmessaging.IPMessagingClientManager;
 import com.twilio.twiliochat.ipmessaging.LoginListener;
 import com.twilio.twiliochat.util.AlertDialogHandler;
 
@@ -43,7 +42,7 @@ public class LoginActivity extends AppCompatActivity {
   private EditText emailEditText;
   private Boolean isSigningUp = false;
 
-  private IPMessagingClient messagingClient;
+  private IPMessagingClientManager messagingClient;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -203,11 +202,6 @@ public class LoginActivity extends AppCompatActivity {
       public void onLoginError(String errorMessage) {
         stopStatusDialog();
         showAlertWithMessage(errorMessage);
-      }
-
-      @Override
-      public void onLogoutFinished() {
-
       }
     });
   }

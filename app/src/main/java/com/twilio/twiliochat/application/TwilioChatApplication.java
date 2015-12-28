@@ -4,17 +4,17 @@ import android.app.Application;
 
 import com.parse.Parse;
 import com.parse.ParseACL;
-import com.twilio.twiliochat.ipmessaging.IPMessagingClient;
+import com.twilio.twiliochat.ipmessaging.IPMessagingClientManager;
 
 public class TwilioChatApplication extends Application {
   private static TwilioChatApplication instance;
-  private IPMessagingClient basicClient;
+  private IPMessagingClientManager basicClient;
 
   public static TwilioChatApplication get() {
     return instance;
   }
 
-  public IPMessagingClient getIPMessagingClient() {
+  public IPMessagingClientManager getIPMessagingClient() {
     return this.basicClient;
   }
 
@@ -23,7 +23,7 @@ public class TwilioChatApplication extends Application {
     super.onCreate();
 
     TwilioChatApplication.instance = this;
-    basicClient = new IPMessagingClient(getApplicationContext());
+    basicClient = new IPMessagingClientManager(getApplicationContext());
 
     // Enable Local Datastore.
     Parse.enableLocalDatastore(this);
