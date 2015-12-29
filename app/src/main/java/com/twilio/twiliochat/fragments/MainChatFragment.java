@@ -13,12 +13,13 @@ import android.widget.ListView;
 
 import com.twilio.ipmessaging.Channel;
 import com.twilio.ipmessaging.ChannelListener;
+import com.twilio.ipmessaging.Constants;
+import com.twilio.ipmessaging.IPMessagingClientListener;
 import com.twilio.ipmessaging.Member;
 import com.twilio.ipmessaging.Message;
 import com.twilio.ipmessaging.Messages;
 import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.messaging.MessageAdapter;
-import com.twilio.twiliochat.messaging.MessageMock;
 
 import java.util.Map;
 
@@ -40,17 +41,6 @@ public class MainChatFragment extends Fragment implements ChannelListener {
   public static MainChatFragment newInstance() {
     MainChatFragment fragment = new MainChatFragment();
     return fragment;
-  }
-
-  public Channel getCurrentChannel() {
-    return currentChannel;
-  }
-
-  public void setCurrentChannel(Channel currentChannel) {
-    this.currentChannel = currentChannel;
-    this.currentChannel.setListener(this);
-    this.messages = this.currentChannel.getMessages();
-    messagesArray = this.messages.getMessages();
   }
 
   @Override
@@ -95,9 +85,49 @@ public class MainChatFragment extends Fragment implements ChannelListener {
     if (messageText.length() == 0) {
       return;
     }
-    MessageMock message = new MessageMock(messageText);
-    messageAdapter.addMessage(message);
+    Message newMessage = this.messages.createMessage(messageText);
+    this.messages.sendMessage(newMessage, null);
     clearTextInput();
+  }
+
+  private void loadMessages() {
+    this.messages = this.currentChannel.getMessages();
+    messagesArray = this.messages.getMessages();
+    mainActivity.runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        messageAdapter.setMessages(messagesArray);
+        sendButton.setEnabled(true);
+      }
+    });
+  }
+
+  public Channel getCurrentChannel() {
+    return currentChannel;
+  }
+
+  public void setCurrentChannel(Channel currentChannel) {
+    sendButton.setEnabled(false);
+    if (currentChannel != this.currentChannel) {
+      this.currentChannel = currentChannel;
+      this.currentChannel.setListener(this);
+      if (this.currentChannel.getStatus() == Channel.ChannelStatus.JOINED) {
+        loadMessages();
+      }
+      else {
+        this.currentChannel.join(new Constants.StatusListener() {
+          @Override
+          public void onSuccess() {
+
+            loadMessages();
+          }
+
+          @Override
+          public void onError() {
+          }
+        });
+      }
+    }
   }
 
   private String getTextInput() {
@@ -109,17 +139,19 @@ public class MainChatFragment extends Fragment implements ChannelListener {
   }
 
   @Override
-  public void onMessageAdd(com.twilio.ipmessaging.Message message) {
+  public void onMessageAdd(Message message) {
+    if (message.getChannelSid().contentEquals(this.currentChannel.getSid())) {
+      messageAdapter.addMessage(message);
+    }
+  }
+
+  @Override
+  public void onMessageChange(Message message) {
 
   }
 
   @Override
-  public void onMessageChange(com.twilio.ipmessaging.Message message) {
-
-  }
-
-  @Override
-  public void onMessageDelete(com.twilio.ipmessaging.Message message) {
+  public void onMessageDelete(Message message) {
 
   }
 

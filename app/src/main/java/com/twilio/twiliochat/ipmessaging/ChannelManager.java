@@ -133,9 +133,11 @@ public class ChannelManager implements IPMessagingClientListener {
     Handler handler;
     if((looper = Looper.myLooper()) != null) {
       handler = new Handler(looper);
-    } else if((looper = Looper.getMainLooper()) != null) {
+    }
+    else if((looper = Looper.getMainLooper()) != null) {
       handler = new Handler(looper);
-    } else {
+    }
+    else {
       handler = null;
       throw new IllegalArgumentException("Channel Listener must have a Looper.");
     }

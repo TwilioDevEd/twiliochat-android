@@ -49,6 +49,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
   private ChannelAdapter channelAdapter;
   private ChannelManager channelManager;
   private MainChatFragment chatFragment;
+  private DrawerLayout drawer;
 
   private String defaultChannelName;
 
@@ -59,7 +60,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
 
-    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+    drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
     ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
         this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
     drawer.setDrawerListener(toggle);
@@ -94,7 +95,6 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
 
   @Override
   public void onBackPressed() {
-    DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
     if (drawer.isDrawerOpen(GravityCompat.START)) {
       drawer.closeDrawer(GravityCompat.START);
     } else {
@@ -141,7 +141,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
         channelsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
           @Override
           public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+            setChannel(position);
           }
         });
       }
@@ -149,7 +149,19 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
   }
 
   private void setChannel(int position) {
-
+    List<Channel> channels = channelManager.getChannels();
+    if (channels == null) {
+      return;
+    }
+    Channel selectedChannel = channels.get(position);
+    if (selectedChannel != null) {
+      chatFragment.setCurrentChannel(selectedChannel);
+      setTitle(selectedChannel.getFriendlyName());
+      drawer.closeDrawer(GravityCompat.START);
+    }
+    else {
+      System.out.println("Selected channel out of range");
+    }
   }
 
   private void checkTwilioClient() {

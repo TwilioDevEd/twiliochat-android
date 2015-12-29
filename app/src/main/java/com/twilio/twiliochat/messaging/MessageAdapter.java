@@ -7,13 +7,15 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.twilio.ipmessaging.Message;
 import com.twilio.twiliochat.R;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class MessageAdapter extends BaseAdapter {
-  private List<MessageMock> messages;
+  private List<Message> messages;
   private LayoutInflater layoutInflater;
 
   public MessageAdapter(Activity activity) {
@@ -21,8 +23,18 @@ public class MessageAdapter extends BaseAdapter {
     messages = new ArrayList<>();
   }
 
-  public void addMessage(MessageMock message) {
+  public void setMessages(Message[] messages) {
+    this.messages = new ArrayList<>(Arrays.asList(messages));
+    notifyDataSetChanged();
+  }
+
+  public void addMessage(Message message) {
     messages.add(message);
+    notifyDataSetChanged();
+  }
+
+  public void removeMessage(Message message) {
+    messages.remove(messages.indexOf(message));
     notifyDataSetChanged();
   }
 
@@ -47,9 +59,13 @@ public class MessageAdapter extends BaseAdapter {
       int res = R.layout.message;
       convertView = layoutInflater.inflate(res, viewGroup, false);
     }
-    MessageMock message = messages.get(i);
-    TextView txtMessage = (TextView) convertView.findViewById(R.id.textViewMessage);
-    txtMessage.setText(message.getTextBody());
+    Message message = messages.get(i);
+    TextView textViewMessage = (TextView) convertView.findViewById(R.id.textViewMessage);
+    TextView textViewAuthor = (TextView) convertView.findViewById(R.id.textViewAuthor);
+    TextView textViewDate = (TextView) convertView.findViewById(R.id.textViewDate);
+    textViewMessage.setText(message.getMessageBody());
+    textViewAuthor.setText(message.getAuthor());
+    textViewDate.setText(message.getTimeStamp());
     return convertView;
   }
 }
