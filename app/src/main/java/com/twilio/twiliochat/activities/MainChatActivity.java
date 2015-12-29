@@ -23,8 +23,6 @@ import android.widget.TextView;
 
 import com.parse.ParseUser;
 import com.twilio.ipmessaging.Channel;
-import com.twilio.ipmessaging.Channels;
-import com.twilio.ipmessaging.Constants;
 import com.twilio.ipmessaging.IPMessagingClientListener;
 import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.application.TwilioChatApplication;
