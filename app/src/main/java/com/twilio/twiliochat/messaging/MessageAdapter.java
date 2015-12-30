@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.twilio.ipmessaging.Message;
 import com.twilio.twiliochat.R;
+import com.twilio.twiliochat.util.DateFormatter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,7 +66,7 @@ public class MessageAdapter extends BaseAdapter {
     TextView textViewDate = (TextView) convertView.findViewById(R.id.textViewDate);
     textViewMessage.setText(message.getMessageBody());
     textViewAuthor.setText(message.getAuthor());
-    textViewDate.setText(message.getTimeStamp());
+    textViewDate.setText(DateFormatter.getFormattedDateFromISOString(message.getTimeStamp()));
     return convertView;
   }
 }
