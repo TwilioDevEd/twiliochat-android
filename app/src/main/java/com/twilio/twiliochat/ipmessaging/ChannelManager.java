@@ -24,6 +24,7 @@ public class ChannelManager implements IPMessagingClientListener {
   }
 
   private IPMessagingClientManager client;
+  public Channel generalChannel;
 
   private List<Channel> channels;
   private Channels channelsObject;
@@ -73,6 +74,89 @@ public class ChannelManager implements IPMessagingClientListener {
             }
           });
         }
+      }
+    });
+  }
+
+  public void joinGeneralChannelWithCompletion(final Constants.StatusListener listener) {
+    if (this.channels == null) {
+      listener.onError();
+      return;
+    }
+    this.generalChannel = channelsObject.getChannelByUniqueName(defaultChannelName);
+    if (this.generalChannel != null) {
+      joinGeneralChannelWithUniqueName(null, listener);
+    }
+    else {
+      createGeneralChannelWithCompletion(new Constants.StatusListener() {
+        @Override
+        public void onSuccess() {
+          joinGeneralChannelWithUniqueName(defaultChannelName, listener);
+        }
+        @Override
+        public void onError() {
+          if (listener != null) {
+            listener.onError();
+          }
+        }
+      });
+    }
+  }
+
+  private void joinGeneralChannelWithUniqueName(final String uniqueName, final Constants.StatusListener listener) {
+    if (this.generalChannel == null) {
+      if (listener != null) {
+        listener.onError();
+      }
+      return;
+    }
+    this.generalChannel.join(new Constants.StatusListener() {
+      @Override
+      public void onSuccess() {
+        if (uniqueName != null) {
+          setGeneralChannelUniqueNameWithCompletion(listener);
+          return;
+        }
+        if (listener != null) {
+          listener.onSuccess();
+        }
+      }
+      @Override
+      public void onError() {
+        listener.onError();
+      }
+    });
+  }
+
+  private void createGeneralChannelWithCompletion(final Constants.StatusListener listener) {
+    this.channelsObject
+        .createChannel(defaultChannelName, Channel.ChannelType.CHANNEL_TYPE_PUBLIC, new Constants.CreateChannelListener() {
+          @Override
+          public void onCreated(Channel channel) {
+            ChannelManager.this.generalChannel = channel;
+            ChannelManager.this.channels.add(channel);
+            if (listener != null) {
+              listener.onSuccess();
+            }
+          }
+          @Override
+          public void onError() {
+            listener.onError();
+          }
+        });
+  }
+
+  private void setGeneralChannelUniqueNameWithCompletion(final Constants.StatusListener listener) {
+    this.generalChannel.setUniqueName(defaultChannelName, new Constants.StatusListener() {
+      @Override
+      public void onSuccess() {
+        if (listener != null) {
+          listener.onSuccess();
+        }
+      }
+      @Override
+      public void onError() {
+        listener.onError();
       }
     });
   }

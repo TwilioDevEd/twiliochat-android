@@ -16,7 +16,6 @@ import android.widget.TextView;
 import com.twilio.ipmessaging.Channel;
 import com.twilio.ipmessaging.ChannelListener;
 import com.twilio.ipmessaging.Constants;
-import com.twilio.ipmessaging.IPMessagingClientListener;
 import com.twilio.ipmessaging.Member;
 import com.twilio.ipmessaging.Message;
 import com.twilio.ipmessaging.Messages;
@@ -63,6 +62,7 @@ public class MainChatFragment extends Fragment implements ChannelListener {
     messageAdapter = new MessageAdapter(mainActivity);
     messagesListView.setAdapter(messageAdapter);
     setUpListeners();
+    setMessageInputEnabled(false);
 
     return view;
   }
@@ -109,7 +109,7 @@ public class MainChatFragment extends Fragment implements ChannelListener {
       @Override
       public void run() {
         messageAdapter.setMessages(messagesArray);
-        sendButton.setEnabled(true);
+        setMessageInputEnabled(true);
       }
     });
   }
@@ -119,14 +119,13 @@ public class MainChatFragment extends Fragment implements ChannelListener {
   }
 
   public void setCurrentChannel(Channel currentChannel) {
-    sendButton.setEnabled(false);
+    setMessageInputEnabled(false);
     if (currentChannel != this.currentChannel) {
       this.currentChannel = currentChannel;
       this.currentChannel.setListener(this);
       if (this.currentChannel.getStatus() == Channel.ChannelStatus.JOINED) {
         loadMessages();
-      }
-      else {
+      } else {
         this.currentChannel.join(new Constants.StatusListener() {
           @Override
           public void onSuccess() {
@@ -140,6 +139,11 @@ public class MainChatFragment extends Fragment implements ChannelListener {
         });
       }
     }
+  }
+
+  private void setMessageInputEnabled(boolean enabled) {
+    this.sendButton.setEnabled(enabled);
+    this.messageTextEdit.setEnabled(enabled);
   }
 
   private String getTextInput() {
