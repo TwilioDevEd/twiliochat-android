@@ -90,6 +90,7 @@
             <EditText
                 android:id="@+id/editTextPassword"
                 style="@style/LoginTextEdit"
+                android:imeActionId="100"
                 android:layout_width="match_parent"
                 android:hint="@string/password_placeholder"
                 android:inputType="textPassword" />
@@ -133,6 +134,7 @@
             <EditText
                 android:id="@+id/editTextEmail"
                 style="@style/LoginTextEdit"
+                android:imeActionId="101"
                 android:layout_width="match_parent"
                 android:hint="@string/email_placeholder"
                 android:inputType="textEmailAddress" />

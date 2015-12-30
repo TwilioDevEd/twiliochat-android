@@ -6,9 +6,11 @@ import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.parse.ParseException;
 import com.parse.ParseUser;
@@ -32,26 +34,36 @@ public class ForgotPasswordActivity extends AppCompatActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_forgot_password);
     setUIComponents();
-
-    goBackButton.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        backToLogin();
-      }
-    });
-
-    sendButton.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        sendPasswordRecoveryEmail();
-      }
-    });
   }
 
   private void setUIComponents() {
     goBackButton = (Button) findViewById(R.id.buttonGoBack);
     sendButton = (Button) findViewById(R.id.buttonSend);
     emailEditText = (EditText) findViewById(R.id.editTextEmail);
+
+    setUpListeners();
+  }
+
+  private void setUpListeners() {
+    goBackButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        backToLogin();
+      }
+    });
+    sendButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        sendPasswordRecoveryEmail();
+      }
+    });
+    emailEditText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+      @Override
+      public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        sendPasswordRecoveryEmail();
+        return true;
+      }
+    });
   }
 
   private void sendPasswordRecoveryEmail() {
@@ -65,7 +77,8 @@ public class ForgotPasswordActivity extends AppCompatActivity {
       public void done(ParseException e) {
         stopStatusDialog();
         if (e == null) {
-          AlertDialogHandler.displayAlertWithHandler("success", context, new DialogInterface.OnClickListener() {
+          String successMessage = getStringResource(R.string.forgot_password_success_message);
+          AlertDialogHandler.displayAlertWithHandler(successMessage, context, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
               finish();

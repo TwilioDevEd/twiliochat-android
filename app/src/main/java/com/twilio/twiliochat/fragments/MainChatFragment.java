@@ -4,12 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.twilio.ipmessaging.Channel;
 import com.twilio.ipmessaging.ChannelListener;
@@ -60,13 +62,8 @@ public class MainChatFragment extends Fragment implements ChannelListener {
 
     messageAdapter = new MessageAdapter(mainActivity);
     messagesListView.setAdapter(messageAdapter);
+    setUpListeners();
 
-    sendButton.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        sendMessage();
-      }
-    });
     return view;
   }
 
@@ -78,6 +75,21 @@ public class MainChatFragment extends Fragment implements ChannelListener {
   @Override
   public void onDetach() {
     super.onDetach();
+  }
+
+  private void setUpListeners() {
+    sendButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        sendMessage();
+      }
+    });
+    messageTextEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+      @Override
+      public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        return false;
+      }
+    });
   }
 
   private void sendMessage() {

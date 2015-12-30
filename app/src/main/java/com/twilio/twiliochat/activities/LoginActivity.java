@@ -6,10 +6,12 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.parse.LogInCallback;
 import com.parse.ParseException;
@@ -51,31 +53,6 @@ public class LoginActivity extends AppCompatActivity {
     setUIComponents();
 
     messagingClient = TwilioChatApplication.get().getIPMessagingClient();
-
-    createAccountButton.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        toggleIsSigningUp();
-      }
-    });
-
-    loginButton.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        if (isSigningUp) {
-          register();
-          return;
-        }
-        login();
-      }
-    });
-
-    forgotPasswordButton.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        showForgotPasswordActivity();
-      }
-    });
   }
 
   private void setUIComponents() {
@@ -88,6 +65,51 @@ public class LoginActivity extends AppCompatActivity {
     passwordEditText = (EditText) findViewById(R.id.editTextPassword);
     fullNameEditText = (EditText) findViewById(R.id.editTextFullName);
     emailEditText = (EditText) findViewById(R.id.editTextEmail);
+
+    setUpListeners();
+  }
+
+  private void setUpListeners() {
+    createAccountButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        toggleIsSigningUp();
+      }
+    });
+    loginButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        loginOrRegister();
+      }
+    });
+    forgotPasswordButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        showForgotPasswordActivity();
+      }
+    });
+    TextView.OnEditorActionListener actionListener = new TextView.OnEditorActionListener() {
+      @Override
+      public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        int viewId = v.getImeActionId();
+        if ((isSigningUp && viewId == 101) || (!isSigningUp && viewId == 100)) {
+          loginOrRegister();
+          return true;
+        }
+        return false;
+      }
+    };
+
+    passwordEditText.setOnEditorActionListener(actionListener);
+    emailEditText.setOnEditorActionListener(actionListener);
+  }
+
+  private void loginOrRegister() {
+    if (isSigningUp) {
+      register();
+      return;
+    }
+    login();
   }
 
   private void toggleIsSigningUp() {
