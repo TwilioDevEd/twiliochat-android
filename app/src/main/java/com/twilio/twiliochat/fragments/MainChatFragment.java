@@ -21,7 +21,9 @@ import com.twilio.ipmessaging.Message;
 import com.twilio.ipmessaging.Messages;
 import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.messaging.MessageAdapter;
+import com.twilio.twiliochat.messaging.StatusMessage;
 
+import java.util.Date;
 import java.util.Map;
 
 public class MainChatFragment extends Fragment implements ChannelListener {
@@ -173,7 +175,8 @@ public class MainChatFragment extends Fragment implements ChannelListener {
 
   @Override
   public void onMemberJoin(Member member) {
-
+    StatusMessage statusMessage = new StatusMessage(member.getIdentity(), "timestamp", "joined");
+    this.messageAdapter.addStatusMessage(statusMessage);
   }
 
   @Override
@@ -183,7 +186,8 @@ public class MainChatFragment extends Fragment implements ChannelListener {
 
   @Override
   public void onMemberDelete(Member member) {
-
+    StatusMessage statusMessage = new StatusMessage(member.getIdentity(), "timestamp", "left");
+    this.messageAdapter.addStatusMessage(statusMessage);
   }
 
   @Override
