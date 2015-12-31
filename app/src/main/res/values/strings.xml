@@ -44,6 +44,7 @@
     <string name="image_text">image</string>
 
     <string name="default_channel_name">General Channel</string>
+    <string name="default_channel_unique_name">general</string>
 
 
 </resources>

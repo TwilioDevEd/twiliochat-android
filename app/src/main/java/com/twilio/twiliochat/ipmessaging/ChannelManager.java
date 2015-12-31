@@ -31,12 +31,14 @@ public class ChannelManager implements IPMessagingClientListener {
   private Channel[] channelArray;
   private IPMessagingClientListener listener;
   private String defaultChannelName;
+  private String defaultChannelUniqueName;
   private Handler handler;
 
   private ChannelManager() {
     this.client = TwilioChatApplication.get().getIPMessagingClient();
     this.listener = this;
     defaultChannelName = getStringResource(R.string.default_channel_name);
+    defaultChannelUniqueName = getStringResource(R.string.default_channel_unique_name);
     handler = setupListenerHandler();
   }
 
@@ -147,7 +149,7 @@ public class ChannelManager implements IPMessagingClientListener {
   }
 
   private void setGeneralChannelUniqueNameWithCompletion(final Constants.StatusListener listener) {
-    this.generalChannel.setUniqueName(defaultChannelName, new Constants.StatusListener() {
+    this.generalChannel.setUniqueName(defaultChannelUniqueName, new Constants.StatusListener() {
       @Override
       public void onSuccess() {
         if (listener != null) {

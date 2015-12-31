@@ -120,8 +120,8 @@ public class MainChatFragment extends Fragment implements ChannelListener {
   }
 
   public void setCurrentChannel(Channel currentChannel) {
-    setMessageInputEnabled(false);
     if (currentChannel != this.currentChannel) {
+      setMessageInputEnabled(false);
       this.currentChannel = currentChannel;
       this.currentChannel.setListener(this);
       if (this.currentChannel.getStatus() == Channel.ChannelStatus.JOINED) {
