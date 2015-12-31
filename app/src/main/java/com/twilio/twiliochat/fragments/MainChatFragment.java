@@ -110,6 +110,7 @@ public class MainChatFragment extends Fragment implements ChannelListener {
       public void run() {
         messageAdapter.setMessages(messagesArray);
         setMessageInputEnabled(true);
+        messageTextEdit.requestFocus();
       }
     });
   }
@@ -129,7 +130,6 @@ public class MainChatFragment extends Fragment implements ChannelListener {
         this.currentChannel.join(new Constants.StatusListener() {
           @Override
           public void onSuccess() {
-
             loadMessages();
           }
 

@@ -1,6 +1,7 @@
 package com.twilio.twiliochat.activities;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -49,6 +50,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
   private ChannelManager channelManager;
   private MainChatFragment chatFragment;
   private DrawerLayout drawer;
+  private ProgressDialog progressDialog;
 
   private String defaultChannelName;
 
@@ -150,10 +152,12 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
               @Override
               public void run() {
                 channelAdapter.notifyDataSetChanged();
-                setChannel(MainChatActivity.this.channelManager.generalChannel);
+                setChannel(0);
+                stopStatusDialog();
               }
             });
           }
+
           @Override
           public void onError() {
             System.out.println("Error joining the channel");
@@ -164,12 +168,9 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
   }
 
   private void setChannel(Channel channel) {
-    List<Channel> channels = channelManager.getChannels();
-    if (channels == null) {
-      return;
-    }
-    int position = channels.indexOf(channel);
-    setChannel(position);
+    chatFragment.setCurrentChannel(channel);
+    setTitle(channel.getFriendlyName());
+    drawer.closeDrawer(GravityCompat.START);
   }
 
   private void setChannel(int position) {
@@ -189,6 +190,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
   }
 
   private void checkTwilioClient() {
+    showActivityIndicator("Loading channel information");
     client = TwilioChatApplication.get().getIPMessagingClient();
     if (client.getIpMessagingClient() == null) {
       initializeClient();
@@ -202,7 +204,6 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
     client.connectClient(new LoginListener() {
       @Override
       public void onLoginStarted() {
-
       }
 
       @Override
@@ -239,6 +240,20 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
   private void setUsernameTextView() {
     String username = ParseUser.getCurrentUser().getUsername();
     usernameTextView.setText(username);
+  }
+
+  private void stopStatusDialog() {
+    if (progressDialog.isShowing()) {
+      progressDialog.dismiss();
+    }
+  }
+
+  private void showActivityIndicator(String message) {
+    progressDialog = new ProgressDialog(this.mainActivity);
+    progressDialog.setMessage(message);
+    progressDialog.show();
+    progressDialog.setCanceledOnTouchOutside(false);
+    progressDialog.setCancelable(false);
   }
 
   @Override
