@@ -41,7 +41,7 @@ import java.util.List;
 
 public class MainChatActivity extends AppCompatActivity implements IPMessagingClientListener {
   private Context context;
-  Activity mainActivity;
+  private Activity mainActivity;
   private Button logoutButton;
   private TextView usernameTextView;
   private IPMessagingClientManager client;

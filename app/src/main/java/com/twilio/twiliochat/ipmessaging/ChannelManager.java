@@ -85,7 +85,7 @@ public class ChannelManager implements IPMessagingClientListener {
       listener.onError();
       return;
     }
-    this.generalChannel = channelsObject.getChannelByUniqueName(defaultChannelName);
+    this.generalChannel = channelsObject.getChannelByUniqueName(defaultChannelUniqueName);
     if (this.generalChannel != null) {
       joinGeneralChannelWithUniqueName(null, listener);
     }
@@ -93,7 +93,7 @@ public class ChannelManager implements IPMessagingClientListener {
       createGeneralChannelWithCompletion(new Constants.StatusListener() {
         @Override
         public void onSuccess() {
-          joinGeneralChannelWithUniqueName(defaultChannelName, listener);
+          joinGeneralChannelWithUniqueName(defaultChannelUniqueName, listener);
         }
         @Override
         public void onError() {
