@@ -31,6 +31,7 @@ public class MessageAdapter extends BaseAdapter {
 
   public void setMessages(Message[] messages) {
     this.messages = new ArrayList<>(Arrays.asList(messages));
+    this.statusMessageSet.clear();
     notifyDataSetChanged();
   }
 
@@ -41,7 +42,7 @@ public class MessageAdapter extends BaseAdapter {
 
   public void addStatusMessage(StatusMessage message) {
     messages.add(message);
-    statusMessageSet.add(messages.size()-1);
+    statusMessageSet.add(messages.size() - 1);
     notifyDataSetChanged();
   }
 

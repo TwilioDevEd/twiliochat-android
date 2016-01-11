@@ -26,6 +26,7 @@ import com.parse.ParseUser;
 import com.twilio.ipmessaging.Channel;
 import com.twilio.ipmessaging.Constants;
 import com.twilio.ipmessaging.IPMessagingClientListener;
+import com.twilio.ipmessaging.TwilioIPMessagingSDK;
 import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.application.TwilioChatApplication;
 import com.twilio.twiliochat.fragments.MainChatFragment;
@@ -51,8 +52,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
   private MainChatFragment chatFragment;
   private DrawerLayout drawer;
   private ProgressDialog progressDialog;
-
-  private String defaultChannelName;
+  private MenuItem leaveChannelMenuItem;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -80,8 +80,6 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
     logoutButton = (Button) findViewById(R.id.buttonLogout);
     usernameTextView = (TextView) findViewById(R.id.textViewUsername);
     channelManager = ChannelManager.getInstance();
-
-    defaultChannelName = getStringResource(R.string.default_channel_name);
     setUsernameTextView();
 
     logoutButton.setOnClickListener(new View.OnClickListener() {
@@ -105,21 +103,18 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
-    // Inflate the menu; this adds items to the action bar if it is present.
     getMenuInflater().inflate(R.menu.main_chat, menu);
+    this.leaveChannelMenuItem = menu.findItem(R.id.action_leave_channel);
+    this.leaveChannelMenuItem.setVisible(false);
     return true;
   }
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-    // Handle action bar item clicks here. The action bar will
-    // automatically handle clicks on the Home/Up button, so long
-    // as you specify a parent activity in AndroidManifest.xml.
     int id = item.getItemId();
 
-    //noinspection SimplifiableIfStatement
     if (id == R.id.action_leave_channel) {
-      System.out.println("Leave channel");
+      leaveChannel();
       return true;
     }
 
@@ -173,11 +168,12 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
     drawer.closeDrawer(GravityCompat.START);
   }
 
-  private void setChannel(int position) {
+  private void setChannel(final int position) {
     List<Channel> channels = channelManager.getChannels();
     if (channels == null) {
       return;
     }
+    MainChatActivity.this.leaveChannelMenuItem.setVisible(position != 0);
     Channel selectedChannel = channels.get(position);
     if (selectedChannel != null) {
       chatFragment.setCurrentChannel(selectedChannel);
@@ -187,6 +183,21 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
     else {
       System.out.println("Selected channel out of range");
     }
+  }
+
+  private void leaveChannel() {
+    Channel currentChannel = chatFragment.getCurrentChannel();
+    setChannel(0);
+    currentChannel.leave(new Constants.StatusListener() {
+      @Override
+      public void onSuccess() {
+
+      }
+      @Override
+      public void onError() {
+
+      }
+    });
   }
 
   private void checkTwilioClient() {
@@ -224,6 +235,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
       @Override
       public void onClick(DialogInterface dialog, int which) {
         ParseUser.logOut();
+        TwilioIPMessagingSDK.shutdown();
         showLoginActivity();
       }
     });
@@ -258,7 +270,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
 
   @Override
   public void onChannelAdd(Channel channel) {
-
+    //this.channelAdapter.addChannel(channel);
   }
 
   @Override
@@ -268,7 +280,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
 
   @Override
   public void onChannelDelete(Channel channel) {
-
+    //this.channelAdapter.deleteChannel(channel);
   }
 
   @Override
@@ -283,19 +295,5 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
 
   @Override
   public void onChannelHistoryLoaded(Channel channel) {
-
-  }
-
-  private class CustomChannelComparator implements Comparator<Channel> {
-    @Override
-    public int compare(Channel lhs, Channel rhs) {
-      if (lhs.getFriendlyName().contentEquals(defaultChannelName)) {
-        return -100;
-      }
-      else if (rhs.getFriendlyName().contentEquals(defaultChannelName)) {
-        return 100;
-      }
-      return lhs.getFriendlyName().compareTo(rhs.getFriendlyName());
-    }
   }
 }

@@ -14,7 +14,6 @@ import com.twilio.twiliochat.application.TwilioChatApplication;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class ChannelManager implements IPMessagingClientListener {
@@ -228,18 +227,5 @@ public class ChannelManager implements IPMessagingClientListener {
       throw new IllegalArgumentException("Channel Listener must have a Looper.");
     }
     return handler;
-  }
-
-  private class CustomChannelComparator implements Comparator<Channel> {
-    @Override
-    public int compare(Channel lhs, Channel rhs) {
-      if (lhs.getFriendlyName().contentEquals(defaultChannelName)) {
-        return -100;
-      }
-      else if (rhs.getFriendlyName().contentEquals(defaultChannelName)) {
-        return 100;
-      }
-      return lhs.getFriendlyName().compareTo(rhs.getFriendlyName());
-    }
   }
 }

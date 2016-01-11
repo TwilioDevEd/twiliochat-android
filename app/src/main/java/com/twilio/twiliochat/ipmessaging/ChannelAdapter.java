@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.twilio.ipmessaging.Channel;
 import com.twilio.twiliochat.R;
 
+import java.util.Collections;
 import java.util.List;
 
 public class ChannelAdapter extends BaseAdapter {
@@ -21,6 +22,17 @@ public class ChannelAdapter extends BaseAdapter {
   public ChannelAdapter(Activity activity, List<Channel> channels) {
     this.layoutInflater = activity.getLayoutInflater();
     this.channels = channels;
+  }
+
+  public void addChannel(Channel channel) {
+    this.channels.add(channel);
+    Collections.sort(this.channels, new CustomChannelComparator());
+    notifyDataSetChanged();
+  }
+
+  public void deleteChannel(Channel channel) {
+    this.channels.remove(channel);
+    notifyDataSetChanged();
   }
 
   @Override
