@@ -6,6 +6,7 @@ import android.os.Looper;
 
 import com.twilio.ipmessaging.Channel;
 import com.twilio.ipmessaging.Channels;
+import com.twilio.ipmessaging.Channel.ChannelType;
 import com.twilio.ipmessaging.Constants;
 import com.twilio.ipmessaging.IPMessagingClientListener;
 import com.twilio.twiliochat.R;
@@ -75,6 +76,20 @@ public class ChannelManager implements IPMessagingClientListener {
             }
           });
         }
+      }
+    });
+  }
+
+  public void createChannelWithName(String name, final Constants.StatusListener handler) {
+    this.channelsObject.createChannel(name, ChannelType.CHANNEL_TYPE_PUBLIC, new Constants.CreateChannelListener() {
+      @Override
+      public void onCreated(Channel channel) {
+        handler.onSuccess();
+      }
+
+      @Override
+      public void onError() {
+        handler.onError();
       }
     });
   }

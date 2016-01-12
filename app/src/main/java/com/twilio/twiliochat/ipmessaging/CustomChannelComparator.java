@@ -6,7 +6,7 @@ import com.twilio.twiliochat.application.TwilioChatApplication;
 
 import java.util.Comparator;
 
-class CustomChannelComparator implements Comparator<Channel> {
+public class CustomChannelComparator implements Comparator<Channel> {
   private String defaultChannelName;
 
   CustomChannelComparator() {

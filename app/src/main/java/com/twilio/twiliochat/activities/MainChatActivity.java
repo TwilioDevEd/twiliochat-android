@@ -30,6 +30,7 @@ import com.twilio.ipmessaging.TwilioIPMessagingSDK;
 import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.application.TwilioChatApplication;
 import com.twilio.twiliochat.fragments.MainChatFragment;
+import com.twilio.twiliochat.helpers.InputOnClickListener;
 import com.twilio.twiliochat.ipmessaging.ChannelAdapter;
 import com.twilio.twiliochat.ipmessaging.ChannelManager;
 import com.twilio.twiliochat.ipmessaging.IPMessagingClientManager;
@@ -37,13 +38,13 @@ import com.twilio.twiliochat.ipmessaging.LoadChannelListener;
 import com.twilio.twiliochat.ipmessaging.LoginListener;
 import com.twilio.twiliochat.util.AlertDialogHandler;
 
-import java.util.Comparator;
 import java.util.List;
 
 public class MainChatActivity extends AppCompatActivity implements IPMessagingClientListener {
   private Context context;
   private Activity mainActivity;
   private Button logoutButton;
+  private Button addChannelButton;
   private TextView usernameTextView;
   private IPMessagingClientManager client;
   private ListView channelsListView;
@@ -78,18 +79,28 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
     context = this;
     mainActivity = this;
     logoutButton = (Button) findViewById(R.id.buttonLogout);
+    addChannelButton = (Button) findViewById(R.id.buttonAddChannel);
     usernameTextView = (TextView) findViewById(R.id.textViewUsername);
     channelManager = ChannelManager.getInstance();
     setUsernameTextView();
 
+    setUpListeners();
+    checkTwilioClient();
+  }
+
+  private void setUpListeners() {
     logoutButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View v) {
         promptLogout();
       }
     });
-
-    checkTwilioClient();
+    addChannelButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        showAddChannelDialog();
+      }
+    });
   }
 
   @Override
@@ -185,6 +196,30 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
     }
   }
 
+  private void showAddChannelDialog() {
+    String message = getStringResource(R.string.new_channel_prompt);
+    AlertDialogHandler.displayInputDialog(message, context, new InputOnClickListener() {
+      @Override
+      public void onClick(String input) {
+        createChannelWithName(input);
+      }
+    });
+  }
+
+  private void createChannelWithName(String name) {
+    this.channelManager.createChannelWithName(name, new Constants.StatusListener() {
+      @Override
+      public void onSuccess() {
+        populateChannels();
+      }
+
+      @Override
+      public void onError() {
+        AlertDialogHandler.displayAlertWithMessage("There was an error while creating the channel", context);
+      }
+    });
+  }
+
   private void leaveChannel() {
     Channel currentChannel = chatFragment.getCurrentChannel();
     setChannel(0);
@@ -193,6 +228,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
       public void onSuccess() {
 
       }
+
       @Override
       public void onError() {
 

@@ -34,6 +34,7 @@
 
     <string name="logout_prompt_message">Are you sure you want to logout?</string>
     <string name="action_leave_channel">Leave channel</string>
+    <string name="action_delete_channel">Delete channel</string>
     <string name="message_elipses">Say something</string>
     <string name="logo_text">logo</string>
     <string name="login_button_text">Login</string>
@@ -45,6 +46,7 @@
 
     <string name="default_channel_name">General Channel</string>
     <string name="default_channel_unique_name">general</string>
+    <string name="new_channel_prompt">Enter a name for the new channel:</string>
 
 
 </resources>

@@ -32,7 +32,7 @@
                 android:id="@+id/listViewChannels"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_above="@+id/button"
+                android:layout_above="@+id/buttonAddChannel"
                 android:layout_below="@+id/toolbarPlaceholder"
                 android:scrollbars="none"
                 android:divider="@null"
@@ -43,14 +43,14 @@
             </ListView>
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/buttonAddChannel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
-                android:layout_marginLeft="@dimen/channel_list_left_margin"
                 android:layout_marginBottom="15dp"
                 android:layout_marginTop="15dp"
-                android:background="@drawable/add_channel_button" />
+                android:background="@drawable/add_channel_button"
+                android:layout_centerHorizontal="true"/>
         </RelativeLayout>
 
     </android.support.design.widget.NavigationView>
