@@ -1,5 +1,8 @@
 package com.twilio.twiliochat.activities;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -22,9 +25,6 @@ import com.twilio.twiliochat.application.TwilioChatApplication;
 import com.twilio.twiliochat.ipmessaging.IPMessagingClientManager;
 import com.twilio.twiliochat.ipmessaging.LoginListener;
 import com.twilio.twiliochat.util.AlertDialogHandler;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
   final Context context = this;
@@ -168,17 +168,17 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     startStatusDialogWithMessage(getStringResource(R.string.login_user_progress_message));
-    ParseUser.logInInBackground(formInput.get(USERNAME_FORM_FIELD), formInput.get(PASSWORD_FORM_FIELD), new LogInCallback() {
-      public void done(ParseUser user, ParseException e) {
-        if (user != null) {
-          initializeMessagingClient();
-        }
-        else {
-          stopStatusDialog();
-          showAlertWithMessage(e.getLocalizedMessage());
-        }
-      }
-    });
+    ParseUser.logInInBackground(formInput.get(USERNAME_FORM_FIELD),
+        formInput.get(PASSWORD_FORM_FIELD), new LogInCallback() {
+          public void done(ParseUser user, ParseException e) {
+            if (user != null) {
+              initializeMessagingClient();
+            } else {
+              stopStatusDialog();
+              showAlertWithMessage(e.getLocalizedMessage());
+            }
+          }
+        });
   }
 
   private Map<String, String> getFormInput() {

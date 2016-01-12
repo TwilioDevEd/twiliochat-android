@@ -1,5 +1,7 @@
 package com.twilio.twiliochat.fragments;
 
+import java.util.Map;
+
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -23,8 +25,6 @@ import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.messaging.MessageAdapter;
 import com.twilio.twiliochat.messaging.StatusMessage;
 
-import java.util.Map;
-
 public class MainChatFragment extends Fragment implements ChannelListener {
   Context context;
   Activity mainActivity;
@@ -37,8 +37,7 @@ public class MainChatFragment extends Fragment implements ChannelListener {
   Messages messages;
   Message[] messagesArray;
 
-  public MainChatFragment() {
-  }
+  public MainChatFragment() {}
 
   public static MainChatFragment newInstance() {
     MainChatFragment fragment = new MainChatFragment();
@@ -54,7 +53,7 @@ public class MainChatFragment extends Fragment implements ChannelListener {
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                           Bundle savedInstanceState) {
+      Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.fragment_main_chat, container, false);
     sendButton = (Button) view.findViewById(R.id.buttonSend);
     messagesListView = (ListView) view.findViewById(R.id.listViewMessages);
@@ -135,8 +134,7 @@ public class MainChatFragment extends Fragment implements ChannelListener {
           }
 
           @Override
-          public void onError() {
-          }
+          public void onError() {}
         });
       }
     }

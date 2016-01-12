@@ -1,5 +1,7 @@
 package com.twilio.twiliochat.activities;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -38,8 +40,6 @@ import com.twilio.twiliochat.ipmessaging.LoadChannelListener;
 import com.twilio.twiliochat.ipmessaging.LoginListener;
 import com.twilio.twiliochat.util.AlertDialogHandler;
 
-import java.util.List;
-
 public class MainChatActivity extends AppCompatActivity implements IPMessagingClientListener {
   private Context context;
   private Activity mainActivity;
@@ -64,8 +64,8 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
     setSupportActionBar(toolbar);
 
     drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-    ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-        this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+    ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar,
+        R.string.navigation_drawer_open, R.string.navigation_drawer_close);
     drawer.setDrawerListener(toggle);
     toggle.syncState();
 
@@ -157,24 +157,25 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
             setChannel(position);
           }
         });
-        MainChatActivity.this.channelManager.joinGeneralChannelWithCompletion(new Constants.StatusListener() {
-          @Override
-          public void onSuccess() {
-            runOnUiThread(new Runnable() {
+        MainChatActivity.this.channelManager
+            .joinGeneralChannelWithCompletion(new Constants.StatusListener() {
               @Override
-              public void run() {
-                channelAdapter.notifyDataSetChanged();
-                setChannel(0);
-                stopStatusDialog();
+              public void onSuccess() {
+                runOnUiThread(new Runnable() {
+                  @Override
+                  public void run() {
+                    channelAdapter.notifyDataSetChanged();
+                    setChannel(0);
+                    stopStatusDialog();
+                  }
+                });
+              }
+
+              @Override
+              public void onError() {
+                System.out.println("Error joining the channel");
               }
             });
-          }
-
-          @Override
-          public void onError() {
-            System.out.println("Error joining the channel");
-          }
-        });
       }
     });
   }
@@ -197,8 +198,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
       chatFragment.setCurrentChannel(selectedChannel);
       setTitle(selectedChannel.getFriendlyName());
       drawer.closeDrawer(GravityCompat.START);
-    }
-    else {
+    } else {
       System.out.println("Selected channel out of range");
     }
   }
@@ -226,7 +226,8 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
 
       @Override
       public void onError() {
-        AlertDialogHandler.displayAlertWithMessage("There was an error while creating the channel", context);
+        AlertDialogHandler.displayAlertWithMessage("There was an error while creating the channel",
+            context);
       }
     });
   }
@@ -273,8 +274,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
     client = TwilioChatApplication.get().getIPMessagingClient();
     if (client.getIpMessagingClient() == null) {
       initializeClient();
-    }
-    else {
+    } else {
       populateChannels();
     }
   }
@@ -282,8 +282,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
   private void initializeClient() {
     client.connectClient(new LoginListener() {
       @Override
-      public void onLoginStarted() {
-      }
+      public void onLoginStarted() {}
 
       @Override
       public void onLoginFinished() {
@@ -299,14 +298,15 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
 
   private void promptLogout() {
     String message = getStringResource(R.string.logout_prompt_message);
-    AlertDialogHandler.displayCancellableAlertWithHandler(message, context, new DialogInterface.OnClickListener() {
-      @Override
-      public void onClick(DialogInterface dialog, int which) {
-        ParseUser.logOut();
-        TwilioIPMessagingSDK.shutdown();
-        showLoginActivity();
-      }
-    });
+    AlertDialogHandler.displayCancellableAlertWithHandler(message, context,
+        new DialogInterface.OnClickListener() {
+          @Override
+          public void onClick(DialogInterface dialog, int which) {
+            ParseUser.logOut();
+            TwilioIPMessagingSDK.shutdown();
+            showLoginActivity();
+          }
+        });
   }
 
   private void showLoginActivity() {
@@ -338,7 +338,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
 
   @Override
   public void onChannelAdd(Channel channel) {
-    //this.channelAdapter.addChannel(channel);
+    // this.channelAdapter.addChannel(channel);
   }
 
   @Override
@@ -348,7 +348,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
 
   @Override
   public void onChannelDelete(Channel channel) {
-    //this.channelAdapter.deleteChannel(channel);
+    // this.channelAdapter.deleteChannel(channel);
   }
 
   @Override
@@ -362,6 +362,5 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
   }
 
   @Override
-  public void onChannelHistoryLoaded(Channel channel) {
-  }
+  public void onChannelHistoryLoaded(Channel channel) {}
 }

@@ -1,31 +1,26 @@
 package com.twilio.twiliochat.ipmessaging;
 
-import android.content.res.Resources;
-import android.os.Handler;
-import android.os.Looper;
-
-import com.twilio.ipmessaging.Channel;
-import com.twilio.ipmessaging.Channels;
-import com.twilio.ipmessaging.Channel.ChannelType;
-import com.twilio.ipmessaging.Constants;
-import com.twilio.ipmessaging.IPMessagingClientListener;
-import com.twilio.twiliochat.R;
-import com.twilio.twiliochat.application.TwilioChatApplication;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import android.content.res.Resources;
+import android.os.Handler;
+import android.os.Looper;
+
+import com.twilio.ipmessaging.Channel;
+import com.twilio.ipmessaging.Channel.ChannelType;
+import com.twilio.ipmessaging.Channels;
+import com.twilio.ipmessaging.Constants;
+import com.twilio.ipmessaging.IPMessagingClientListener;
+import com.twilio.twiliochat.R;
+import com.twilio.twiliochat.application.TwilioChatApplication;
+
 public class ChannelManager implements IPMessagingClientListener {
   private static ChannelManager sharedManager = new ChannelManager();
-  public static ChannelManager getInstance() {
-    return sharedManager;
-  }
-
-  private IPMessagingClientManager client;
   public Channel generalChannel;
-
+  private IPMessagingClientManager client;
   private List<Channel> channels;
   private Channels channelsObject;
   private Channel[] channelArray;
@@ -33,13 +28,16 @@ public class ChannelManager implements IPMessagingClientListener {
   private String defaultChannelName;
   private String defaultChannelUniqueName;
   private Handler handler;
-
   private ChannelManager() {
     this.client = TwilioChatApplication.get().getIPMessagingClient();
     this.listener = this;
     defaultChannelName = getStringResource(R.string.default_channel_name);
     defaultChannelUniqueName = getStringResource(R.string.default_channel_unique_name);
     handler = setupListenerHandler();
+  }
+
+  public static ChannelManager getInstance() {
+    return sharedManager;
   }
 
   public List<Channel> getChannels() {
@@ -89,17 +87,18 @@ public class ChannelManager implements IPMessagingClientListener {
   }
 
   public void createChannelWithName(String name, final Constants.StatusListener handler) {
-    this.channelsObject.createChannel(name, ChannelType.CHANNEL_TYPE_PUBLIC, new Constants.CreateChannelListener() {
-      @Override
-      public void onCreated(Channel channel) {
-        handler.onSuccess();
-      }
+    this.channelsObject.createChannel(name, ChannelType.CHANNEL_TYPE_PUBLIC,
+        new Constants.CreateChannelListener() {
+          @Override
+          public void onCreated(Channel channel) {
+            handler.onSuccess();
+          }
 
-      @Override
-      public void onError() {
-        handler.onError();
-      }
-    });
+          @Override
+          public void onError() {
+            handler.onError();
+          }
+        });
   }
 
   public void joinGeneralChannelWithCompletion(final Constants.StatusListener listener) {
@@ -110,13 +109,13 @@ public class ChannelManager implements IPMessagingClientListener {
     this.generalChannel = channelsObject.getChannelByUniqueName(defaultChannelUniqueName);
     if (this.generalChannel != null) {
       joinGeneralChannelWithUniqueName(null, listener);
-    }
-    else {
+    } else {
       createGeneralChannelWithCompletion(new Constants.StatusListener() {
         @Override
         public void onSuccess() {
           joinGeneralChannelWithUniqueName(defaultChannelUniqueName, listener);
         }
+
         @Override
         public void onError() {
           if (listener != null) {
@@ -127,7 +126,8 @@ public class ChannelManager implements IPMessagingClientListener {
     }
   }
 
-  private void joinGeneralChannelWithUniqueName(final String uniqueName, final Constants.StatusListener listener) {
+  private void joinGeneralChannelWithUniqueName(final String uniqueName,
+      final Constants.StatusListener listener) {
     if (this.generalChannel == null) {
       if (listener != null) {
         listener.onError();
@@ -154,8 +154,8 @@ public class ChannelManager implements IPMessagingClientListener {
   }
 
   private void createGeneralChannelWithCompletion(final Constants.StatusListener listener) {
-    this.channelsObject
-        .createChannel(defaultChannelName, Channel.ChannelType.CHANNEL_TYPE_PUBLIC, new Constants.CreateChannelListener() {
+    this.channelsObject.createChannel(defaultChannelName, Channel.ChannelType.CHANNEL_TYPE_PUBLIC,
+        new Constants.CreateChannelListener() {
           @Override
           public void onCreated(Channel channel) {
             ChannelManager.this.generalChannel = channel;
@@ -242,13 +242,11 @@ public class ChannelManager implements IPMessagingClientListener {
   private Handler setupListenerHandler() {
     Looper looper;
     Handler handler;
-    if((looper = Looper.myLooper()) != null) {
+    if ((looper = Looper.myLooper()) != null) {
       handler = new Handler(looper);
-    }
-    else if((looper = Looper.getMainLooper()) != null) {
+    } else if ((looper = Looper.getMainLooper()) != null) {
       handler = new Handler(looper);
-    }
-    else {
+    } else {
       handler = null;
       throw new IllegalArgumentException("Channel Listener must have a Looper.");
     }

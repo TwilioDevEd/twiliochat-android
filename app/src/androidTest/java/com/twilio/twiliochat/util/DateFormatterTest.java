@@ -1,13 +1,13 @@
 package com.twilio.twiliochat.util;
 
 
-import android.test.suitebuilder.annotation.SmallTest;
-
 import junit.framework.TestCase;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
+
+import android.test.suitebuilder.annotation.SmallTest;
 
 public class DateFormatterTest extends TestCase {
   @SmallTest

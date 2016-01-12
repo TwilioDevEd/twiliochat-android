@@ -14,40 +14,41 @@ import com.twilio.twiliochat.helpers.InputOnClickListener;
 
 public class AlertDialogHandler {
   public static void displayAlertWithMessage(String message, Context context) {
-    AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.AlertDialogCustom));
-    builder.setMessage(message)
-        .setCancelable(false)
-        .setPositiveButton("OK", null);
+    AlertDialog.Builder builder =
+        new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.AlertDialogCustom));
+    builder.setMessage(message).setCancelable(false).setPositiveButton("OK", null);
 
     AlertDialog alert = builder.create();
     alert.show();
   }
 
-  public static void displayAlertWithHandler(String message, Context context, DialogInterface.OnClickListener handler) {
-    AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.AlertDialogCustom));
-    builder.setMessage(message)
-        .setCancelable(false)
-        .setPositiveButton("OK", handler);
+  public static void displayAlertWithHandler(String message, Context context,
+      DialogInterface.OnClickListener handler) {
+    AlertDialog.Builder builder =
+        new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.AlertDialogCustom));
+    builder.setMessage(message).setCancelable(false).setPositiveButton("OK", handler);
 
     AlertDialog alert = builder.create();
     alert.show();
   }
 
-  public static void displayCancellableAlertWithHandler(String message, Context context, DialogInterface.OnClickListener handler) {
-    AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.AlertDialogCustom));
-    builder.setMessage(message)
-        .setPositiveButton("OK", handler)
-        .setNegativeButton("Cancel", null);
+  public static void displayCancellableAlertWithHandler(String message, Context context,
+      DialogInterface.OnClickListener handler) {
+    AlertDialog.Builder builder =
+        new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.AlertDialogCustom));
+    builder.setMessage(message).setPositiveButton("OK", handler).setNegativeButton("Cancel", null);
 
     AlertDialog alert = builder.create();
     alert.show();
   }
 
-  public static void displayInputDialog(String message, Context context, final InputOnClickListener handler) {
+  public static void displayInputDialog(String message, Context context,
+      final InputOnClickListener handler) {
     LayoutInflater li = LayoutInflater.from(context);
     View promptsView = li.inflate(R.layout.input_dialog_view, null);
 
-    AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.AlertDialogCustom));
+    AlertDialog.Builder builder =
+        new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.AlertDialogCustom));
     builder.setView(promptsView);
 
     final EditText userInput = (EditText) promptsView.findViewById(R.id.editTextUserInput);
@@ -55,20 +56,16 @@ public class AlertDialogHandler {
     promptMessage.setText(message);
 
 
-    builder
-        .setCancelable(false)
-        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-          @Override
-          public void onClick(DialogInterface dialog, int which) {
-            handler.onClick(userInput.getText().toString());
-          }
-        })
-        .setNegativeButton("Cancel",
-            new DialogInterface.OnClickListener() {
-              public void onClick(DialogInterface dialog, int id) {
-                dialog.cancel();
-              }
-            });
+    builder.setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+      @Override
+      public void onClick(DialogInterface dialog, int which) {
+        handler.onClick(userInput.getText().toString());
+      }
+    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+      public void onClick(DialogInterface dialog, int id) {
+        dialog.cancel();
+      }
+    });
 
     AlertDialog alertDialog = builder.create();
 

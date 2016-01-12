@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
-    tools:openDrawer="start">
+<android.support.v4.widget.DrawerLayout android:id="@+id/drawer_layout"
+                                        xmlns:android="http://schemas.android.com/apk/res/android"
+                                        xmlns:tools="http://schemas.android.com/tools"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:fitsSystemWindows="true"
+                                        tools:openDrawer="start">
 
     <include
         layout="@layout/app_bar_main_chat"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
 
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
@@ -26,7 +26,7 @@
 
             <include
                 android:id="@+id/toolbarPlaceholder"
-                layout="@layout/nav_header_main_chat" />
+                layout="@layout/nav_header_main_chat"/>
 
             <ListView
                 android:id="@+id/listViewChannels"
@@ -34,10 +34,10 @@
                 android:layout_height="match_parent"
                 android:layout_above="@+id/buttonAddChannel"
                 android:layout_below="@+id/toolbarPlaceholder"
-                android:scrollbars="none"
                 android:divider="@null"
                 android:dividerHeight="0dp"
                 android:padding="0dp"
+                android:scrollbars="none"
                 tools:listitem="@layout/channel">
 
             </ListView>
@@ -47,10 +47,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
                 android:layout_marginBottom="15dp"
                 android:layout_marginTop="15dp"
-                android:background="@drawable/add_channel_button"
-                android:layout_centerHorizontal="true"/>
+                android:background="@drawable/add_channel_button"/>
         </RelativeLayout>
 
     </android.support.design.widget.NavigationView>

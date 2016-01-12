@@ -24,8 +24,7 @@ public class DateFormatter {
     String stringDate = null;
     if (todayMidnight.isEqual(today.withTimeAtStartOfDay())) {
       stringDate = "Today - ";
-    }
-    else {
+    } else {
       stringDate = today.toString("MMM. dd - ");
     }
 

@@ -1,5 +1,8 @@
 package com.twilio.twiliochat.ipmessaging;
 
+import java.util.Collections;
+import java.util.List;
+
 import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,9 +12,6 @@ import android.widget.TextView;
 
 import com.twilio.ipmessaging.Channel;
 import com.twilio.twiliochat.R;
-
-import java.util.Collections;
-import java.util.List;
 
 public class ChannelAdapter extends BaseAdapter {
   private LayoutInflater layoutInflater;

@@ -1,5 +1,8 @@
 package com.twilio.twiliochat.activities;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,9 +20,6 @@ import com.parse.ParseUser;
 import com.parse.RequestPasswordResetCallback;
 import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.util.AlertDialogHandler;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class ForgotPasswordActivity extends AppCompatActivity {
   private final String EMAIL_FORM_FIELD = "email";
@@ -73,23 +73,25 @@ public class ForgotPasswordActivity extends AppCompatActivity {
       return;
     }
     startStatusDialogWithMessage(getStringResource(R.string.forgot_password_progress_message));
-    ParseUser.requestPasswordResetInBackground(formInput.get(EMAIL_FORM_FIELD), new RequestPasswordResetCallback() {
-      public void done(ParseException e) {
-        stopStatusDialog();
-        if (e == null) {
-          String successMessage = getStringResource(R.string.forgot_password_success_message);
-          AlertDialogHandler.displayAlertWithHandler(successMessage, context, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-              finish();
+    ParseUser.requestPasswordResetInBackground(formInput.get(EMAIL_FORM_FIELD),
+        new RequestPasswordResetCallback() {
+          public void done(ParseException e) {
+            stopStatusDialog();
+            if (e == null) {
+              String successMessage = getStringResource(R.string.forgot_password_success_message);
+              AlertDialogHandler.displayAlertWithHandler(successMessage, context,
+                  new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                  finish();
+                }
+              });
+              return;
+            } else {
+              showAlertWithMessage(e.getLocalizedMessage());
             }
-          });
-          return;
-        } else {
-          showAlertWithMessage(e.getLocalizedMessage());
-        }
-      }
-    });
+          }
+        });
   }
 
   private Map<String, String> getFormInput() {

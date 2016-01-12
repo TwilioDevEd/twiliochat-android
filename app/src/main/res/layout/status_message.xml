@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="50dp"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:padding="1dp">
+              android:layout_width="match_parent"
+              android:layout_height="50dp"
+              android:gravity="center"
+              android:orientation="vertical"
+              android:padding="1dp">
 
     <View
         android:layout_width="match_parent"
@@ -13,16 +13,16 @@
         android:background="@color/status_text_color"/>
 
     <TextView
+        android:id="@+id/textViewStatusMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textViewStatusMessage"
         android:layout_marginBottom="5dp"
         android:layout_marginTop="5dp"
-        android:textSize="14sp"
+        android:fontFamily="sans-serif-thin"
         android:paddingLeft="15dp"
         android:text="status message"
         android:textColor="@color/status_text_color"
-        android:fontFamily="sans-serif-thin"/>
+        android:textSize="14sp"/>
 
     <View
         android:layout_width="match_parent"

@@ -1,5 +1,10 @@
 package com.twilio.twiliochat.messaging;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.TreeSet;
+
 import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,11 +15,6 @@ import android.widget.TextView;
 import com.twilio.ipmessaging.Message;
 import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.util.DateFormatter;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.TreeSet;
 
 public class MessageAdapter extends BaseAdapter {
   private final int TYPE_MESSAGE = 0;
