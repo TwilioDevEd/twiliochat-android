@@ -54,6 +54,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
   private DrawerLayout drawer;
   private ProgressDialog progressDialog;
   private MenuItem leaveChannelMenuItem;
+  private MenuItem deleteChannelMenuItem;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +118,8 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
     getMenuInflater().inflate(R.menu.main_chat, menu);
     this.leaveChannelMenuItem = menu.findItem(R.id.action_leave_channel);
     this.leaveChannelMenuItem.setVisible(false);
+    this.deleteChannelMenuItem = menu.findItem(R.id.action_delete_channel);
+    this.deleteChannelMenuItem.setVisible(false);
     return true;
   }
 
@@ -125,8 +128,11 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
     int id = item.getItemId();
 
     if (id == R.id.action_leave_channel) {
-      leaveChannel();
+      leaveCurrentChannel();
       return true;
+    }
+    if (id == R.id.action_delete_channel) {
+      deleteCurrentChannel();
     }
 
     return super.onOptionsItemSelected(item);
@@ -185,6 +191,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
       return;
     }
     MainChatActivity.this.leaveChannelMenuItem.setVisible(position != 0);
+    MainChatActivity.this.deleteChannelMenuItem.setVisible(position != 0);
     Channel selectedChannel = channels.get(position);
     if (selectedChannel != null) {
       chatFragment.setCurrentChannel(selectedChannel);
@@ -201,6 +208,10 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
     AlertDialogHandler.displayInputDialog(message, context, new InputOnClickListener() {
       @Override
       public void onClick(String input) {
+        if (input.length() == 0) {
+          AlertDialogHandler.displayAlertWithMessage("Channel name cannot be empty", context);
+          return;
+        }
         createChannelWithName(input);
       }
     });
@@ -220,10 +231,31 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
     });
   }
 
-  private void leaveChannel() {
+  private void deleteCurrentChannel() {
     Channel currentChannel = chatFragment.getCurrentChannel();
     setChannel(0);
-    currentChannel.leave(new Constants.StatusListener() {
+    channelManager.deleteChannelWithHandler(currentChannel, new Constants.StatusListener() {
+      @Override
+      public void onSuccess() {
+        populateChannels();
+      }
+
+      @Override
+      public void onError() {
+        runOnUiThread(new Runnable() {
+          @Override
+          public void run() {
+            AlertDialogHandler.displayAlertWithMessage("You cannot delete this channel", context);
+          }
+        });
+      }
+    });
+  }
+
+  private void leaveCurrentChannel() {
+    Channel currentChannel = chatFragment.getCurrentChannel();
+    setChannel(0);
+    channelManager.leaveChannelWithHandler(currentChannel, new Constants.StatusListener() {
       @Override
       public void onSuccess() {
 

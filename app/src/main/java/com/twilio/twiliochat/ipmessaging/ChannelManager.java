@@ -46,6 +46,14 @@ public class ChannelManager implements IPMessagingClientListener {
     return channels;
   }
 
+  public void leaveChannelWithHandler(Channel channel, Constants.StatusListener handler) {
+    channel.leave(handler);
+  }
+
+  public void deleteChannelWithHandler(Channel channel, Constants.StatusListener handler) {
+    channel.destroy(handler);
+  }
+
   public void populateChannels(final LoadChannelListener listener) {
     if (this.client == null) {
       return;
@@ -137,6 +145,7 @@ public class ChannelManager implements IPMessagingClientListener {
           listener.onSuccess();
         }
       }
+
       @Override
       public void onError() {
         listener.onError();
@@ -155,6 +164,7 @@ public class ChannelManager implements IPMessagingClientListener {
               listener.onSuccess();
             }
           }
+
           @Override
           public void onError() {
             listener.onError();
@@ -170,6 +180,7 @@ public class ChannelManager implements IPMessagingClientListener {
           listener.onSuccess();
         }
       }
+
       @Override
       public void onError() {
         listener.onError();
