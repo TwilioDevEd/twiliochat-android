@@ -21,7 +21,7 @@
     <RelativeLayout
         android:id="@+id/relSendMessage"
         android:layout_width="wrap_content"
-        android:layout_height="48dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@android:color/white"
         android:paddingLeft="10dp">
@@ -30,9 +30,9 @@
         <EditText
             android:id="@+id/editTextMessage"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_alignBottom="@+id/buttonSend"
-            android:layout_alignTop="@+id/buttonSend"
+            android:layout_height="wrap_content"
+            android:minHeight="45dp"
+            android:maxHeight="100dp"
             android:layout_marginBottom="-4dp"
             android:layout_marginRight="10dp"
             android:layout_toLeftOf="@+id/buttonSend"
@@ -44,8 +44,14 @@
         <Button
             android:id="@+id/buttonSend"
             android:layout_width="72dp"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="45dp"
+            android:maxHeight="100dp"
+            android:gravity="center"
+            android:layout_alignBottom="@+id/editTextMessage"
+            android:layout_alignTop="@+id/editTextMessage"
             android:layout_alignParentRight="true"
+            android:layout_gravity="center_vertical"
             android:layout_margin="4dp"
             android:background="@android:color/transparent"
             android:text="Send"
