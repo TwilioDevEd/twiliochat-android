@@ -23,36 +23,39 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@android:color/white"
-        android:paddingLeft="10dp">
+        android:background="@color/login_tf_background_gray"
+        android:paddingLeft="5dp">
 
 
         <EditText
             android:id="@+id/editTextMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="45dp"
+            android:minHeight="40dp"
             android:maxHeight="100dp"
-            android:layout_marginBottom="-4dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
             android:layout_marginRight="10dp"
+            android:padding="7dp"
             android:layout_toLeftOf="@+id/buttonSend"
-            android:background="@android:color/white"
+            android:background="@drawable/message_input_shape"
             android:hint="@string/message_elipses"
             android:textColor="@android:color/black"
-            android:textSize="14sp"/>
+            android:textSize="14sp"
+            android:maxLength="200"/>
 
         <Button
             android:id="@+id/buttonSend"
-            android:layout_width="72dp"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
-            android:minHeight="45dp"
+            android:minHeight="40dp"
             android:maxHeight="100dp"
             android:gravity="center"
             android:layout_alignBottom="@+id/editTextMessage"
             android:layout_alignTop="@+id/editTextMessage"
             android:layout_alignParentRight="true"
             android:layout_gravity="center_vertical"
-            android:layout_margin="4dp"
+            android:layout_margin="1dp"
             android:background="@android:color/transparent"
             android:text="Send"
             android:textColor="@color/colorAccent"/>
