@@ -33,12 +33,12 @@ import com.twilio.ipmessaging.TwilioIPMessagingSDK;
 import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.application.TwilioChatApplication;
 import com.twilio.twiliochat.fragments.MainChatFragment;
-import com.twilio.twiliochat.helpers.InputOnClickListener;
+import com.twilio.twiliochat.interfaces.InputOnClickListener;
+import com.twilio.twiliochat.interfaces.LoadChannelListener;
+import com.twilio.twiliochat.interfaces.LoginListener;
 import com.twilio.twiliochat.ipmessaging.ChannelAdapter;
 import com.twilio.twiliochat.ipmessaging.ChannelManager;
 import com.twilio.twiliochat.ipmessaging.IPMessagingClientManager;
-import com.twilio.twiliochat.ipmessaging.LoadChannelListener;
-import com.twilio.twiliochat.ipmessaging.LoginListener;
 import com.twilio.twiliochat.util.AlertDialogHandler;
 
 public class MainChatActivity extends AppCompatActivity implements IPMessagingClientListener {
@@ -171,23 +171,23 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
         });
         MainChatActivity.this.channelManager
             .joinGeneralChannelWithCompletion(new Constants.StatusListener() {
+          @Override
+          public void onSuccess() {
+            runOnUiThread(new Runnable() {
               @Override
-              public void onSuccess() {
-                runOnUiThread(new Runnable() {
-                  @Override
-                  public void run() {
-                    channelAdapter.notifyDataSetChanged();
-                    setChannel(0);
-                    stopStatusDialog();
-                  }
-                });
-              }
-
-              @Override
-              public void onError() {
-                System.out.println("Error joining the channel");
+              public void run() {
+                channelAdapter.notifyDataSetChanged();
+                setChannel(0);
+                stopStatusDialog();
               }
             });
+          }
+
+          @Override
+          public void onError() {
+            System.out.println("Error joining the channel");
+          }
+        });
       }
     });
   }

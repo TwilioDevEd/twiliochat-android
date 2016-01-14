@@ -22,8 +22,8 @@ import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.application.TwilioChatApplication;
+import com.twilio.twiliochat.interfaces.LoginListener;
 import com.twilio.twiliochat.ipmessaging.IPMessagingClientManager;
-import com.twilio.twiliochat.ipmessaging.LoginListener;
 import com.twilio.twiliochat.util.AlertDialogHandler;
 
 public class LoginActivity extends AppCompatActivity {

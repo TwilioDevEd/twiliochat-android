@@ -77,6 +77,6 @@ public class LoginActivityTest extends ActivityUnitTestCase<LoginActivity> {
     instrumentation.waitForIdleSync();
 
     final Intent launchIntent = getStartedActivityIntent();
-    //assertNotNull(launchIntent);
+    // assertNotNull(launchIntent);
   }
 }

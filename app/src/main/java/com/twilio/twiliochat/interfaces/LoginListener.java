@@ -1,4 +1,4 @@
-package com.twilio.twiliochat.ipmessaging;
+package com.twilio.twiliochat.interfaces;
 
 public interface LoginListener {
   public void onLoginStarted();

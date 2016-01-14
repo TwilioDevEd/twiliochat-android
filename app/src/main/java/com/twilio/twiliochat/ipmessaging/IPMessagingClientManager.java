@@ -18,6 +18,8 @@ import com.twilio.ipmessaging.Constants;
 import com.twilio.ipmessaging.IPMessagingClientListener;
 import com.twilio.ipmessaging.TwilioIPMessagingClient;
 import com.twilio.ipmessaging.TwilioIPMessagingSDK;
+import com.twilio.twiliochat.interfaces.FetchTokenListener;
+import com.twilio.twiliochat.interfaces.LoginListener;
 
 public class IPMessagingClientManager
     implements IPMessagingClientListener, TwilioAccessManagerListener {

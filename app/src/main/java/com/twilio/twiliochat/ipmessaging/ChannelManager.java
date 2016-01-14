@@ -16,6 +16,7 @@ import com.twilio.ipmessaging.Constants;
 import com.twilio.ipmessaging.IPMessagingClientListener;
 import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.application.TwilioChatApplication;
+import com.twilio.twiliochat.interfaces.LoadChannelListener;
 
 public class ChannelManager implements IPMessagingClientListener {
   private static ChannelManager sharedManager = new ChannelManager();
@@ -28,6 +29,7 @@ public class ChannelManager implements IPMessagingClientListener {
   private String defaultChannelName;
   private String defaultChannelUniqueName;
   private Handler handler;
+
   private ChannelManager() {
     this.client = TwilioChatApplication.get().getIPMessagingClient();
     this.listener = this;
