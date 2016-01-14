@@ -33,6 +33,7 @@ import com.twilio.ipmessaging.TwilioIPMessagingSDK;
 import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.application.TwilioChatApplication;
 import com.twilio.twiliochat.fragments.MainChatFragment;
+import com.twilio.twiliochat.interfaces.BlankChannelListener;
 import com.twilio.twiliochat.interfaces.InputOnClickListener;
 import com.twilio.twiliochat.interfaces.LoadChannelListener;
 import com.twilio.twiliochat.interfaces.LoginListener;
@@ -267,6 +268,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
 
   private void leaveCurrentChannel() {
     Channel currentChannel = chatFragment.getCurrentChannel();
+    currentChannel.setListener(new BlankChannelListener());
     setChannel(0);
     channelManager.leaveChannelWithHandler(currentChannel, new Constants.StatusListener() {
       @Override

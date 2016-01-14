@@ -155,9 +155,7 @@ public class MainChatFragment extends Fragment implements ChannelListener {
 
   @Override
   public void onMessageAdd(Message message) {
-    if (message.getChannelSid().contentEquals(this.currentChannel.getSid())) {
-      messageAdapter.addMessage(message);
-    }
+    messageAdapter.addMessage(message);
   }
 
   @Override
@@ -178,14 +176,14 @@ public class MainChatFragment extends Fragment implements ChannelListener {
   }
 
   @Override
-  public void onMemberChange(Member member) {
-
-  }
-
-  @Override
   public void onMemberDelete(Member member) {
     StatusMessage statusMessage = new StatusMessage(member.getIdentity(), "timestamp", "left");
     this.messageAdapter.addStatusMessage(statusMessage);
+  }
+
+  @Override
+  public void onMemberChange(Member member) {
+
   }
 
   @Override
