@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -55,6 +56,17 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
   private ProgressDialog progressDialog;
   private MenuItem leaveChannelMenuItem;
   private MenuItem deleteChannelMenuItem;
+
+  @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    new Handler().post(new Runnable() {
+      @Override
+      public void run() {
+        TwilioIPMessagingSDK.shutdown();
+      }
+    });
+  }
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -303,7 +315,6 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
           @Override
           public void onClick(DialogInterface dialog, int which) {
             ParseUser.logOut();
-            TwilioIPMessagingSDK.shutdown();
             showLoginActivity();
           }
         });
