@@ -211,6 +211,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
       setTitle(selectedChannel.getFriendlyName());
       drawer.closeDrawer(GravityCompat.START);
     } else {
+      showAlertWithMessage(getStringResource(R.string.generic_error));
       System.out.println("Selected channel out of range");
     }
   }
@@ -221,7 +222,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
       @Override
       public void onClick(String input) {
         if (input.length() == 0) {
-          AlertDialogHandler.displayAlertWithMessage("Channel name cannot be empty", context);
+          showAlertWithMessage(getStringResource(R.string.channel_name_required_message));
           return;
         }
         createChannelWithName(input);
@@ -238,8 +239,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
 
       @Override
       public void onError() {
-        AlertDialogHandler.displayAlertWithMessage("There was an error while creating the channel",
-            context);
+        showAlertWithMessage(getStringResource(R.string.generic_error));
       }
     });
   }
@@ -258,7 +258,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
         runOnUiThread(new Runnable() {
           @Override
           public void run() {
-            AlertDialogHandler.displayAlertWithMessage("You cannot delete this channel", context);
+            showAlertWithMessage(getStringResource(R.string.message_deletion_forbidden));
           }
         });
       }
@@ -282,7 +282,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
   }
 
   private void checkTwilioClient() {
-    showActivityIndicator("Loading channel information");
+    showActivityIndicator(getStringResource(R.string.loading_channels_message));
     client = TwilioChatApplication.get().getIPMessagingClient();
     if (client.getIpMessagingClient() == null) {
       initializeClient();
@@ -303,7 +303,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
 
       @Override
       public void onLoginError(String errorMessage) {
-        AlertDialogHandler.displayAlertWithMessage("Client connection error", context);
+        showAlertWithMessage("Client connection error");
       }
     });
   }
@@ -345,6 +345,10 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
     progressDialog.show();
     progressDialog.setCanceledOnTouchOutside(false);
     progressDialog.setCancelable(false);
+  }
+
+  private void showAlertWithMessage(String message) {
+    AlertDialogHandler.displayAlertWithMessage(message, context);
   }
 
   @Override

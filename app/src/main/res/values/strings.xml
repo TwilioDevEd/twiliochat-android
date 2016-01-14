@@ -47,6 +47,10 @@
     <string name="default_channel_name">General Channel</string>
     <string name="default_channel_unique_name">general</string>
     <string name="new_channel_prompt">Enter a name for the new channel:</string>
+    <string name="generic_error">An error occurred, please try again</string>
+    <string name="message_deletion_forbidden">You cannot delete this channel</string>
+    <string name="loading_channels_message">Loading channel information</string>
+    <string name="channel_name_required_message">Channel name cannot be empty</string>
 
 
 </resources>
