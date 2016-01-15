@@ -29,6 +29,7 @@ public class ChannelManager implements IPMessagingClientListener {
   private String defaultChannelName;
   private String defaultChannelUniqueName;
   private Handler handler;
+  private Boolean isRefreshingChannels = false;
 
   private ChannelManager() {
     this.client = TwilioChatApplication.get().getIPMessagingClient();
@@ -55,30 +56,32 @@ public class ChannelManager implements IPMessagingClientListener {
   }
 
   public void populateChannels(final LoadChannelListener listener) {
-    if (this.client == null) {
+    if (this.client == null || this.isRefreshingChannels) {
       return;
     }
+    this.isRefreshingChannels = true;
     handler.post(new Runnable() {
       @Override
       public void run() {
-        client.setClientListener(ChannelManager.this);
         channelsObject = client.getIpMessagingClient().getChannels();
         if (channelsObject != null) {
           channelsObject.loadChannelsWithListener(new Constants.StatusListener() {
             @Override
             public void onError() {
+              ChannelManager.this.isRefreshingChannels = false;
               System.out.println("Failed to loadChannelsWithListener");
             }
 
             @Override
             public void onSuccess() {
-              System.out.println("Successfully loadChannelsWithListener.");
               channels = new ArrayList<>();
 
               channelArray = channelsObject.getChannels();
               if (ChannelManager.this.channels != null && channelArray != null) {
                 ChannelManager.this.channels.addAll(Arrays.asList(channelArray));
                 Collections.sort(ChannelManager.this.channels, new CustomChannelComparator());
+                ChannelManager.this.isRefreshingChannels = false;
+                client.setClientListener(ChannelManager.this);
                 listener.onChannelsFinishedLoading(ChannelManager.this.channels);
               }
             }

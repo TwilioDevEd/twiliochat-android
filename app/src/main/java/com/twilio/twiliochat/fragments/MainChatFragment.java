@@ -22,6 +22,7 @@ import com.twilio.ipmessaging.Member;
 import com.twilio.ipmessaging.Message;
 import com.twilio.ipmessaging.Messages;
 import com.twilio.twiliochat.R;
+import com.twilio.twiliochat.ipmessaging.BlankChannelListener;
 import com.twilio.twiliochat.messaging.MessageAdapter;
 import com.twilio.twiliochat.messaging.StatusMessage;
 
@@ -122,6 +123,9 @@ public class MainChatFragment extends Fragment implements ChannelListener {
   public void setCurrentChannel(Channel currentChannel) {
     if (currentChannel != this.currentChannel) {
       setMessageInputEnabled(false);
+      if (this.currentChannel != null) {
+        this.currentChannel.setListener(new BlankChannelListener());
+      }
       this.currentChannel = currentChannel;
       this.currentChannel.setListener(this);
       if (this.currentChannel.getStatus() == Channel.ChannelStatus.JOINED) {
@@ -134,7 +138,8 @@ public class MainChatFragment extends Fragment implements ChannelListener {
           }
 
           @Override
-          public void onError() {}
+          public void onError() {
+          }
         });
       }
     }
@@ -155,7 +160,9 @@ public class MainChatFragment extends Fragment implements ChannelListener {
 
   @Override
   public void onMessageAdd(Message message) {
-    messageAdapter.addMessage(message);
+    if (message.getChannelSid().contentEquals(this.currentChannel.getSid())) {
+      messageAdapter.addMessage(message);
+    }
   }
 
   @Override

@@ -24,6 +24,15 @@ public class ChannelAdapter extends BaseAdapter {
     this.channels = channels;
   }
 
+  public List<Channel> getChannels() {
+    return channels;
+  }
+
+  public void setChannels(List<Channel> channels) {
+    this.channels = channels;
+    notifyDataSetChanged();
+  }
+
   public void addChannel(Channel channel) {
     this.channels.add(channel);
     Collections.sort(this.channels, new CustomChannelComparator());

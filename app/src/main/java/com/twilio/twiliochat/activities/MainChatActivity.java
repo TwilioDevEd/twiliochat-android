@@ -10,10 +10,10 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -33,10 +33,10 @@ import com.twilio.ipmessaging.TwilioIPMessagingSDK;
 import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.application.TwilioChatApplication;
 import com.twilio.twiliochat.fragments.MainChatFragment;
-import com.twilio.twiliochat.interfaces.BlankChannelListener;
 import com.twilio.twiliochat.interfaces.InputOnClickListener;
 import com.twilio.twiliochat.interfaces.LoadChannelListener;
 import com.twilio.twiliochat.interfaces.LoginListener;
+import com.twilio.twiliochat.ipmessaging.BlankChannelListener;
 import com.twilio.twiliochat.ipmessaging.ChannelAdapter;
 import com.twilio.twiliochat.ipmessaging.ChannelManager;
 import com.twilio.twiliochat.ipmessaging.IPMessagingClientManager;
@@ -57,6 +57,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
   private ProgressDialog progressDialog;
   private MenuItem leaveChannelMenuItem;
   private MenuItem deleteChannelMenuItem;
+  private SwipeRefreshLayout refreshLayout;
 
   @Override
   protected void onDestroy() {
@@ -82,7 +83,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
     drawer.setDrawerListener(toggle);
     toggle.syncState();
 
-    NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+    refreshLayout = (SwipeRefreshLayout) findViewById(R.id.refreshLayout);
 
     FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 
@@ -113,6 +114,13 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
       @Override
       public void onClick(View v) {
         showAddChannelDialog();
+      }
+    });
+    refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+      @Override
+      public void onRefresh() {
+        refreshLayout.setRefreshing(true);
+        refreshChannels();
       }
     });
   }
@@ -154,6 +162,16 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
   private String getStringResource(int id) {
     Resources resources = getResources();
     return resources.getString(id);
+  }
+
+  private void refreshChannels() {
+    channelManager.populateChannels(new LoadChannelListener() {
+      @Override
+      public void onChannelsFinishedLoading(List<Channel> channels) {
+        channelAdapter.setChannels(channels);
+        refreshLayout.setRefreshing(false);
+      }
+    });
   }
 
   private void populateChannels() {
@@ -204,6 +222,10 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
     if (channels == null) {
       return;
     }
+    Channel currentChannel = chatFragment.getCurrentChannel();
+    if (currentChannel != null) {
+      currentChannel.setListener(new BlankChannelListener());
+    }
     MainChatActivity.this.leaveChannelMenuItem.setVisible(position != 0);
     MainChatActivity.this.deleteChannelMenuItem.setVisible(position != 0);
     Channel selectedChannel = channels.get(position);
@@ -235,7 +257,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
     this.channelManager.createChannelWithName(name, new Constants.StatusListener() {
       @Override
       public void onSuccess() {
-        populateChannels();
+        refreshChannels();
       }
 
       @Override
@@ -247,11 +269,12 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
 
   private void deleteCurrentChannel() {
     Channel currentChannel = chatFragment.getCurrentChannel();
+    currentChannel.setListener(new BlankChannelListener());
     setChannel(0);
     channelManager.deleteChannelWithHandler(currentChannel, new Constants.StatusListener() {
       @Override
       public void onSuccess() {
-        populateChannels();
+        refreshChannels();
       }
 
       @Override
@@ -355,7 +378,13 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
 
   @Override
   public void onChannelAdd(Channel channel) {
-    // this.channelAdapter.addChannel(channel);
+    System.out.println("Channel Added");
+    runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        refreshChannels();
+      }
+    });
   }
 
   @Override
@@ -364,8 +393,18 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
   }
 
   @Override
-  public void onChannelDelete(Channel channel) {
-    // this.channelAdapter.deleteChannel(channel);
+  public void onChannelDelete(final Channel channel) {
+    System.out.println("Channel Deleted");
+    runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        Channel currentChannel = chatFragment.getCurrentChannel();
+        if (channel.getSid().contentEquals(currentChannel.getSid())) {
+          setChannel(0);
+        }
+        refreshChannels();
+      }
+    });
   }
 
   @Override

@@ -1,4 +1,4 @@
-package com.twilio.twiliochat.interfaces;
+package com.twilio.twiliochat.ipmessaging;
 
 import com.twilio.ipmessaging.Channel;
 import com.twilio.ipmessaging.ChannelListener;
