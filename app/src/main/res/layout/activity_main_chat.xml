@@ -30,12 +30,12 @@
                 layout="@layout/nav_header_main_chat"/>
 
             <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/refreshLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/refreshLayout"
-                android:padding="0dp"
                 android:layout_above="@+id/buttonAddChannel"
-                android:layout_below="@+id/toolbarPlaceholder">
+                android:layout_below="@+id/toolbarPlaceholder"
+                android:padding="0dp">
 
                 <ListView
                     android:id="@+id/listViewChannels"

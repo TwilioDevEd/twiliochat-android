@@ -36,7 +36,6 @@ import com.twilio.twiliochat.fragments.MainChatFragment;
 import com.twilio.twiliochat.interfaces.InputOnClickListener;
 import com.twilio.twiliochat.interfaces.LoadChannelListener;
 import com.twilio.twiliochat.interfaces.LoginListener;
-import com.twilio.twiliochat.ipmessaging.BlankChannelListener;
 import com.twilio.twiliochat.ipmessaging.ChannelAdapter;
 import com.twilio.twiliochat.ipmessaging.ChannelManager;
 import com.twilio.twiliochat.ipmessaging.IPMessagingClientManager;
@@ -96,6 +95,8 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
     logoutButton = (Button) findViewById(R.id.buttonLogout);
     addChannelButton = (Button) findViewById(R.id.buttonAddChannel);
     usernameTextView = (TextView) findViewById(R.id.textViewUsername);
+    channelsListView = (ListView) findViewById(R.id.listViewChannels);
+
     channelManager = ChannelManager.getInstance();
     setUsernameTextView();
 
@@ -121,6 +122,12 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
       public void onRefresh() {
         refreshLayout.setRefreshing(true);
         refreshChannels();
+      }
+    });
+    channelsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+      @Override
+      public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        setChannel(position);
       }
     });
   }
@@ -179,34 +186,27 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
     channelManager.populateChannels(new LoadChannelListener() {
       @Override
       public void onChannelsFinishedLoading(List<Channel> channels) {
-        channelsListView = (ListView) findViewById(R.id.listViewChannels);
         channelAdapter = new ChannelAdapter(mainActivity, channels);
         channelsListView.setAdapter(channelAdapter);
-        channelsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-          @Override
-          public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            setChannel(position);
-          }
-        });
         MainChatActivity.this.channelManager
-            .joinGeneralChannelWithCompletion(new Constants.StatusListener() {
+            .joinOrCreateGeneralChannelWithCompletion(new Constants.StatusListener() {
+          @Override
+          public void onSuccess() {
+            runOnUiThread(new Runnable() {
               @Override
-              public void onSuccess() {
-                runOnUiThread(new Runnable() {
-                  @Override
-                  public void run() {
-                    channelAdapter.notifyDataSetChanged();
-                    stopActivityIndicator();
-                    setChannel(0);
-                  }
-                });
-              }
-
-              @Override
-              public void onError() {
-                System.out.println("Error joining the channel");
+              public void run() {
+                channelAdapter.notifyDataSetChanged();
+                stopActivityIndicator();
+                setChannel(0);
               }
             });
+          }
+
+          @Override
+          public void onError() {
+            System.out.println("Error joining the channel");
+          }
+        });
       }
     });
   }

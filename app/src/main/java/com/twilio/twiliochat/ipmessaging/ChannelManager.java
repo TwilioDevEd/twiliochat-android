@@ -3,7 +3,9 @@ package com.twilio.twiliochat.ipmessaging;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.content.res.Resources;
 import android.os.Handler;
@@ -92,63 +94,44 @@ public class ChannelManager implements IPMessagingClientListener {
   }
 
   public void createChannelWithName(String name, final Constants.StatusListener handler) {
-    this.channelsObject.createChannel(name, ChannelType.CHANNEL_TYPE_PUBLIC,
-        new Constants.CreateChannelListener() {
-          @Override
-          public void onCreated(Channel channel) {
-            handler.onSuccess();
-          }
+    Map<String, Object> options = new HashMap<>();
+    options.put(Constants.CHANNEL_FRIENDLY_NAME, name);
+    options.put(Constants.CHANNEL_TYPE, ChannelType.CHANNEL_TYPE_PUBLIC);
+    this.channelsObject.createChannel(options, new Constants.CreateChannelListener() {
+      @Override
+      public void onCreated(Channel channel) {
+        handler.onSuccess();
+      }
 
-          @Override
-          public void onError() {
-            handler.onError();
-          }
-        });
+      @Override
+      public void onError() {
+        handler.onError();
+      }
+    });
   }
 
-  public void joinGeneralChannelWithCompletion(final Constants.StatusListener listener) {
+  public void joinOrCreateGeneralChannelWithCompletion(final Constants.StatusListener listener) {
     if (this.channels == null) {
       listener.onError();
       return;
     }
     this.generalChannel = channelsObject.getChannelByUniqueName(defaultChannelUniqueName);
     if (this.generalChannel != null) {
-      joinGeneralChannelWithUniqueName(null, listener);
+      joinGeneralChannelWithCompletion(listener);
     } else {
-      createGeneralChannelWithCompletion(new Constants.StatusListener() {
-        @Override
-        public void onSuccess() {
-          joinGeneralChannelWithUniqueName(defaultChannelUniqueName, listener);
-        }
-
-        @Override
-        public void onError() {
-          if (listener != null) {
-            listener.onError();
-          }
-        }
-      });
+      createGeneralChannelWithCompletion(listener);
     }
   }
 
-  private void joinGeneralChannelWithUniqueName(final String uniqueName,
-      final Constants.StatusListener listener) {
+  private void joinGeneralChannelWithCompletion(final Constants.StatusListener listener) {
     if (this.generalChannel == null) {
-      if (listener != null) {
-        listener.onError();
-      }
+      listener.onError();
       return;
     }
     this.generalChannel.join(new Constants.StatusListener() {
       @Override
       public void onSuccess() {
-        if (uniqueName != null) {
-          setGeneralChannelUniqueNameWithCompletion(listener);
-          return;
-        }
-        if (listener != null) {
-          listener.onSuccess();
-        }
+        listener.onSuccess();
       }
 
       @Override
@@ -159,31 +142,16 @@ public class ChannelManager implements IPMessagingClientListener {
   }
 
   private void createGeneralChannelWithCompletion(final Constants.StatusListener listener) {
-    this.channelsObject.createChannel(defaultChannelName, Channel.ChannelType.CHANNEL_TYPE_PUBLIC,
-        new Constants.CreateChannelListener() {
-          @Override
-          public void onCreated(Channel channel) {
-            ChannelManager.this.generalChannel = channel;
-            ChannelManager.this.channels.add(channel);
-            if (listener != null) {
-              listener.onSuccess();
-            }
-          }
-
-          @Override
-          public void onError() {
-            listener.onError();
-          }
-        });
-  }
-
-  private void setGeneralChannelUniqueNameWithCompletion(final Constants.StatusListener listener) {
-    this.generalChannel.setUniqueName(defaultChannelUniqueName, new Constants.StatusListener() {
+    Map<String, Object> options = new HashMap<>();
+    options.put(Constants.CHANNEL_FRIENDLY_NAME, defaultChannelName);
+    options.put(Constants.CHANNEL_UNIQUE_NAME, defaultChannelUniqueName);
+    options.put(Constants.CHANNEL_TYPE, ChannelType.CHANNEL_TYPE_PUBLIC);
+    this.channelsObject.createChannel(options, new Constants.CreateChannelListener() {
       @Override
-      public void onSuccess() {
-        if (listener != null) {
-          listener.onSuccess();
-        }
+      public void onCreated(Channel channel) {
+        ChannelManager.this.generalChannel = channel;
+        ChannelManager.this.channels.add(channel);
+        joinGeneralChannelWithCompletion(listener);
       }
 
       @Override
