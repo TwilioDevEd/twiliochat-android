@@ -28,7 +28,6 @@ public class TwilioChatApplication extends Application {
     // Enable Local Datastore.
     Parse.enableLocalDatastore(this);
 
-    // Add your initialization code here
     Parse.initialize(this);
 
     ParseACL defaultACL = new ParseACL();

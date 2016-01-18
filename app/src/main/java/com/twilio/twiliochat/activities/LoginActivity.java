@@ -210,13 +210,7 @@ public class LoginActivity extends AppCompatActivity {
   private void initializeMessagingClient() {
     messagingClient.connectClient(new LoginListener() {
       @Override
-      public void onLoginStarted() {
-
-      }
-
-      @Override
       public void onLoginFinished() {
-        System.out.println("Client Connected");
         showMainChatActivity();
       }
 

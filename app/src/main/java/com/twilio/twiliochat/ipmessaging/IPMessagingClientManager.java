@@ -57,6 +57,10 @@ public class IPMessagingClientManager
     return this.ipMessagingClient;
   }
 
+  public void setIpMessagingClient(TwilioIPMessagingClient client) {
+    this.ipMessagingClient = client;
+  }
+
   public void connectClient(final LoginListener listener) {
     TwilioIPMessagingSDK.setLogLevel(android.util.Log.DEBUG);
     if (!TwilioIPMessagingSDK.isInitialized()) {

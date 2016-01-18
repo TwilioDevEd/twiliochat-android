@@ -64,6 +64,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
     new Handler().post(new Runnable() {
       @Override
       public void run() {
+        TwilioChatApplication.get().getIPMessagingClient().setIpMessagingClient(null);
         TwilioIPMessagingSDK.shutdown();
       }
     });
@@ -160,7 +161,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
       return true;
     }
     if (id == R.id.action_delete_channel) {
-      deleteCurrentChannel();
+      promptChannelDeletion();
     }
 
     return super.onOptionsItemSelected(item);
@@ -174,9 +175,14 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
   private void refreshChannels() {
     channelManager.populateChannels(new LoadChannelListener() {
       @Override
-      public void onChannelsFinishedLoading(List<Channel> channels) {
-        channelAdapter.setChannels(channels);
-        refreshLayout.setRefreshing(false);
+      public void onChannelsFinishedLoading(final List<Channel> channels) {
+        runOnUiThread(new Runnable() {
+          @Override
+          public void run() {
+            channelAdapter.setChannels(channels);
+            refreshLayout.setRefreshing(false);
+          }
+        });
       }
     });
   }
@@ -204,7 +210,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
 
           @Override
           public void onError() {
-            System.out.println("Error joining the channel");
+            showAlertWithMessage(getStringResource(R.string.generic_error));
           }
         });
       }
@@ -218,7 +224,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
     }
     Channel currentChannel = chatFragment.getCurrentChannel();
     final Channel selectedChannel = channels.get(position);
-    if (currentChannel != null && currentChannel.equals(selectedChannel)) {
+    if (currentChannel != null && currentChannel.getSid().contentEquals(selectedChannel.getSid())) {
       drawer.closeDrawer(GravityCompat.START);
       return;
     }
@@ -242,6 +248,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
       joinChannel(selectedChannel);
       stopActivityIndicator();
     } else {
+      stopActivityIndicator();
       showAlertWithMessage(getStringResource(R.string.generic_error));
       System.out.println("Selected channel out of range");
     }
@@ -258,9 +265,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
           }
 
           @Override
-          public void onError() {
-
-          }
+          public void onError() {}
         });
         setTitle(selectedChannel.getFriendlyName());
         drawer.closeDrawer(GravityCompat.START);
@@ -304,6 +309,17 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
         showAlertWithMessage(getStringResource(R.string.generic_error));
       }
     });
+  }
+
+  private void promptChannelDeletion() {
+    String message = getStringResource(R.string.channel_delete_prompt_message);
+    AlertDialogHandler.displayCancellableAlertWithHandler(message, context,
+        new DialogInterface.OnClickListener() {
+          @Override
+          public void onClick(DialogInterface dialog, int which) {
+            deleteCurrentChannel();
+          }
+        });
   }
 
   private void deleteCurrentChannel() {
@@ -354,37 +370,40 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
   private void initializeClient() {
     client.connectClient(new LoginListener() {
       @Override
-      public void onLoginStarted() {}
-
-      @Override
       public void onLoginFinished() {
         populateChannels();
       }
 
       @Override
       public void onLoginError(String errorMessage) {
+        stopActivityIndicator();
         showAlertWithMessage("Client connection error");
       }
     });
   }
 
   private void promptLogout() {
-    String message = getStringResource(R.string.logout_prompt_message);
-    AlertDialogHandler.displayCancellableAlertWithHandler(message, context,
-        new DialogInterface.OnClickListener() {
+    final String message = getStringResource(R.string.logout_prompt_message);
+    runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        AlertDialogHandler.displayCancellableAlertWithHandler(message, context,
+            new DialogInterface.OnClickListener() {
           @Override
           public void onClick(DialogInterface dialog, int which) {
             ParseUser.logOut();
             showLoginActivity();
           }
         });
+      }
+    });
+
   }
 
   private void showLoginActivity() {
     Intent launchIntent = new Intent();
     launchIntent.setClass(getApplicationContext(), LoginActivity.class);
     startActivity(launchIntent);
-
     finish();
   }
 
@@ -429,43 +448,27 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
   @Override
   public void onChannelAdd(Channel channel) {
     System.out.println("Channel Added");
-    runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        refreshChannels();
-      }
-    });
-  }
-
-  @Override
-  public void onChannelChange(Channel channel) {
-
+    refreshChannels();
   }
 
   @Override
   public void onChannelDelete(final Channel channel) {
     System.out.println("Channel Deleted");
-    runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        Channel currentChannel = chatFragment.getCurrentChannel();
-        if (channel.getSid().contentEquals(currentChannel.getSid())) {
-          setChannel(0);
-        }
-        refreshChannels();
-      }
-    });
+    Channel currentChannel = chatFragment.getCurrentChannel();
+    if (channel.getSid().contentEquals(currentChannel.getSid())) {
+      setChannel(0);
+    }
+    refreshChannels();
   }
 
   @Override
-  public void onError(int i, String s) {
-
-  }
+  public void onChannelChange(Channel channel) {}
 
   @Override
-  public void onAttributesChange(String s) {
+  public void onError(int i, String s) {}
 
-  }
+  @Override
+  public void onAttributesChange(String s) {}
 
   @Override
   public void onChannelHistoryLoaded(Channel channel) {}

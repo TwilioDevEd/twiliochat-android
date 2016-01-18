@@ -11,8 +11,8 @@
     <string name="twilio_first_line">A simple chat app built using the</string>
     <string name="twilio_second_line">Twilio IP Messaging API</string>
     <string name="login_all_fields_required">All fields are required</string>
-    <string name="login_user_progress_message">signing in...</string>
-    <string name="register_user_progress_message">registering user...</string>
+    <string name="login_user_progress_message">signing in…</string>
+    <string name="register_user_progress_message">registering user…</string>
 
     <!-- Strings related to forgot password -->
     <string name="forgot_password_message">
@@ -23,7 +23,7 @@
     <string name="forgot_password_email_required">
         You must provide a registered email address to start the recovery process
     </string>
-    <string name="forgot_password_progress_message">recovering password...</string>
+    <string name="forgot_password_progress_message">recovering password…</string>
     <string name="forgot_password_success_message">
         We have sent you an email to start the password recovery process
     </string>
@@ -51,6 +51,7 @@
     <string name="message_deletion_forbidden">You cannot delete this channel</string>
     <string name="loading_channels_message">Loading channel information</string>
     <string name="channel_name_required_message">Channel name cannot be empty</string>
+    <string name="channel_delete_prompt_message">Are you sure you want to delete this channel?</string>
 
 
 </resources>

@@ -24,17 +24,17 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@color/login_tf_background_gray"
-        android:paddingLeft="5dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:paddingLeft="5dp">
 
 
         <EditText
             android:id="@+id/editTextMessage"
             android:layout_width="0dip"
-            android:layout_weight=".85"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="5dp"
+            android:layout_weight=".85"
             android:background="@drawable/message_input_shape"
             android:hint="@string/message_elipses"
             android:maxHeight="100dp"
@@ -47,9 +47,9 @@
         <Button
             android:id="@+id/buttonSend"
             android:layout_width="0dip"
-            android:layout_weight=".15"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_weight=".15"
             android:background="@android:color/transparent"
             android:gravity="center"
             android:maxHeight="100dp"

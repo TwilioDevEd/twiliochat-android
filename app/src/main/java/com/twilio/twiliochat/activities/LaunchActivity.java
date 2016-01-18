@@ -12,7 +12,6 @@ public class LaunchActivity extends Activity {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    // launch a different activity
     Intent launchIntent = new Intent();
     Class<?> launchActivity;
 
@@ -23,9 +22,6 @@ public class LaunchActivity extends Activity {
     finish();
   }
 
-  /**
-   * return Class name of Activity to show
-   **/
   private Class<?> getLaunchClass() {
     ParseUser currentUser = ParseUser.getCurrentUser();
     if (currentUser != null) {
