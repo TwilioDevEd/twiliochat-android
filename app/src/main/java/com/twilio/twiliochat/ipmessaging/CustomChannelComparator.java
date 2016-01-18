@@ -21,6 +21,6 @@ public class CustomChannelComparator implements Comparator<Channel> {
     } else if (rhs.getFriendlyName().contentEquals(defaultChannelName)) {
       return 100;
     }
-    return lhs.getFriendlyName().compareTo(rhs.getFriendlyName());
+    return lhs.getFriendlyName().toLowerCase().compareTo(rhs.getFriendlyName().toLowerCase());
   }
 }

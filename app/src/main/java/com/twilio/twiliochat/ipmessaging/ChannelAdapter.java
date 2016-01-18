@@ -30,6 +30,7 @@ public class ChannelAdapter extends BaseAdapter {
 
   public void setChannels(List<Channel> channels) {
     this.channels = channels;
+    Collections.sort(this.channels, new CustomChannelComparator());
     notifyDataSetChanged();
   }
 

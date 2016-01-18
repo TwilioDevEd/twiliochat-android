@@ -190,31 +190,25 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
         });
         MainChatActivity.this.channelManager
             .joinGeneralChannelWithCompletion(new Constants.StatusListener() {
-          @Override
-          public void onSuccess() {
-            runOnUiThread(new Runnable() {
               @Override
-              public void run() {
-                channelAdapter.notifyDataSetChanged();
-                setChannel(0);
-                stopStatusDialog();
+              public void onSuccess() {
+                runOnUiThread(new Runnable() {
+                  @Override
+                  public void run() {
+                    channelAdapter.notifyDataSetChanged();
+                    stopActivityIndicator();
+                    setChannel(0);
+                  }
+                });
+              }
+
+              @Override
+              public void onError() {
+                System.out.println("Error joining the channel");
               }
             });
-          }
-
-          @Override
-          public void onError() {
-            System.out.println("Error joining the channel");
-          }
-        });
       }
     });
-  }
-
-  private void setChannel(Channel channel) {
-    chatFragment.setCurrentChannel(channel);
-    setTitle(channel.getFriendlyName());
-    drawer.closeDrawer(GravityCompat.START);
   }
 
   private void setChannel(final int position) {
@@ -223,20 +217,65 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
       return;
     }
     Channel currentChannel = chatFragment.getCurrentChannel();
-    if (currentChannel != null) {
-      currentChannel.setListener(new BlankChannelListener());
-    }
-    MainChatActivity.this.leaveChannelMenuItem.setVisible(position != 0);
-    MainChatActivity.this.deleteChannelMenuItem.setVisible(position != 0);
-    Channel selectedChannel = channels.get(position);
-    if (selectedChannel != null) {
-      chatFragment.setCurrentChannel(selectedChannel);
-      setTitle(selectedChannel.getFriendlyName());
+    final Channel selectedChannel = channels.get(position);
+    if (currentChannel != null && currentChannel.equals(selectedChannel)) {
       drawer.closeDrawer(GravityCompat.START);
+      return;
+    }
+    hideMenuItems(position);
+    if (selectedChannel != null) {
+      showActivityIndicator("Joining " + selectedChannel.getFriendlyName() + " channel");
+      if (currentChannel != null && currentChannel.getStatus() == Channel.ChannelStatus.JOINED) {
+        this.channelManager.leaveChannelWithHandler(currentChannel, new Constants.StatusListener() {
+          @Override
+          public void onSuccess() {
+            joinChannel(selectedChannel);
+          }
+
+          @Override
+          public void onError() {
+            stopActivityIndicator();
+          }
+        });
+        return;
+      }
+      joinChannel(selectedChannel);
+      stopActivityIndicator();
     } else {
       showAlertWithMessage(getStringResource(R.string.generic_error));
       System.out.println("Selected channel out of range");
     }
+  }
+
+  private void joinChannel(final Channel selectedChannel) {
+    runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        chatFragment.setCurrentChannel(selectedChannel, new Constants.StatusListener() {
+          @Override
+          public void onSuccess() {
+            MainChatActivity.this.stopActivityIndicator();
+          }
+
+          @Override
+          public void onError() {
+
+          }
+        });
+        setTitle(selectedChannel.getFriendlyName());
+        drawer.closeDrawer(GravityCompat.START);
+      }
+    });
+  }
+
+  private void hideMenuItems(final int position) {
+    runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        MainChatActivity.this.leaveChannelMenuItem.setVisible(position != 0);
+        MainChatActivity.this.deleteChannelMenuItem.setVisible(position != 0);
+      }
+    });
   }
 
   private void showAddChannelDialog() {
@@ -269,39 +308,35 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
 
   private void deleteCurrentChannel() {
     Channel currentChannel = chatFragment.getCurrentChannel();
-    currentChannel.setListener(new BlankChannelListener());
-    setChannel(0);
     channelManager.deleteChannelWithHandler(currentChannel, new Constants.StatusListener() {
       @Override
       public void onSuccess() {
+        setChannel(0);
         refreshChannels();
       }
 
       @Override
       public void onError() {
-        runOnUiThread(new Runnable() {
-          @Override
-          public void run() {
-            showAlertWithMessage(getStringResource(R.string.message_deletion_forbidden));
-          }
-        });
+        showAlertWithMessage(getStringResource(R.string.message_deletion_forbidden));
       }
     });
   }
 
   private void leaveCurrentChannel() {
     Channel currentChannel = chatFragment.getCurrentChannel();
-    currentChannel.setListener(new BlankChannelListener());
-    setChannel(0);
+    if (currentChannel.getStatus() == Channel.ChannelStatus.NOT_PARTICIPATING) {
+      setChannel(0);
+      return;
+    }
     channelManager.leaveChannelWithHandler(currentChannel, new Constants.StatusListener() {
       @Override
       public void onSuccess() {
-
+        setChannel(0);
       }
 
       @Override
       public void onError() {
-
+        stopActivityIndicator();
       }
     });
   }
@@ -358,22 +393,37 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
     usernameTextView.setText(username);
   }
 
-  private void stopStatusDialog() {
-    if (progressDialog.isShowing()) {
-      progressDialog.dismiss();
-    }
+  private void stopActivityIndicator() {
+    runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        if (progressDialog.isShowing()) {
+          progressDialog.dismiss();
+        }
+      }
+    });
   }
 
-  private void showActivityIndicator(String message) {
-    progressDialog = new ProgressDialog(this.mainActivity);
-    progressDialog.setMessage(message);
-    progressDialog.show();
-    progressDialog.setCanceledOnTouchOutside(false);
-    progressDialog.setCancelable(false);
+  private void showActivityIndicator(final String message) {
+    runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        progressDialog = new ProgressDialog(MainChatActivity.this.mainActivity);
+        progressDialog.setMessage(message);
+        progressDialog.show();
+        progressDialog.setCanceledOnTouchOutside(false);
+        progressDialog.setCancelable(false);
+      }
+    });
   }
 
-  private void showAlertWithMessage(String message) {
-    AlertDialogHandler.displayAlertWithMessage(message, context);
+  private void showAlertWithMessage(final String message) {
+    runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        AlertDialogHandler.displayAlertWithMessage(message, context);
+      }
+    });
   }
 
   @Override

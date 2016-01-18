@@ -103,7 +103,7 @@ public class MainChatFragment extends Fragment implements ChannelListener {
     clearTextInput();
   }
 
-  private void loadMessages() {
+  private void loadMessages(final Constants.StatusListener handler) {
     this.messages = this.currentChannel.getMessages();
     messagesArray = this.messages.getMessages();
     mainActivity.runOnUiThread(new Runnable() {
@@ -112,6 +112,7 @@ public class MainChatFragment extends Fragment implements ChannelListener {
         messageAdapter.setMessages(messagesArray);
         setMessageInputEnabled(true);
         messageTextEdit.requestFocus();
+        handler.onSuccess();
       }
     });
   }
@@ -120,7 +121,7 @@ public class MainChatFragment extends Fragment implements ChannelListener {
     return currentChannel;
   }
 
-  public void setCurrentChannel(Channel currentChannel) {
+  public void setCurrentChannel(Channel currentChannel, final Constants.StatusListener handler) {
     if (currentChannel != this.currentChannel) {
       setMessageInputEnabled(false);
       if (this.currentChannel != null) {
@@ -129,12 +130,12 @@ public class MainChatFragment extends Fragment implements ChannelListener {
       this.currentChannel = currentChannel;
       this.currentChannel.setListener(this);
       if (this.currentChannel.getStatus() == Channel.ChannelStatus.JOINED) {
-        loadMessages();
+        loadMessages(handler);
       } else {
         this.currentChannel.join(new Constants.StatusListener() {
           @Override
           public void onSuccess() {
-            loadMessages();
+            loadMessages(handler);
           }
 
           @Override
@@ -145,9 +146,14 @@ public class MainChatFragment extends Fragment implements ChannelListener {
     }
   }
 
-  private void setMessageInputEnabled(boolean enabled) {
-    this.sendButton.setEnabled(enabled);
-    this.messageTextEdit.setEnabled(enabled);
+  private void setMessageInputEnabled(final boolean enabled) {
+    mainActivity.runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        MainChatFragment.this.sendButton.setEnabled(enabled);
+        MainChatFragment.this.messageTextEdit.setEnabled(enabled);
+      }
+    });
   }
 
   private String getTextInput() {
@@ -160,9 +166,7 @@ public class MainChatFragment extends Fragment implements ChannelListener {
 
   @Override
   public void onMessageAdd(Message message) {
-    if (message.getChannelSid().contentEquals(this.currentChannel.getSid())) {
-      messageAdapter.addMessage(message);
-    }
+    messageAdapter.addMessage(message);
   }
 
   @Override

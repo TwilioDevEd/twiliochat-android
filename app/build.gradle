@@ -21,10 +21,9 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile files('libs/twilio-common-android.jar')
-    compile files('libs/twilio-ip-messaging-android.jar')
+    compile 'com.twilio.sdk:twilio-common-android:0.1.17'
+    compile 'com.twilio.rtd.android:twilio-ip-messaging-android:0.4.11'
     compile 'com.android.support:appcompat-v7:23.1.1'
     compile 'com.android.support:design:23.1.1'
     compile 'com.parse:parse-android:1.11.0'

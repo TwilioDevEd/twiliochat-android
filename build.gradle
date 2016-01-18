@@ -17,6 +17,7 @@ allprojects {
     repositories {
         jcenter()
         maven { url 'https://maven.parse.com/repo' }
+        maven { url 'http://media.twiliocdn.com/sdk/maven' }
     }
 }
 
