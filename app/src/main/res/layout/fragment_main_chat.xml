@@ -18,23 +18,23 @@
         tools:listitem="@layout/message"/>
 
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/relSendMessage"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@color/login_tf_background_gray"
-        android:paddingLeft="5dp">
+        android:paddingLeft="5dp"
+        android:orientation="horizontal">
 
 
         <EditText
             android:id="@+id/editTextMessage"
-            android:layout_width="match_parent"
+            android:layout_width="0dip"
+            android:layout_weight=".85"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
-            android:layout_marginRight="10dp"
             android:layout_marginTop="5dp"
-            android:layout_toLeftOf="@+id/buttonSend"
             android:background="@drawable/message_input_shape"
             android:hint="@string/message_elipses"
             android:maxHeight="100dp"
@@ -46,18 +46,15 @@
 
         <Button
             android:id="@+id/buttonSend"
-            android:layout_width="50dp"
+            android:layout_width="0dip"
+            android:layout_weight=".15"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/editTextMessage"
-            android:layout_alignParentRight="true"
-            android:layout_alignTop="@+id/editTextMessage"
-            android:layout_gravity="center_vertical"
-            android:layout_margin="1dp"
+            android:layout_gravity="center"
             android:background="@android:color/transparent"
             android:gravity="center"
             android:maxHeight="100dp"
             android:minHeight="40dp"
             android:text="Send"
             android:textColor="@color/colorAccent"/>
-    </RelativeLayout>
+    </LinearLayout>
 </RelativeLayout>
