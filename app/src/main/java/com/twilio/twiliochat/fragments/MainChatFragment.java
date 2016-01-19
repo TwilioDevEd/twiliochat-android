@@ -102,20 +102,6 @@ public class MainChatFragment extends Fragment implements ChannelListener {
     clearTextInput();
   }
 
-  private void loadMessages(final Constants.StatusListener handler) {
-    this.messages = this.currentChannel.getMessages();
-    messagesArray = this.messages.getMessages();
-    mainActivity.runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        messageAdapter.setMessages(messagesArray);
-        setMessageInputEnabled(true);
-        messageTextEdit.requestFocus();
-        handler.onSuccess();
-      }
-    });
-  }
-
   public Channel getCurrentChannel() {
     return currentChannel;
   }
@@ -145,6 +131,20 @@ public class MainChatFragment extends Fragment implements ChannelListener {
     }
   }
 
+  private void loadMessages(final Constants.StatusListener handler) {
+    this.messages = this.currentChannel.getMessages();
+    messagesArray = this.messages.getMessages();
+    mainActivity.runOnUiThread(new Runnable() {
+      @Override
+      public void run() {
+        messageAdapter.setMessages(messagesArray);
+        setMessageInputEnabled(true);
+        messageTextEdit.requestFocus();
+        handler.onSuccess();
+      }
+    });
+  }
+
   private void setMessageInputEnabled(final boolean enabled) {
     mainActivity.runOnUiThread(new Runnable() {
       @Override
@@ -169,16 +169,6 @@ public class MainChatFragment extends Fragment implements ChannelListener {
   }
 
   @Override
-  public void onMessageChange(Message message) {
-
-  }
-
-  @Override
-  public void onMessageDelete(Message message) {
-
-  }
-
-  @Override
   public void onMemberJoin(Member member) {
     StatusMessage statusMessage = new StatusMessage(member.getIdentity(), "timestamp", "joined");
     this.messageAdapter.addStatusMessage(statusMessage);
@@ -191,27 +181,23 @@ public class MainChatFragment extends Fragment implements ChannelListener {
   }
 
   @Override
-  public void onMemberChange(Member member) {
-
-  }
+  public void onMessageChange(Message message) {}
 
   @Override
-  public void onAttributesChange(Map<String, String> map) {
-
-  }
+  public void onMessageDelete(Message message) {}
 
   @Override
-  public void onTypingStarted(Member member) {
-
-  }
+  public void onMemberChange(Member member) {}
 
   @Override
-  public void onTypingEnded(Member member) {
-
-  }
+  public void onAttributesChange(Map<String, String> map) {}
 
   @Override
-  public void onChannelHistoryLoaded(Channel channel) {
+  public void onTypingStarted(Member member) {}
 
-  }
+  @Override
+  public void onTypingEnded(Member member) {}
+
+  @Override
+  public void onChannelHistoryLoaded(Channel channel) {}
 }
