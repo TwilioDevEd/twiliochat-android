@@ -52,7 +52,7 @@
       
   .step(data-title='Getting the Channel List',
         data-file='app/src/main/java/com/twilio/twiliochat/ipmessaging/ChannelManager.java',
-        data-highlight='60-94')
+        data-highlight='64-98')
     :markdown
       ## Getting the Channel List
 
@@ -68,7 +68,7 @@
       
   .step(data-title='Join the General Channel',
         data-file='app/src/main/java/com/twilio/twiliochat/ipmessaging/ChannelManager.java',
-        data-highlight='113-162')
+        data-highlight='117-166')
     :markdown
       ## Join the General Channel
 
@@ -112,7 +112,7 @@
       
   .step(data-title='Creating a Channel',
         data-file='app/src/main/java/com/twilio/twiliochat/ipmessaging/ChannelManager.java',
-        data-highlight='96-111')
+        data-highlight='100-115')
     :markdown
       ## Creating a Channel
 
@@ -120,21 +120,32 @@
       The only restriction here, is that the user can't create a channel called
       "General Channel". Other than that, creating a channel is as simple as calling
       `createChannel(Map<String, Object> options, CreateChannelListener listener)`
+      where `options` has the following required keys:
 
-  .step(data-title='Deleting a Channel', data-file='twiliochat/MenuViewController.swift', data-highlight='163-178')
+      * Constants.CHANNEL_FRIENDLY_NAME
+      * Constants.CHANNEL_TYPE
+
+      You can use additional keys to create a channel with more details, as we did
+      with general channel to set a unique name. There's a list of keys you can use
+      [here](//media.twiliocdn.com/sdk/rtc/android/ip-messaging/releases/0.4.10.b204-57cc05a/docs/com/twilio/ipmessaging/Constants.html).
+
+  .step(data-title='Deleting a Channel',
+        data-file='app/src/main/java/com/twilio/twiliochat/ipmessaging/ChannelManager.java',
+        data-highlight='60-62')
     :markdown
       ## Deleting a Channel
 
-      Deleting a channel is as simple as creating one. We'll use the `UITableView`
-      hability to delete a cell. Once you have figured out what channel is meant
-      to be deleted (from the selected cell index path), deleting it is as simple
-      as calling the channel's method `destroyWithCompletion`.
+      Deleting a channel is even more simple than creating one. The application
+      lets the user delete the channel they are currently joined to through a menu
+      option. The only thing you need to do to actually delete the channel from Twilio,
+      is call the `destroy` method on the channel you are trying to delete. But you still
+      need to provide a `StatusListener` to handle the success or failure of the operation.
 
   .step(data-title='Where to Next?')
     :markdown
       ## Where to Next?
 
-      That's it! We've just implemented a simple chat application in objective-c.
+      That's it! We've just implemented a simple chat application for Android.
 
       Thanks for checking out this tutorial! If you have any feedback to share
       with us, we'd love to hear it. Tweet
