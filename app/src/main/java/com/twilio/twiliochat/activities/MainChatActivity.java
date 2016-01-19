@@ -222,7 +222,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
     if (channels == null) {
       return;
     }
-    Channel currentChannel = chatFragment.getCurrentChannel();
+    final Channel currentChannel = chatFragment.getCurrentChannel();
     final Channel selectedChannel = channels.get(position);
     if (currentChannel != null && currentChannel.getSid().contentEquals(selectedChannel.getSid())) {
       drawer.closeDrawer(GravityCompat.START);
@@ -326,10 +326,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
     Channel currentChannel = chatFragment.getCurrentChannel();
     channelManager.deleteChannelWithHandler(currentChannel, new Constants.StatusListener() {
       @Override
-      public void onSuccess() {
-        setChannel(0);
-        refreshChannels();
-      }
+      public void onSuccess() {}
 
       @Override
       public void onError() {
@@ -339,7 +336,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
   }
 
   private void leaveCurrentChannel() {
-    Channel currentChannel = chatFragment.getCurrentChannel();
+    final Channel currentChannel = chatFragment.getCurrentChannel();
     if (currentChannel.getStatus() == Channel.ChannelStatus.NOT_PARTICIPATING) {
       setChannel(0);
       return;
@@ -456,6 +453,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
     System.out.println("Channel Deleted");
     Channel currentChannel = chatFragment.getCurrentChannel();
     if (channel.getSid().contentEquals(currentChannel.getSid())) {
+      chatFragment.setCurrentChannel(null, null);
       setChannel(0);
     }
     refreshChannels();
