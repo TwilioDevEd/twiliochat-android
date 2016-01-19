@@ -49,6 +49,10 @@ public class ChannelManager implements IPMessagingClientListener {
     return channels;
   }
 
+  public String getDefaultChannelName() {
+    return this.defaultChannelName;
+  }
+
   public void leaveChannelWithHandler(Channel channel, Constants.StatusListener handler) {
     channel.leave(handler);
   }

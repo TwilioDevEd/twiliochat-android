@@ -298,6 +298,11 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
   }
 
   private void createChannelWithName(String name) {
+    name = name.trim();
+    if (name.toLowerCase().contentEquals(this.channelManager.getDefaultChannelName().toLowerCase())) {
+      showAlertWithMessage(getStringResource(R.string.channel_name_equals_default_name));
+      return;
+    }
     this.channelManager.createChannelWithName(name, new Constants.StatusListener() {
       @Override
       public void onSuccess() {
