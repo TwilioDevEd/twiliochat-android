@@ -7,9 +7,6 @@ import android.content.Context;
 import android.os.Handler;
 import android.provider.Settings;
 
-import com.parse.FunctionCallback;
-import com.parse.ParseCloud;
-import com.parse.ParseException;
 import com.twilio.common.TwilioAccessManager;
 import com.twilio.common.TwilioAccessManagerFactory;
 import com.twilio.common.TwilioAccessManagerListener;
@@ -20,6 +17,9 @@ import com.twilio.ipmessaging.TwilioIPMessagingClient;
 import com.twilio.ipmessaging.TwilioIPMessagingSDK;
 import com.twilio.twiliochat.interfaces.FetchTokenListener;
 import com.twilio.twiliochat.interfaces.LoginListener;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class IPMessagingClientManager
     implements IPMessagingClientListener, TwilioAccessManagerListener {
@@ -134,7 +134,9 @@ public class IPMessagingClientManager
   }
 
   private void fetchAccessToken(final FetchTokenListener listener) {
-    ParseCloud.callFunctionInBackground(TOKEN_KEY, getTokenRequestParams(),
+
+
+    /*ParseCloud.callFunctionInBackground(TOKEN_KEY, getTokenRequestParams(),
         new FunctionCallback<Object>() {
           @Override
           public void done(Object object, ParseException e) {
@@ -147,16 +149,22 @@ public class IPMessagingClientManager
             IPMessagingClientManager.this.capabilityToken = capabilityToken;
             listener.fetchTokenSuccess(token);
           }
-        });
+        });*/
   }
 
-  private Map<String, String> getTokenRequestParams() {
-    String android_id =
+  private String getTokenRequestParams(String username) {
+    JSONObject obj = new JSONObject();
+    String androidID =
         Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
-    Map<String, String> params = new HashMap<>();
-    params.put("device", android_id);
 
-    return params;
+    try {
+      obj.put("username", username);
+      obj.put("device", androidID);
+    } catch (JSONException e) {
+      return null;
+    }
+
+    return obj.toString();
   }
 
   @Override

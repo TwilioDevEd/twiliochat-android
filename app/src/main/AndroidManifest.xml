@@ -15,12 +15,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <meta-data
-            android:name="com.parse.APPLICATION_ID"
-            android:value="@string/parse_app_id"/>
-        <meta-data
-            android:name="com.parse.CLIENT_KEY"
-            android:value="@string/parse_client_key"/>
 
         <activity
             android:name=".activities.LaunchActivity"
@@ -39,9 +33,6 @@
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_main_chat"
             android:theme="@style/AppTheme.NoActionBar"/>
-        <activity
-            android:name=".activities.ForgotPasswordActivity"
-            android:screenOrientation="portrait"/>
 
         <service
             android:name="com.twilio.ipmessaging.TwilioIPMessagingClientService"
