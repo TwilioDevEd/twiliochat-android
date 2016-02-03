@@ -25,7 +25,6 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.parse.ParseUser;
 import com.twilio.ipmessaging.Channel;
 import com.twilio.ipmessaging.Constants;
 import com.twilio.ipmessaging.IPMessagingClientListener;
@@ -40,6 +39,7 @@ import com.twilio.twiliochat.ipmessaging.ChannelAdapter;
 import com.twilio.twiliochat.ipmessaging.ChannelManager;
 import com.twilio.twiliochat.ipmessaging.IPMessagingClientManager;
 import com.twilio.twiliochat.util.AlertDialogHandler;
+import com.twilio.twiliochat.util.SessionManager;
 
 public class MainChatActivity extends AppCompatActivity implements IPMessagingClientListener {
   private Context context;
@@ -394,7 +394,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
             new DialogInterface.OnClickListener() {
           @Override
           public void onClick(DialogInterface dialog, int which) {
-            ParseUser.logOut();
+            SessionManager.getInstance().logoutUser();
             showLoginActivity();
           }
         });
@@ -411,7 +411,8 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
   }
 
   private void setUsernameTextView() {
-    String username = ParseUser.getCurrentUser().getUsername();
+    String username =
+        SessionManager.getInstance().getUserDetails().get(SessionManager.KEY_USERNAME);
     usernameTextView.setText(username);
   }
 

@@ -43,6 +43,10 @@ public class SessionManager {
     return user;
   }
 
+  public String getUsername() {
+    return pref.getString(KEY_USERNAME, null);
+  }
+
   public void logoutUser() {
     editor = editor.clear();
     editor.commit();
