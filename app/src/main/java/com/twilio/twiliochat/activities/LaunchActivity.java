@@ -4,7 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.parse.ParseUser;
+import com.twilio.twiliochat.util.SessionManager;
 
 public class LaunchActivity extends Activity {
 
@@ -23,8 +23,7 @@ public class LaunchActivity extends Activity {
   }
 
   private Class<?> getLaunchClass() {
-    ParseUser currentUser = ParseUser.getCurrentUser();
-    if (currentUser != null) {
+    if (SessionManager.getInstance().isLoggedIn()) {
       return MainChatActivity.class;
     } else {
       return LoginActivity.class;

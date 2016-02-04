@@ -3,13 +3,18 @@ package com.twilio.twiliochat.ipmessaging;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Handler;
 import android.provider.Settings;
 
-import com.parse.FunctionCallback;
-import com.parse.ParseCloud;
-import com.parse.ParseException;
+import com.android.volley.Request.Method;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.twilio.common.TwilioAccessManager;
 import com.twilio.common.TwilioAccessManagerFactory;
 import com.twilio.common.TwilioAccessManagerListener;
@@ -18,11 +23,13 @@ import com.twilio.ipmessaging.Constants;
 import com.twilio.ipmessaging.IPMessagingClientListener;
 import com.twilio.ipmessaging.TwilioIPMessagingClient;
 import com.twilio.ipmessaging.TwilioIPMessagingSDK;
+import com.twilio.twiliochat.R;
+import com.twilio.twiliochat.application.TwilioChatApplication;
 import com.twilio.twiliochat.interfaces.FetchTokenListener;
 import com.twilio.twiliochat.interfaces.LoginListener;
+import com.twilio.twiliochat.util.SessionManager;
 
-public class IPMessagingClientManager
-    implements IPMessagingClientListener, TwilioAccessManagerListener {
+public class IPMessagingClientManager implements IPMessagingClientListener {
   private final String TOKEN_KEY = "token";
   private final Handler handler = new Handler();
   private String capabilityToken;
@@ -88,7 +95,7 @@ public class IPMessagingClientManager
       }
 
       @Override
-      public void fetchTokenFailure(ParseException e) {
+      public void fetchTokenFailure(Exception e) {
         if (listener != null) {
           listener.onLoginError(e.getLocalizedMessage());
         }
@@ -109,7 +116,7 @@ public class IPMessagingClientManager
               }
 
               @Override
-              public void fetchTokenFailure(ParseException e) {
+              public void fetchTokenFailure(Exception e) {
                 System.out.println("Error trying to fetch token: " + e.getLocalizedMessage());
               }
             });
@@ -134,73 +141,62 @@ public class IPMessagingClientManager
   }
 
   private void fetchAccessToken(final FetchTokenListener listener) {
-    ParseCloud.callFunctionInBackground(TOKEN_KEY, getTokenRequestParams(),
-        new FunctionCallback<Object>() {
+    JSONObject obj = new JSONObject(getTokenRequestParams());
+    String requestUrl = getStringResource(R.string.token_url);
+    JsonObjectRequest jsonObjReq =
+        new JsonObjectRequest(Method.POST, requestUrl, obj, new Response.Listener<JSONObject>() {
+
           @Override
-          public void done(Object object, ParseException e) {
-            if (e != null) {
-              listener.fetchTokenFailure(e);
-              return;
+          public void onResponse(JSONObject response) {
+            String token = null;
+            try {
+              token = response.getString("token");
+            } catch (JSONException e) {
+              e.printStackTrace();
+              listener.fetchTokenFailure(new Exception("Failed to parse token JSON response"));
             }
-            Map<String, String> result = (HashMap<String, String>) object;
-            String token = result.get(TOKEN_KEY);
-            IPMessagingClientManager.this.capabilityToken = capabilityToken;
             listener.fetchTokenSuccess(token);
           }
+        }, new Response.ErrorListener() {
+
+          @Override
+          public void onErrorResponse(VolleyError error) {
+            listener.fetchTokenFailure(new Exception("Failed to fetch token"));
+          }
         });
+    jsonObjReq.setShouldCache(false);
+    TokenRequest.getInstance().addToRequestQueue(jsonObjReq);
+  }
+
+  private String getStringResource(int id) {
+    Resources resources = TwilioChatApplication.get().getResources();
+    return resources.getString(id);
   }
 
   private Map<String, String> getTokenRequestParams() {
-    String android_id =
+    String androidId =
         Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     Map<String, String> params = new HashMap<>();
-    params.put("device", android_id);
-
+    params.put("deviceId", androidId);
+    params.put("identity", SessionManager.getInstance().getUsername());
     return params;
   }
 
   @Override
-  public void onChannelAdd(Channel channel) {
-
-  }
+  public void onChannelAdd(Channel channel) {}
 
   @Override
-  public void onChannelChange(Channel channel) {
-
-  }
+  public void onChannelChange(Channel channel) {}
 
   @Override
-  public void onChannelDelete(Channel channel) {
-
-  }
+  public void onChannelDelete(Channel channel) {}
 
   @Override
-  public void onError(int i, String s) {
-
-  }
+  public void onError(int i, String s) {}
 
   @Override
-  public void onAttributesChange(String s) {
-
-  }
+  public void onAttributesChange(String s) {}
 
   @Override
-  public void onChannelHistoryLoaded(Channel channel) {
-
-  }
-
-  @Override
-  public void onAccessManagerTokenExpire(TwilioAccessManager twilioAccessManager) {
-
-  }
-
-  @Override
-  public void onTokenUpdated(TwilioAccessManager twilioAccessManager) {
-
-  }
-
-  @Override
-  public void onError(TwilioAccessManager twilioAccessManager, String s) {
-
-  }
+  public void onChannelHistoryLoaded(Channel channel) {}
 }

@@ -17,7 +17,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
+        android:layout_marginTop="50dp"
         android:background="@drawable/landing_logo"
         android:contentDescription="@string/logo_text"/>
 
@@ -40,13 +40,6 @@
         android:layout_centerHorizontal="true"
         android:text="@string/twilio_second_line"
         android:textAppearance="?android:attr/textAppearanceMedium"/>
-
-    <Button
-        android:id="@+id/buttonCreateAccount"
-        style="@style/LoginButton"
-        android:layout_above="@+id/linearLayoutTextFields"
-        android:layout_centerHorizontal="true"
-        android:text="@string/create_account_button_text"/>
 
     <LinearLayout
         android:id="@+id/linearLayoutTextFields"
@@ -73,89 +66,16 @@
                 style="@style/LoginTextEdit"
                 android:layout_width="match_parent"
                 android:hint="@string/username_placeholder"
-                android:inputType="textPersonName"/>
-        </LinearLayout>
-
-        <LinearLayout
-            style="@style/LoginFormLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <ImageView
-                style="@style/LoginTextEditImage"
-                android:background="@drawable/password_field_bg"
-                android:contentDescription="@string/image_text"/>
-
-            <EditText
-                android:id="@+id/editTextPassword"
-                style="@style/LoginTextEdit"
-                android:layout_width="match_parent"
-                android:hint="@string/password_placeholder"
                 android:imeActionId="100"
-                android:inputType="textPassword"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/layoutFullName"
-            style="@style/LoginFormLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:visibility="gone">
-
-            <ImageView
-                style="@style/LoginTextEditImage"
-                android:background="@drawable/username_field_bg"
-                android:contentDescription="@string/image_text"/>
-
-            <EditText
-                android:id="@+id/editTextFullName"
-                style="@style/LoginTextEdit"
-                android:layout_width="match_parent"
-                android:ems="10"
-                android:hint="@string/full_name_placeholder"
                 android:inputType="textPersonName"/>
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/layoutEmail"
-            style="@style/LoginFormLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:visibility="gone">
-
-            <ImageView
-                style="@style/LoginTextEditImage"
-                android:background="@drawable/username_field_bg"
-                android:contentDescription="@string/image_text"/>
-
-            <EditText
-                android:id="@+id/editTextEmail"
-                style="@style/LoginTextEdit"
-                android:layout_width="match_parent"
-                android:hint="@string/email_placeholder"
-                android:imeActionId="101"
-                android:inputType="textEmailAddress"/>
         </LinearLayout>
     </LinearLayout>
 
     <Button
         android:id="@+id/buttonLogin"
         style="@style/LoginButton"
-        android:layout_above="@+id/buttonForgotPassword"
-        android:layout_marginBottom="10dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="20dp"
         android:background="@color/login_button_background"
         android:text="@string/login_button_text"/>
-
-    <Button
-        android:id="@+id/buttonForgotPassword"
-        style="@style/LoginButton"
-        android:layout_height="20dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dp"
-        android:text="@string/forgot_password_button_text"
-        android:textColor="@android:color/white"
-        android:textSize="15sp"/>
 </RelativeLayout>
