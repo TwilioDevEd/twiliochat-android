@@ -4,63 +4,57 @@
 Android implementation of Twilio Chat
 
 ### Running the Application
-1. We use [Parse](https://www.parse.com) to handle user accounts and also fetch
-   Twilio [access tokens](https://www.twilio.com/docs/api/ip-messaging/guides/identity)
-   in this application.
-   First, Configure your [Parse](https://www.parse.com) keys so the application can
-   communicate with your parse app. Click [here](#create-a-parse-app) for more information on how
-   to create a `Parse App`.
-
-1. Clone the repository and `cd` into it.
-
-1. The project includes a sample `keys.example.xml` file on the root of the project.
-   This file should contain the `Client Key` and `Application ID` for your parse app.
-   So, replace the sample keys in this file to match your keys and then, from the command line,
-   you can use this command to copy and rename the file to where it is supposed to be:
-
-   ```
-   $ cp keys.example.xml app/src/main/res/values/keys.xml
-   ```
-
-   You can use any method you like, but in the end, you should have a file named
-   `keys.xml` in the directory `app/src/main/res/values/` of the project, and this
-   file should contain your parse keys in the marked places. If you try to import the
-   project before this step, you'll get an error saying that the file is missing
-   (if you already did, just copy the file and rebuild the project. The error should be gone).
-
-1. In order for the app to get the access token from Twilio, you need to set up a
-   [parse webhook](https://parse.com/docs/cloudcode/guide#cloud-code-advanced-cloud-code-webhooks)
-   in your parse app described in a previous step. This webhook's URL should be pointing
-   at your own `Twilio token generation app`. There's one example application written
-   in Node that demonstrates how to generate access tokens,
-   [here](https://github.com/TwilioDevEd/twiliochat).
-
-   If you need to expose you localhost so it is visible to Parse, you can use
-   [ngrok](https://ngrok.com/), a handy tool that will give the outside world access
-   to you localhost in any port you specify.
+1. Clone the repository.
 
 1. This application was developed using [Android Studio](http://developer.android.com/tools/studio/index.html).
-   So, if you are using a different tool like Eclipse with ADT there might be some additional
+   So, if you are using a different tool like Eclipse with ADT, there might be some additional
    steps you need to follow. If you are using Android Studio, just open the project
-   using the IDE. If you didn't skip any step, you should be good to go. Just run
-   the app on the simulator or your own device.
+   using the IDE.
+
+1. [Twilio's IP Messaging Client](https://www.twilio.com/docs/api/ip-messaging) requires an
+   [access token](https://www.twilio.com/docs/api/ip-messaging/guides/identity) generated using your
+   Twilio credentials in order to connect. First, we need to setup a server that will generate this token
+   for the mobile application to use. We have created web versions of Twilio Chat, you can use any of these
+   applications to generate the token that this mobile app requires, just pick you favourite flavour:
+
+   * [PHP - Laravel](https://github.com/TwilioDevEd/twiliochat-laravel)
+   * [C# - .NET MVC](https://github.com/TwilioDevEd/twiliochat-csharp)
+   * [Java - Servlets](https://github.com/TwilioDevEd/twiliochat-servlets)
+   * [JS - Node](https://github.com/TwilioDevEd/twiliochat-node)
+
+   Look for instructions on how to setup these servers in any of the links above.
+
+1. Once you have the server running (from the previous step), you need to edit one file in this android
+   application.
+
+   ```
+   ProjectRoot(app) -> res -> values -> keys.xml (on the Android Studio)
+   or
+   ProjectRoot/app/src/main/res/values/keys.xml (on the file system)
+   ```
+   This file contains the `token_url` key. The default values is `http://10.0.2.2:8000/token`. This
+   address refers to the host machine loopback interface (127.0.0.1) when running this application
+   in the android emulator. You must change this value to match the address of your server running
+   the token generation application. We are using the [PHP - Laravel](https://github.com/TwilioDevEd/twiliochat-laravel)
+   version in this case, that's why we use port 8000. The token generation route is `/token` in all
+   platforms.
+
+   ***Note:***In some operating systems you need to specify the address for the development server
+   when you run the Laravel application, like this:
+   ```
+   $ php artisan serve --host=127.0.0.1
+   ```
+
+1. Now Twilio Chat is ready to go. Run the application on the android emulator or your own device, just
+   make sure that you have properly set up the token generation server and the `token_url` key.
+   To run the application in a real device you'll need to expose your local token generation server
+   by manually forwarding ports, or using a tool like [ngrok](https://ngrok.com/).
+   If you decide to work with ngrok, your keys.xml file should hold a key like this one:
+
+   ```
+   <string name="token_url">"http://<your_subdomain>.ngrok.io/token"</string>
+   ```
+   No need to specify the port in this url, as ngrok will forwart the request to the specified port.
 
  **Note:** The current version of the app uses a fixed version of Twilio SDK (included in the
  repository). This version only work for arm devices as the SDK includes some native code.
-
-### Create a Parse App
-This android application uses [Parse](https://www.parse.com) to manage sessions.
-
-The first thing you need to do, is login into your parse account, if you don't have
-one yet, [signup](https://www.parse.com/signup) for one, it's free!
-
-Once you are logged in, visit [your app dashboard](https://www.parse.com/apps/)
-to create a new app. The next step is to get your parse `Application ID` and
-`Client Key`, for this, visit the following url, replacing first your your app's
-ID portion of it:
-
-```
-https://www.parse.com/apps/<your_app_name>/settings/keys
-```
-
-You will need both of these keys to configure the Twilio Chat Application.
