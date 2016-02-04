@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Token Request URL -->
+    <!-- if using a real device, you'll need an exposed url (try ngrok) -->
+    <string name="token_url">"http://10.0.2.2:8000/token"</string>
+</resources>
