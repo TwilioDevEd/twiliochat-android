@@ -6,9 +6,6 @@
       Ready to implement a chat application using Twilio IP Messaging Client?
       Here is how it works at a high level:
 
-      1. We use [Parse](//www.parse.com/) to handle session management and user
-      registration in our app. 
-
       1. [Twilio IP Messaging](//www.twilio.com/ip-messaging) is the core product
       we'll be using to handle all the chat functionality.
 
@@ -32,23 +29,26 @@
 
   .step(data-title='Initializing the Client',
         data-file='app/src/main/java/com/twilio/twiliochat/ipmessaging/IPMessagingClientManager.java',
-        data-highlight='83-151')
+        data-highlight='106-141')
     :markdown
       ## Initializing the IP Messaging Client
 
       The only thing you need to create a client, is an access token. This token
-      holds information about your Twilio account and IP Messaging API keys. You
-      can find an example application written in node that demonstrates how to
-      generate the token [here](//github.com/TwilioDevEd/twiliochat).
+      holds information about your Twilio account and IP Messaging API keys. We have created a web
+      version of Twilio chat in different languages. You can use any of these to generate the token:
 
-      We use [Parse cloud code
-      webhooks](//parse.com/docs/cloudcode/guide#cloud-code-advanced-cloud-code-webhooks)
+      * [PHP - Laravel](//github.com/TwilioDevEd/twiliochat-laravel)
+      * [C# - .NET MVC](//github.com/TwilioDevEd/twiliochat-csharp)
+      * [Java - Servlets](//github.com/TwilioDevEd/twiliochat-servlets)
+      * [JS - Node](//github.com/TwilioDevEd/twiliochat-node)
+
+      We use [Volley](//developer.android.com/training/volley/index.html)
       to make a request to our server and get the access token.
 
       ---
 
       **See Also:**
-      * [Parse cloud code webhooks](//parse.com/docs/cloudcode/guide#cloud-code-advanced-cloud-code-webhooks)
+      * [Set up a request queue with Volley](//developer.android.com/training/volley/requestqueue.html)
       
   .step(data-title='Getting the Channel List',
         data-file='app/src/main/java/com/twilio/twiliochat/ipmessaging/ChannelManager.java',
@@ -65,7 +65,31 @@
       `Channels'` method `loadChannelsWithListener`. Once that operation
       finishes successfully, call the method `getChannels` on the same object, to
       get an array of channels.
-      
+
+  .step(data-title='Listen to Client Events',
+        data-file='app/src/main/java/com/twilio/twiliochat/activities/MainChatActivity.java',
+        data-highlight='452-467')
+    :markdown
+      ## Listen to Client Events
+
+      The IP Messaging Client will trigger events such as `onChannelAdd` or `onChannelDelete`.
+      In our application, given the event that a channel is deleted or created, we'll reload the
+      channel list in the sliding panel. If a channel is deleted and we were currently joined to that
+      channel, the application will automatically join the general channel.
+
+      You must set your `IPMessagingClient` to listen to events using a
+      [IPMessagingClientListener](https://media.twiliocdn.com/sdk/rtc/android/ip-messaging/releases/0.4.10.b204-57cc05a/docs/com/twilio/ipmessaging/IPMessagingClientListener.html).
+      In this particular case, `MainChatActivity` implements IPMessagingClientListener, but it's methods
+      are called from the ChannelManager class that also implements IPMessagingClientListener and is actually
+      the client's listener. Channel manager is used as an event handler proxy.
+      Twilio chat sets the listener when loading the channels.
+
+      ---
+
+      **See Also:**
+      * [IPMessagingClientListener available event](//media.twiliocdn.com/sdk/rtc/android/ip-messaging/releases/0.4.10.b204-57cc05a/docs/com/twilio/ipmessaging/IPMessagingClientListener.html)
+      * [ChannelManager as an event proxy](//github.com/TwilioDevEd/twiliochat-android/blob/1bcde08d53ad6ddc3a738ed254346e269e655922/app/src/main/java/com/twilio/twiliochat/ipmessaging/ChannelManager.java#L177-L217)
+
   .step(data-title='Join the General Channel',
         data-file='app/src/main/java/com/twilio/twiliochat/ipmessaging/ChannelManager.java',
         data-highlight='117-166')
