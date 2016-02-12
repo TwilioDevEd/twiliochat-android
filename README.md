@@ -36,10 +36,9 @@ Android implementation of Twilio Chat
    address refers to the host machine loopback interface (127.0.0.1) when running this application
    in the android emulator. You must change this value to match the address of your server running
    the token generation application. We are using the [PHP - Laravel](https://github.com/TwilioDevEd/twiliochat-laravel)
-   version in this case, that's why we use port 8000. The token generation route is `/token` in all
-   platforms.
+   version in this case, that's why we use port 8000.
 
-   ***Note:***In some operating systems you need to specify the address for the development server
+   ***Note:*** In some operating systems you need to specify the address for the development server
    when you run the Laravel application, like this:
    ```
    $ php artisan serve --host=127.0.0.1
@@ -54,7 +53,7 @@ Android implementation of Twilio Chat
    ```
    <string name="token_url">"http://<your_subdomain>.ngrok.io/token"</string>
    ```
-   No need to specify the port in this url, as ngrok will forwart the request to the specified port.
+   No need to specify the port in this url, as ngrok will forward the request to the specified port.
 
- **Note:** The current version of the app uses a fixed version of Twilio SDK (included in the
+ ***Note:*** The current version of the app uses a fixed version of Twilio SDK (included in the
  repository). This version only work for arm devices as the SDK includes some native code.
