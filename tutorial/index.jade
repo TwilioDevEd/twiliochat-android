@@ -33,7 +33,7 @@
     :markdown
       ## Initializing the IP Messaging Client
 
-      The only thing you need to create a client, is an access token. This token
+      The only thing you need to create a client is an access token. This token
       holds information about your Twilio account and IP Messaging API keys. We have created a web
       version of Twilio chat in different languages. You can use any of these to generate the token:
 
@@ -49,7 +49,7 @@
 
       **See Also:**
       * [Set up a request queue with Volley](//developer.android.com/training/volley/requestqueue.html)
-      
+
   .step(data-title='Getting the Channel List',
         data-file='app/src/main/java/com/twilio/twiliochat/ipmessaging/ChannelManager.java',
         data-highlight='64-98')
@@ -57,14 +57,14 @@
       ## Getting the Channel List
 
       Our `ChannelManager` class takes care of everything related to channels.
-      The first thing we need to do when the class is initialized, is to store
+      The first thing we need to do, when the class is initialized, is to store
       a list of channels of type `Channels` that we get by calling the method `getChannels`
       from the IP Messaging Client.
 
       Once we have a `Channels` object, we can fetch the actual channels using the
-      `Channels'` method `loadChannelsWithListener`. Once that operation
-      finishes successfully, call the method `getChannels` on the same object, to
-      get an array of channels.
+      `Channels'` method `loadChannelsWithListener`. When the operation
+      finishes successfully, in order to get an array of channels, call the
+      method `getChannels` on the same object.
 
   .step(data-title='Listen to Client Events',
         data-file='app/src/main/java/com/twilio/twiliochat/activities/MainChatActivity.java',
@@ -72,16 +72,17 @@
     :markdown
       ## Listen to Client Events
 
-      The IP Messaging Client will trigger events such as `onChannelAdd` or `onChannelDelete`.
-      In our application, given the event that a channel is deleted or created, we'll reload the
+      The IP Messaging Client will trigger events such as `onChannelAdd` or `onChannelDelete`
+      on our application. Given the creation or deletion of a channel we'll reload the
       channel list in the sliding panel. If a channel is deleted and we were currently joined to that
       channel, the application will automatically join the general channel.
 
       You must set your `IPMessagingClient` to listen to events using a
       [IPMessagingClientListener](https://media.twiliocdn.com/sdk/rtc/android/ip-messaging/releases/0.4.10.b204-57cc05a/docs/com/twilio/ipmessaging/IPMessagingClientListener.html).
       In this particular case, `MainChatActivity` implements IPMessagingClientListener, but it's methods
-      are called from the ChannelManager class that also implements IPMessagingClientListener and is actually
-      the client's listener. Channel manager is used as an event handler proxy.
+      are called from the ChannelManager class that also implements IPMessagingClientListener (who actually is the
+      client's listener).
+      Channel manager is used as an event handler proxy.
       Twilio chat sets the listener when loading the channels.
 
       ---
@@ -97,14 +98,14 @@
       ## Join the General Channel
 
       This application will try to join a channel called "General Channel" when it starts.
-      If the channel doesn't exist, we'll create one with that name. The scope of
-      this example application will show you how to work only with public channels,
+      If the channel doesn't exist it'll create one with that name. The scope of
+      this example application will show you how to work only with public channels
       but the IP Messaging client allows you to create private channels and handle
       invitations.
 
       Notice we set a unique name for the general channel as we don't want to
       create a new general channel every time we start the application.
-      
+
   .step(data-title='Listen to Channel Events',
         data-file='app/src/main/java/com/twilio/twiliochat/fragments/MainChatFragment.java',
         data-highlight='166-181')
@@ -117,10 +118,10 @@
       * `messageAdded`: When someone sends a message to the channel you are connected to.
       * `memberJoined`: When someone joins the channel.
       * `memberLeft`: When someone leaves the channel.
-      
+
       As you may have noticed, each one of these methods include useful objects
-      as parameters, such as the actual message that was added to the channel.
-      
+      as parameters. One example is the actual message that was added to the channel.
+
   .step(data-title='Joining Other Channels',
         data-file='app/src/main/java/com/twilio/twiliochat/fragments/MainChatFragment.java',
         data-highlight='109-146')
@@ -130,10 +131,10 @@
       The application uses a [Drawer Layout](//developer.android.com/reference/android/support/v4/widget/DrawerLayout.html)
       to show a list of the channels created for that Twilio account.
 
-      When you tap on the name of a channel from the sidebar, that channel is set
+      When you tap on the name of a channel, from the sidebar, that channel is set
       on the `MainChatFragment`. The `setCurrentChannel` method takes care of joining
       to the selected channel and loading the messages.
-      
+
   .step(data-title='Creating a Channel',
         data-file='app/src/main/java/com/twilio/twiliochat/ipmessaging/ChannelManager.java',
         data-highlight='100-115')
@@ -141,7 +142,7 @@
       ## Creating a Channel
 
       We use an input dialog so the user can type the name of the new channel.
-      The only restriction here, is that the user can't create a channel called
+      The only restriction here is that the user can't create a channel called
       "General Channel". Other than that, creating a channel is as simple as calling
       `createChannel(Map<String, Object> options, CreateChannelListener listener)`
       where `options` has the following required keys:
@@ -149,7 +150,7 @@
       * Constants.CHANNEL_FRIENDLY_NAME
       * Constants.CHANNEL_TYPE
 
-      You can use additional keys to create a channel with more details, as we did
+      You can use additional keys to create a channel with more details as we did
       with general channel to set a unique name. There's a list of keys you can use
       [here](//media.twiliocdn.com/sdk/rtc/android/ip-messaging/releases/0.4.10.b204-57cc05a/docs/com/twilio/ipmessaging/Constants.html).
 
@@ -159,10 +160,10 @@
     :markdown
       ## Deleting a Channel
 
-      Deleting a channel is even more simple than creating one. The application
+      Deleting a channel is easier than creating one. The application
       lets the user delete the channel they are currently joined to through a menu
-      option. The only thing you need to do to actually delete the channel from Twilio,
-      is call the `destroy` method on the channel you are trying to delete. But you still
+      option. In order to delete the channel from Twilio you have to call
+      the `destroy` method on the channel you are trying to delete. But you still
       need to provide a `StatusListener` to handle the success or failure of the operation.
 
   .step(data-title='Where to Next?')
