@@ -20,9 +20,11 @@ import com.twilio.common.TwilioAccessManagerFactory;
 import com.twilio.common.TwilioAccessManagerListener;
 import com.twilio.ipmessaging.Channel;
 import com.twilio.ipmessaging.Constants;
+import com.twilio.ipmessaging.ErrorInfo;
 import com.twilio.ipmessaging.IPMessagingClientListener;
 import com.twilio.ipmessaging.TwilioIPMessagingClient;
 import com.twilio.ipmessaging.TwilioIPMessagingSDK;
+import com.twilio.ipmessaging.UserInfo;
 import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.application.TwilioChatApplication;
 import com.twilio.twiliochat.interfaces.FetchTokenListener;
@@ -107,7 +109,7 @@ public class IPMessagingClientManager implements IPMessagingClientListener {
     this.accessManager =
         TwilioAccessManagerFactory.createAccessManager(token, new TwilioAccessManagerListener() {
           @Override
-          public void onAccessManagerTokenExpire(TwilioAccessManager twilioAccessManager) {
+          public void onTokenExpired(TwilioAccessManager twilioAccessManager) {
             System.out.println("token expired.");
             fetchAccessToken(new FetchTokenListener() {
               @Override
@@ -192,7 +194,10 @@ public class IPMessagingClientManager implements IPMessagingClientListener {
   public void onChannelDelete(Channel channel) {}
 
   @Override
-  public void onError(int i, String s) {}
+  public void onUserInfoChange(UserInfo userInfo) {}
+
+  @Override
+  public void onError(ErrorInfo errorInfo) {}
 
   @Override
   public void onAttributesChange(String s) {}
