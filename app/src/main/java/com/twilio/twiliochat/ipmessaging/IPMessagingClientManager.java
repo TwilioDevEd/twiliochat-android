@@ -146,7 +146,7 @@ public class IPMessagingClientManager implements IPMessagingClientListener {
     JSONObject obj = new JSONObject(getTokenRequestParams());
     String requestUrl = getStringResource(R.string.token_url);
     JsonObjectRequest jsonObjReq =
-        new JsonObjectRequest(Method.GET, requestUrl, obj, new Response.Listener<JSONObject>() {
+        new JsonObjectRequest(Method.POST, requestUrl, obj, new Response.Listener<JSONObject>() {
 
           @Override
           public void onResponse(JSONObject response) {
