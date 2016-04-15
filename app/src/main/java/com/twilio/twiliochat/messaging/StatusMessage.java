@@ -32,6 +32,11 @@ public class StatusMessage implements Message {
   }
 
   @Override
+  public long getMessageIndex() {
+    return 0;
+  }
+
+  @Override
   public String getMessageBody() {
     return messageBody;
   }
