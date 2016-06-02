@@ -46,4 +46,9 @@ public class StatusMessage implements Message {
   public String getChannelSid() {
     return null;
   }
+
+  @Override
+  public long getMessageIndex() {
+    return 0;
+  }
 }

@@ -15,7 +15,10 @@ import com.twilio.ipmessaging.Channel;
 import com.twilio.ipmessaging.Channel.ChannelType;
 import com.twilio.ipmessaging.Channels;
 import com.twilio.ipmessaging.Constants;
+import com.twilio.ipmessaging.ErrorInfo;
 import com.twilio.ipmessaging.IPMessagingClientListener;
+import com.twilio.ipmessaging.TwilioIPMessagingClient;
+import com.twilio.ipmessaging.UserInfo;
 import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.application.TwilioChatApplication;
 import com.twilio.twiliochat.interfaces.LoadChannelListener;
@@ -196,24 +199,30 @@ public class ChannelManager implements IPMessagingClientListener {
   }
 
   @Override
-  public void onError(int i, String s) {
+  public void onChannelSynchronizationChange(Channel channel) {
     if (listener != null) {
-      listener.onError(i, s);
+      listener.onChannelSynchronizationChange(channel);
     }
   }
 
   @Override
-  public void onAttributesChange(String s) {
+  public void onError(ErrorInfo errorInfo) {
     if (listener != null) {
-      listener.onAttributesChange(s);
+      listener.onError(errorInfo);
     }
   }
 
   @Override
-  public void onChannelHistoryLoaded(Channel channel) {
+  public void onUserInfoChange(UserInfo userInfo) {
     if (listener != null) {
-      listener.onChannelHistoryLoaded(channel);
+      listener.onUserInfoChange(userInfo);
     }
+  }
+
+  @Override
+  public void onClientSynchronization(
+      TwilioIPMessagingClient.SynchronizationStatus synchronizationStatus) {
+
   }
 
   private Handler setupListenerHandler() {
@@ -224,7 +233,6 @@ public class ChannelManager implements IPMessagingClientListener {
     } else if ((looper = Looper.getMainLooper()) != null) {
       handler = new Handler(looper);
     } else {
-      handler = null;
       throw new IllegalArgumentException("Channel Listener must have a Looper.");
     }
     return handler;
