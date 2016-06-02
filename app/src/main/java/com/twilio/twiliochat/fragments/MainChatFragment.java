@@ -199,5 +199,5 @@ public class MainChatFragment extends Fragment implements ChannelListener {
   public void onTypingEnded(Member member) {}
 
   @Override
-  public void onChannelHistoryLoaded(Channel channel) {}
+  public void onSynchronizationChange(Channel channel) {}
 }
