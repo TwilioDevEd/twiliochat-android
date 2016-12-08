@@ -1,9 +1,7 @@
 package com.twilio.twiliochat.messaging;
 
-import com.twilio.ipmessaging.Constants;
-import com.twilio.ipmessaging.Message;
 
-public class StatusMessage implements Message {
+public class StatusMessage implements ChatMessage {
   private String author = "";
   private String timeStamp = "";
   private String messageBody = "";
@@ -14,11 +12,6 @@ public class StatusMessage implements Message {
     this.author = author;
     this.timeStamp = timeStamp;
     this.messageBody = messageBody;
-  }
-
-  @Override
-  public String getSid() {
-    return "no_sid";
   }
 
   @Override
@@ -34,21 +27,5 @@ public class StatusMessage implements Message {
   @Override
   public String getMessageBody() {
     return messageBody;
-  }
-
-  @Override
-  public void updateMessageBody(String s, Constants.StatusListener statusListener) {
-    messageBody = s;
-    statusListener.onSuccess();
-  }
-
-  @Override
-  public String getChannelSid() {
-    return null;
-  }
-
-  @Override
-  public long getMessageIndex() {
-    return 0;
   }
 }

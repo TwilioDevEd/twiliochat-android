@@ -2,7 +2,7 @@ package com.twilio.twiliochat.ipmessaging;
 
 import java.util.Comparator;
 
-import com.twilio.ipmessaging.Channel;
+import com.twilio.chat.Channel;
 import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.application.TwilioChatApplication;
 

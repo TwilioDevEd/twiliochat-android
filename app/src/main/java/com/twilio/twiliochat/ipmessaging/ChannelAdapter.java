@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.twilio.ipmessaging.Channel;
+import com.twilio.chat.Channel;
 import com.twilio.twiliochat.R;
 
 public class ChannelAdapter extends BaseAdapter {

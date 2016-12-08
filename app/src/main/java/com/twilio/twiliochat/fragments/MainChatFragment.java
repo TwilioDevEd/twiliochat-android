@@ -1,7 +1,5 @@
 package com.twilio.twiliochat.fragments;
 
-import java.util.Map;
-
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -15,15 +13,20 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.twilio.ipmessaging.Channel;
-import com.twilio.ipmessaging.ChannelListener;
-import com.twilio.ipmessaging.Constants;
-import com.twilio.ipmessaging.Member;
-import com.twilio.ipmessaging.Message;
-import com.twilio.ipmessaging.Messages;
+import com.twilio.chat.CallbackListener;
+import com.twilio.chat.Channel;
+import com.twilio.chat.ChannelListener;
+import com.twilio.chat.ErrorInfo;
+import com.twilio.chat.Member;
+import com.twilio.chat.Message;
+import com.twilio.chat.Messages;
+import com.twilio.chat.StatusListener;
 import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.messaging.MessageAdapter;
 import com.twilio.twiliochat.messaging.StatusMessage;
+
+import java.util.List;
+import java.util.Map;
 
 public class MainChatFragment extends Fragment implements ChannelListener {
   Context context;
@@ -34,7 +37,7 @@ public class MainChatFragment extends Fragment implements ChannelListener {
 
   MessageAdapter messageAdapter;
   Channel currentChannel;
-  Messages messages;
+  Messages messagesObject;
   Message[] messagesArray;
 
   public MainChatFragment() {}
@@ -97,8 +100,8 @@ public class MainChatFragment extends Fragment implements ChannelListener {
     if (messageText.length() == 0) {
       return;
     }
-    Message newMessage = this.messages.createMessage(messageText);
-    this.messages.sendMessage(newMessage, null);
+    Message newMessage = this.messagesObject.createMessage(messageText);
+    this.messagesObject.sendMessage(newMessage, null);
     clearTextInput();
   }
 
@@ -106,7 +109,7 @@ public class MainChatFragment extends Fragment implements ChannelListener {
     return currentChannel;
   }
 
-  public void setCurrentChannel(Channel currentChannel, final Constants.StatusListener handler) {
+  public void setCurrentChannel(Channel currentChannel, final StatusListener handler) {
     if (currentChannel == null) {
       this.currentChannel = null;
       return;
@@ -114,35 +117,39 @@ public class MainChatFragment extends Fragment implements ChannelListener {
     if (!currentChannel.equals(this.currentChannel)) {
       setMessageInputEnabled(false);
       this.currentChannel = currentChannel;
-      this.currentChannel.setListener(this);
+      this.currentChannel.addListener(this);
       if (this.currentChannel.getStatus() == Channel.ChannelStatus.JOINED) {
         loadMessages(handler);
       } else {
-        this.currentChannel.join(new Constants.StatusListener() {
+        this.currentChannel.join(new StatusListener() {
           @Override
           public void onSuccess() {
             loadMessages(handler);
           }
 
           @Override
-          public void onError() {}
+          public void onError(ErrorInfo errorInfo) {}
         });
       }
     }
   }
 
-  private void loadMessages(final Constants.StatusListener handler) {
-    this.messages = this.currentChannel.getMessages();
-    messagesArray = this.messages.getMessages();
-    mainActivity.runOnUiThread(new Runnable() {
-      @Override
-      public void run() {
-        messageAdapter.setMessages(messagesArray);
-        setMessageInputEnabled(true);
-        messageTextEdit.requestFocus();
-        handler.onSuccess();
-      }
-    });
+  // TODO: messagesObject and messagesArray need to be members?
+  // TODO: onSuccess logic was done inside UIThread before, is right to take it out?
+  private void loadMessages(final StatusListener handler) {
+    this.messagesObject = this.currentChannel.getMessages();
+
+    if (messagesObject != null) {
+      messagesObject.getLastMessages(100, new CallbackListener<List<Message>>() {
+        @Override
+        public void onSuccess(List<Message> messageList) {
+          messageAdapter.setMessages(messageList);
+          setMessageInputEnabled(true);
+          messageTextEdit.requestFocus();
+          handler.onSuccess();
+        }
+      });
+    }
   }
 
   private void setMessageInputEnabled(final boolean enabled) {
@@ -170,13 +177,13 @@ public class MainChatFragment extends Fragment implements ChannelListener {
 
   @Override
   public void onMemberJoin(Member member) {
-    StatusMessage statusMessage = new StatusMessage(member.getIdentity(), "timestamp", "joined");
+    StatusMessage statusMessage = new StatusMessage(member.getUserInfo().getIdentity(), "timestamp", "joined");
     this.messageAdapter.addStatusMessage(statusMessage);
   }
 
   @Override
   public void onMemberDelete(Member member) {
-    StatusMessage statusMessage = new StatusMessage(member.getIdentity(), "timestamp", "left");
+    StatusMessage statusMessage = new StatusMessage(member.getUserInfo().getIdentity(), "timestamp", "left");
     this.messageAdapter.addStatusMessage(statusMessage);
   }
 
@@ -188,9 +195,6 @@ public class MainChatFragment extends Fragment implements ChannelListener {
 
   @Override
   public void onMemberChange(Member member) {}
-
-  @Override
-  public void onAttributesChange(Map<String, String> map) {}
 
   @Override
   public void onTypingStarted(Member member) {}

@@ -1,43 +1,42 @@
 package com.twilio.twiliochat.ipmessaging;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.twilio.ipmessaging.Channel;
-import com.twilio.ipmessaging.Channel.ChannelType;
-import com.twilio.ipmessaging.Channels;
-import com.twilio.ipmessaging.Constants;
-import com.twilio.ipmessaging.ErrorInfo;
-import com.twilio.ipmessaging.IPMessagingClientListener;
-import com.twilio.ipmessaging.TwilioIPMessagingClient;
-import com.twilio.ipmessaging.UserInfo;
+import com.twilio.chat.CallbackListener;
+import com.twilio.chat.Channel;
+import com.twilio.chat.Channel.ChannelType;
+import com.twilio.chat.Channels;
+import com.twilio.chat.ChatClient;
+import com.twilio.chat.ChatClientListener;
+import com.twilio.chat.ErrorInfo;
+import com.twilio.chat.Paginator;
+import com.twilio.chat.StatusListener;
+import com.twilio.chat.UserInfo;
 import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.application.TwilioChatApplication;
 import com.twilio.twiliochat.interfaces.LoadChannelListener;
 
-public class ChannelManager implements IPMessagingClientListener {
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class ChannelManager implements ChatClientListener {
   private static ChannelManager sharedManager = new ChannelManager();
   public Channel generalChannel;
-  private IPMessagingClientManager client;
+  private ChatClientManager clientManager;
   private List<Channel> channels;
   private Channels channelsObject;
   private Channel[] channelArray;
-  private IPMessagingClientListener listener;
+  private ChatClientListener listener;
   private String defaultChannelName;
   private String defaultChannelUniqueName;
   private Handler handler;
   private Boolean isRefreshingChannels = false;
 
   private ChannelManager() {
-    this.client = TwilioChatApplication.get().getIPMessagingClient();
+    this.clientManager = TwilioChatApplication.get().getChatClientManager();
     this.listener = this;
     defaultChannelName = getStringResource(R.string.default_channel_name);
     defaultChannelUniqueName = getStringResource(R.string.default_channel_unique_name);
@@ -56,119 +55,120 @@ public class ChannelManager implements IPMessagingClientListener {
     return this.defaultChannelName;
   }
 
-  public void leaveChannelWithHandler(Channel channel, Constants.StatusListener handler) {
+  public void leaveChannelWithHandler(Channel channel, StatusListener handler) {
     channel.leave(handler);
   }
 
-  public void deleteChannelWithHandler(Channel channel, Constants.StatusListener handler) {
+  public void deleteChannelWithHandler(Channel channel, StatusListener handler) {
     channel.destroy(handler);
   }
 
   public void populateChannels(final LoadChannelListener listener) {
-    if (this.client == null || this.isRefreshingChannels) {
+    if (this.clientManager == null || this.isRefreshingChannels) {
       return;
     }
     this.isRefreshingChannels = true;
+
     handler.post(new Runnable() {
       @Override
       public void run() {
-        channelsObject = client.getIpMessagingClient().getChannels();
-        if (channelsObject != null) {
-          channelsObject.loadChannelsWithListener(new Constants.StatusListener() {
-            @Override
-            public void onError() {
-              ChannelManager.this.isRefreshingChannels = false;
-              System.out.println("Failed to loadChannelsWithListener");
-            }
 
-            @Override
-            public void onSuccess() {
-              channels = new ArrayList<>();
+        channelsObject = clientManager.getChatClient().getChannels();
 
-              channelArray = channelsObject.getChannels();
-              if (ChannelManager.this.channels != null && channelArray != null) {
-                ChannelManager.this.channels.addAll(Arrays.asList(channelArray));
-                Collections.sort(ChannelManager.this.channels, new CustomChannelComparator());
-                ChannelManager.this.isRefreshingChannels = false;
-                client.setClientListener(ChannelManager.this);
-                listener.onChannelsFinishedLoading(ChannelManager.this.channels);
-              }
-            }
-          });
+        channelsObject.getUserChannels(new CallbackListener<Paginator<Channel>>() {
+          @Override
+          public void onSuccess(Paginator<Channel> channelsPaginator)
+          {
+            channels = new ArrayList<>();
+            ChannelManager.this.channels.clear();
+            ChannelManager.this.channels.addAll(channelsPaginator.getItems());
+            Collections.sort(ChannelManager.this.channels, new CustomChannelComparator());
+            ChannelManager.this.isRefreshingChannels = false;
+            clientManager.setClientListener(ChannelManager.this);
+            listener.onChannelsFinishedLoading(ChannelManager.this.channels);
+          }
+        });
+      }
+    });
+  }
+
+  public void createChannelWithName(String name, final StatusListener handler) {
+
+    this.channelsObject
+        .channelBuilder()
+        .withFriendlyName(name)
+        .withUniqueName(name)
+        .withType(ChannelType.PUBLIC)
+        .build(new CallbackListener<Channel>() {
+          @Override
+          public void onSuccess(final Channel newChannel)
+          {
+            handler.onSuccess();
+          }
+
+          @Override
+          public void onError(ErrorInfo errorInfo)
+          {
+            handler.onError(errorInfo);
+          }
+        });
+
+
+  }
+
+  public void joinOrCreateGeneralChannelWithCompletion(final StatusListener listener) {
+    channelsObject.getChannel(defaultChannelUniqueName, new CallbackListener<Channel>() {
+      @Override
+      public void onSuccess(Channel channel) {
+        ChannelManager.this.generalChannel = channel;
+        if (channel != null) {
+          joinGeneralChannelWithCompletion(listener);
+        } else {
+          createGeneralChannelWithCompletion(listener);
         }
       }
     });
+
   }
 
-  public void createChannelWithName(String name, final Constants.StatusListener handler) {
-    Map<String, Object> options = new HashMap<>();
-    options.put(Constants.CHANNEL_FRIENDLY_NAME, name);
-    options.put(Constants.CHANNEL_TYPE, ChannelType.CHANNEL_TYPE_PUBLIC);
-    this.channelsObject.createChannel(options, new Constants.CreateChannelListener() {
-      @Override
-      public void onCreated(Channel channel) {
-        handler.onSuccess();
-      }
-
-      @Override
-      public void onError() {
-        handler.onError();
-      }
-    });
-  }
-
-  public void joinOrCreateGeneralChannelWithCompletion(final Constants.StatusListener listener) {
-    if (this.channels == null) {
-      listener.onError();
-      return;
-    }
-    this.generalChannel = channelsObject.getChannelByUniqueName(defaultChannelUniqueName);
-    if (this.generalChannel != null) {
-      joinGeneralChannelWithCompletion(listener);
-    } else {
-      createGeneralChannelWithCompletion(listener);
-    }
-  }
-
-  private void joinGeneralChannelWithCompletion(final Constants.StatusListener listener) {
-    if (this.generalChannel == null) {
-      listener.onError();
-      return;
-    }
-    this.generalChannel.join(new Constants.StatusListener() {
+  private void joinGeneralChannelWithCompletion(final StatusListener listener) {
+    this.generalChannel.join(new StatusListener() {
       @Override
       public void onSuccess() {
         listener.onSuccess();
       }
 
       @Override
-      public void onError() {
-        listener.onError();
+      public void onError(ErrorInfo errorInfo) {
+        listener.onError(errorInfo);
       }
     });
   }
 
-  private void createGeneralChannelWithCompletion(final Constants.StatusListener listener) {
-    Map<String, Object> options = new HashMap<>();
-    options.put(Constants.CHANNEL_FRIENDLY_NAME, defaultChannelName);
-    options.put(Constants.CHANNEL_UNIQUE_NAME, defaultChannelUniqueName);
-    options.put(Constants.CHANNEL_TYPE, ChannelType.CHANNEL_TYPE_PUBLIC);
-    this.channelsObject.createChannel(options, new Constants.CreateChannelListener() {
-      @Override
-      public void onCreated(Channel channel) {
-        ChannelManager.this.generalChannel = channel;
-        ChannelManager.this.channels.add(channel);
-        joinGeneralChannelWithCompletion(listener);
-      }
+  private void createGeneralChannelWithCompletion(final StatusListener listener) {
+    this.channelsObject
+        .channelBuilder()
+        .withFriendlyName(defaultChannelName)
+        .withUniqueName(defaultChannelUniqueName)
+        .withType(ChannelType.PUBLIC)
+        .build(new CallbackListener<Channel>() {
+          @Override
+          public void onSuccess(final Channel channel)
+          {
+            ChannelManager.this.generalChannel = channel;
+            ChannelManager.this.channels.add(channel);
+            joinGeneralChannelWithCompletion(listener);
+          }
 
-      @Override
-      public void onError() {
-        listener.onError();
-      }
-    });
+          @Override
+          public void onError(ErrorInfo errorInfo)
+          {
+            listener.onError(errorInfo);
+          }
+        });
   }
 
-  public void setChannelListener(IPMessagingClientListener listener) {
+  public void setChannelListener(ChatClientListener listener) {
     this.listener = listener;
   }
 
@@ -182,6 +182,11 @@ public class ChannelManager implements IPMessagingClientListener {
     if (listener != null) {
       listener.onChannelAdd(channel);
     }
+  }
+
+  @Override
+  public void onChannelInvite(Channel channel) {
+
   }
 
   @Override
@@ -213,15 +218,34 @@ public class ChannelManager implements IPMessagingClientListener {
   }
 
   @Override
-  public void onUserInfoChange(UserInfo userInfo) {
+  public void onUserInfoChange(UserInfo userInfo, UserInfo.UpdateReason updateReason) {
     if (listener != null) {
-      listener.onUserInfoChange(userInfo);
+      listener.onUserInfoChange(userInfo, updateReason);
     }
   }
 
   @Override
-  public void onClientSynchronization(
-      TwilioIPMessagingClient.SynchronizationStatus synchronizationStatus) {
+  public void onClientSynchronization(ChatClient.SynchronizationStatus synchronizationStatus) {
+
+  }
+
+  @Override
+  public void onToastNotification(String s, String s1) {
+
+  }
+
+  @Override
+  public void onToastSubscribed() {
+
+  }
+
+  @Override
+  public void onToastFailed(ErrorInfo errorInfo) {
+
+  }
+
+  @Override
+  public void onConnectionStateChange(ChatClient.ConnectionState connectionState) {
 
   }
 
