@@ -18,7 +18,7 @@ import android.widget.TextView;
 import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.application.TwilioChatApplication;
 import com.twilio.twiliochat.interfaces.LoginListener;
-import com.twilio.twiliochat.ipmessaging.IPMessagingClientManager;
+import com.twilio.twiliochat.ipmessaging.ChatClientManager;
 import com.twilio.twiliochat.util.AlertDialogHandler;
 import com.twilio.twiliochat.util.SessionManager;
 
@@ -29,7 +29,7 @@ public class LoginActivity extends AppCompatActivity {
   private Button loginButton;
   private EditText usernameEditText;
 
-  private IPMessagingClientManager messagingClient;
+  private ChatClientManager messagingClient;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     setContentView(R.layout.activity_login);
     setUIComponents();
 
-    messagingClient = TwilioChatApplication.get().getIPMessagingClient();
+    messagingClient = TwilioChatApplication.get().getChatClientManager();
   }
 
   private void setUIComponents() {

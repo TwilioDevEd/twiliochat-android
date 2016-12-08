@@ -25,13 +25,12 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.twilio.ipmessaging.Channel;
-import com.twilio.ipmessaging.Constants;
-import com.twilio.ipmessaging.ErrorInfo;
-import com.twilio.ipmessaging.IPMessagingClientListener;
-import com.twilio.ipmessaging.TwilioIPMessagingClient;
-import com.twilio.ipmessaging.TwilioIPMessagingSDK;
-import com.twilio.ipmessaging.UserInfo;
+import com.twilio.chat.Channel;
+import com.twilio.chat.ChatClient;
+import com.twilio.chat.ErrorInfo;
+import com.twilio.chat.ChatClientListener;
+import com.twilio.chat.StatusListener;
+import com.twilio.chat.UserInfo;
 import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.application.TwilioChatApplication;
 import com.twilio.twiliochat.fragments.MainChatFragment;
@@ -40,17 +39,17 @@ import com.twilio.twiliochat.interfaces.LoadChannelListener;
 import com.twilio.twiliochat.interfaces.LoginListener;
 import com.twilio.twiliochat.ipmessaging.ChannelAdapter;
 import com.twilio.twiliochat.ipmessaging.ChannelManager;
-import com.twilio.twiliochat.ipmessaging.IPMessagingClientManager;
+import com.twilio.twiliochat.ipmessaging.ChatClientManager;
 import com.twilio.twiliochat.util.AlertDialogHandler;
 import com.twilio.twiliochat.util.SessionManager;
 
-public class MainChatActivity extends AppCompatActivity implements IPMessagingClientListener {
+public class MainChatActivity extends AppCompatActivity implements ChatClientListener {
   private Context context;
   private Activity mainActivity;
   private Button logoutButton;
   private Button addChannelButton;
   private TextView usernameTextView;
-  private IPMessagingClientManager client;
+  private ChatClientManager clientManager;
   private ListView channelsListView;
   private ChannelAdapter channelAdapter;
   private ChannelManager channelManager;
@@ -67,8 +66,8 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
     new Handler().post(new Runnable() {
       @Override
       public void run() {
-        TwilioChatApplication.get().getIPMessagingClient().setIpMessagingClient(null);
-        TwilioIPMessagingSDK.shutdown();
+        clientManager.shutdown();
+        TwilioChatApplication.get().getChatClientManager().setChatClient(null);
       }
     });
   }
@@ -198,7 +197,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
         channelAdapter = new ChannelAdapter(mainActivity, channels);
         channelsListView.setAdapter(channelAdapter);
         MainChatActivity.this.channelManager
-            .joinOrCreateGeneralChannelWithCompletion(new Constants.StatusListener() {
+            .joinOrCreateGeneralChannelWithCompletion(new StatusListener() {
           @Override
           public void onSuccess() {
             runOnUiThread(new Runnable() {
@@ -212,7 +211,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
           }
 
           @Override
-          public void onError() {
+          public void onError(ErrorInfo errorInfo) {
             showAlertWithMessage(getStringResource(R.string.generic_error));
           }
         });
@@ -235,14 +234,14 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
     if (selectedChannel != null) {
       showActivityIndicator("Joining " + selectedChannel.getFriendlyName() + " channel");
       if (currentChannel != null && currentChannel.getStatus() == Channel.ChannelStatus.JOINED) {
-        this.channelManager.leaveChannelWithHandler(currentChannel, new Constants.StatusListener() {
+        this.channelManager.leaveChannelWithHandler(currentChannel, new StatusListener() {
           @Override
           public void onSuccess() {
             joinChannel(selectedChannel);
           }
 
           @Override
-          public void onError() {
+          public void onError(ErrorInfo errorInfo) {
             stopActivityIndicator();
           }
         });
@@ -261,14 +260,14 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
     runOnUiThread(new Runnable() {
       @Override
       public void run() {
-        chatFragment.setCurrentChannel(selectedChannel, new Constants.StatusListener() {
+        chatFragment.setCurrentChannel(selectedChannel, new StatusListener() {
           @Override
           public void onSuccess() {
             MainChatActivity.this.stopActivityIndicator();
           }
 
           @Override
-          public void onError() {}
+          public void onError(ErrorInfo errorInfo) {}
         });
         setTitle(selectedChannel.getFriendlyName());
         drawer.closeDrawer(GravityCompat.START);
@@ -307,14 +306,14 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
       showAlertWithMessage(getStringResource(R.string.channel_name_equals_default_name));
       return;
     }
-    this.channelManager.createChannelWithName(name, new Constants.StatusListener() {
+    this.channelManager.createChannelWithName(name, new StatusListener() {
       @Override
       public void onSuccess() {
         refreshChannels();
       }
 
       @Override
-      public void onError() {
+      public void onError(ErrorInfo errorInfo) {
         showAlertWithMessage(getStringResource(R.string.generic_error));
       }
     });
@@ -333,12 +332,12 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
 
   private void deleteCurrentChannel() {
     Channel currentChannel = chatFragment.getCurrentChannel();
-    channelManager.deleteChannelWithHandler(currentChannel, new Constants.StatusListener() {
+    channelManager.deleteChannelWithHandler(currentChannel, new StatusListener() {
       @Override
       public void onSuccess() {}
 
       @Override
-      public void onError() {
+      public void onError(ErrorInfo errorInfo) {
         showAlertWithMessage(getStringResource(R.string.message_deletion_forbidden));
       }
     });
@@ -350,14 +349,14 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
       setChannel(0);
       return;
     }
-    channelManager.leaveChannelWithHandler(currentChannel, new Constants.StatusListener() {
+    channelManager.leaveChannelWithHandler(currentChannel, new StatusListener() {
       @Override
       public void onSuccess() {
         setChannel(0);
       }
 
       @Override
-      public void onError() {
+      public void onError(ErrorInfo errorInfo) {
         stopActivityIndicator();
       }
     });
@@ -365,8 +364,8 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
 
   private void checkTwilioClient() {
     showActivityIndicator(getStringResource(R.string.loading_channels_message));
-    client = TwilioChatApplication.get().getIPMessagingClient();
-    if (client.getIpMessagingClient() == null) {
+    clientManager = TwilioChatApplication.get().getChatClientManager();
+    if (clientManager.getChatClient() == null) {
       initializeClient();
     } else {
       populateChannels();
@@ -374,7 +373,7 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
   }
 
   private void initializeClient() {
-    client.connectClient(new LoginListener() {
+    clientManager.connectClient(new LoginListener() {
       @Override
       public void onLoginFinished() {
         populateChannels();
@@ -459,6 +458,11 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
   }
 
   @Override
+  public void onChannelInvite(Channel channel) {
+
+  }
+
+  @Override
   public void onChannelDelete(final Channel channel) {
     System.out.println("Channel Deleted");
     Channel currentChannel = chatFragment.getCurrentChannel();
@@ -480,13 +484,32 @@ public class MainChatActivity extends AppCompatActivity implements IPMessagingCl
   }
 
   @Override
-  public void onUserInfoChange(UserInfo userInfo) {
+  public void onUserInfoChange(UserInfo userInfo, UserInfo.UpdateReason updateReason) {
 
   }
 
   @Override
-  public void onClientSynchronization(
-      TwilioIPMessagingClient.SynchronizationStatus synchronizationStatus) {
+  public void onClientSynchronization(ChatClient.SynchronizationStatus synchronizationStatus) {
+
+  }
+
+  @Override
+  public void onToastNotification(String s, String s1) {
+
+  }
+
+  @Override
+  public void onToastSubscribed() {
+
+  }
+
+  @Override
+  public void onToastFailed(ErrorInfo errorInfo) {
+
+  }
+
+  @Override
+  public void onConnectionStateChange(ChatClient.ConnectionState connectionState) {
 
   }
 

@@ -42,7 +42,8 @@
             android:minHeight="40dp"
             android:padding="7dp"
             android:textColor="@android:color/black"
-            android:textSize="14sp"/>
+            android:textSize="14sp"
+            android:imeOptions="actionSend"/>
 
         <Button
             android:id="@+id/buttonSend"

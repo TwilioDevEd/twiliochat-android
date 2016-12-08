@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.twilio.ipmessaging.Message;
+import com.twilio.chat.Message;
 import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.util.DateFormatter;
 
@@ -20,7 +20,7 @@ public class MessageAdapter extends BaseAdapter {
   private final int TYPE_MESSAGE = 0;
   private final int TYPE_STATUS = 1;
 
-  private List<Message> messages;
+  private List<ChatMessage> messages;
   private LayoutInflater layoutInflater;
   private TreeSet statusMessageSet = new TreeSet();
 
@@ -29,14 +29,14 @@ public class MessageAdapter extends BaseAdapter {
     messages = new ArrayList<>();
   }
 
-  public void setMessages(Message[] messages) {
-    this.messages = new ArrayList<>(Arrays.asList(messages));
+  public void setMessages(List<Message> messages) {
+    this.messages = convertTwilioMessages(messages);
     this.statusMessageSet.clear();
     notifyDataSetChanged();
   }
 
   public void addMessage(Message message) {
-    messages.add(message);
+    messages.add(new UserMessage(message));
     notifyDataSetChanged();
   }
 
@@ -49,6 +49,14 @@ public class MessageAdapter extends BaseAdapter {
   public void removeMessage(Message message) {
     messages.remove(messages.indexOf(message));
     notifyDataSetChanged();
+  }
+
+  private List<ChatMessage> convertTwilioMessages(List<Message> messages) {
+    List<ChatMessage> chatMessages = new ArrayList<>();
+    for (Message message : messages) {
+      chatMessages.add(new UserMessage(message));
+    }
+    return chatMessages;
   }
 
   @Override
@@ -84,7 +92,7 @@ public class MessageAdapter extends BaseAdapter {
       case TYPE_MESSAGE:
         res = R.layout.message;
         convertView = layoutInflater.inflate(res, viewGroup, false);
-        Message message = messages.get(position);
+        ChatMessage message = messages.get(position);
         TextView textViewMessage = (TextView) convertView.findViewById(R.id.textViewMessage);
         TextView textViewAuthor = (TextView) convertView.findViewById(R.id.textViewAuthor);
         TextView textViewDate = (TextView) convertView.findViewById(R.id.textViewDate);
@@ -95,7 +103,7 @@ public class MessageAdapter extends BaseAdapter {
       case TYPE_STATUS:
         res = R.layout.status_message;
         convertView = layoutInflater.inflate(res, viewGroup, false);
-        StatusMessage status = (StatusMessage) messages.get(position);
+        ChatMessage status = messages.get(position);
         TextView textViewStatus = (TextView) convertView.findViewById(R.id.textViewStatusMessage);
         String statusMessage = status.getAuthor() + " " + status.getMessageBody() + " the channel";
         textViewStatus.setText(statusMessage);

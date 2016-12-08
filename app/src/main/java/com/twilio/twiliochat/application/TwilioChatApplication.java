@@ -2,17 +2,17 @@ package com.twilio.twiliochat.application;
 
 import android.app.Application;
 
-import com.twilio.twiliochat.ipmessaging.IPMessagingClientManager;
+import com.twilio.twiliochat.ipmessaging.ChatClientManager;
 
 public class TwilioChatApplication extends Application {
   private static TwilioChatApplication instance;
-  private IPMessagingClientManager basicClient;
+  private ChatClientManager basicClient;
 
   public static TwilioChatApplication get() {
     return instance;
   }
 
-  public IPMessagingClientManager getIPMessagingClient() {
+  public ChatClientManager getChatClientManager() {
     return this.basicClient;
   }
 
@@ -21,6 +21,6 @@ public class TwilioChatApplication extends Application {
     super.onCreate();
 
     TwilioChatApplication.instance = this;
-    basicClient = new IPMessagingClientManager(getApplicationContext());
+    basicClient = new ChatClientManager(getApplicationContext());
   }
 }
