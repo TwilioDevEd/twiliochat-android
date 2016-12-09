@@ -10,7 +10,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.application.TwilioChatApplication;
-import com.twilio.twiliochat.interfaces.FetchTokenListener;
+import com.twilio.twiliochat.interfaces.TaskCompletionListener;
 import com.twilio.twiliochat.util.SessionManager;
 
 import org.json.JSONException;
@@ -27,7 +27,7 @@ public class AccessTokenFetcher {
         this.context = context;
     }
 
-    public void fetch(final FetchTokenListener listener) {
+    public void fetch(final TaskCompletionListener<String, String> listener) {
         JSONObject obj = new JSONObject(getTokenRequestParams(context));
         String requestUrl = getStringResource(R.string.token_url);
 
@@ -41,16 +41,16 @@ public class AccessTokenFetcher {
                             token = response.getString("token");
                         } catch (JSONException e) {
                             e.printStackTrace();
-                            listener.fetchTokenFailure(new Exception("Failed to parse token JSON response"));
+                            listener.onError("Failed to parse token JSON response");
                         }
-                        listener.fetchTokenSuccess(token);
+                        listener.onSuccess(token);
                     }
                 }, new Response.ErrorListener() {
 
                     @Override
                     public void onErrorResponse(VolleyError error) {
 
-                        listener.fetchTokenFailure(new Exception("Failed to fetch token"));
+                        listener.onError("Failed to fetch token");
                     }
                 });
         jsonObjReq.setShouldCache(false);
