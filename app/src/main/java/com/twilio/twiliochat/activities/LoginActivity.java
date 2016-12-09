@@ -17,8 +17,8 @@ import android.widget.TextView;
 
 import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.application.TwilioChatApplication;
-import com.twilio.twiliochat.interfaces.LoginListener;
 import com.twilio.twiliochat.ipmessaging.ChatClientManager;
+import com.twilio.twiliochat.ipmessaging.TaskCompletionListener;
 import com.twilio.twiliochat.util.AlertDialogHandler;
 import com.twilio.twiliochat.util.SessionManager;
 
@@ -29,7 +29,7 @@ public class LoginActivity extends AppCompatActivity {
   private Button loginButton;
   private EditText usernameEditText;
 
-  private ChatClientManager messagingClient;
+  private ChatClientManager clientManager;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -37,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
     setContentView(R.layout.activity_login);
     setUIComponents();
 
-    messagingClient = TwilioChatApplication.get().getChatClientManager();
+    clientManager = TwilioChatApplication.get().getChatClientManager();
   }
 
   private void setUIComponents() {
@@ -92,14 +92,14 @@ public class LoginActivity extends AppCompatActivity {
   }
 
   private void initializeMessagingClient() {
-    messagingClient.connectClient(new LoginListener() {
+    clientManager.connectClient(new TaskCompletionListener<Void, String>() {
       @Override
-      public void onLoginFinished() {
+      public void onSuccess(Void aVoid) {
         showMainChatActivity();
       }
 
       @Override
-      public void onLoginError(String errorMessage) {
+      public void onError(String errorMessage) {
         stopStatusDialog();
         showAlertWithMessage(errorMessage);
       }

@@ -36,10 +36,10 @@ import com.twilio.twiliochat.application.TwilioChatApplication;
 import com.twilio.twiliochat.fragments.MainChatFragment;
 import com.twilio.twiliochat.interfaces.InputOnClickListener;
 import com.twilio.twiliochat.interfaces.LoadChannelListener;
-import com.twilio.twiliochat.interfaces.LoginListener;
 import com.twilio.twiliochat.ipmessaging.ChannelAdapter;
 import com.twilio.twiliochat.ipmessaging.ChannelManager;
 import com.twilio.twiliochat.ipmessaging.ChatClientManager;
+import com.twilio.twiliochat.ipmessaging.TaskCompletionListener;
 import com.twilio.twiliochat.util.AlertDialogHandler;
 import com.twilio.twiliochat.util.SessionManager;
 
@@ -373,14 +373,14 @@ public class MainChatActivity extends AppCompatActivity implements ChatClientLis
   }
 
   private void initializeClient() {
-    clientManager.connectClient(new LoginListener() {
+    clientManager.connectClient(new TaskCompletionListener<Void, String>() {
       @Override
-      public void onLoginFinished() {
+      public void onSuccess(Void aVoid) {
         populateChannels();
       }
 
       @Override
-      public void onLoginError(String errorMessage) {
+      public void onError(String errorMessage) {
         stopActivityIndicator();
         showAlertWithMessage("Client connection error");
       }
