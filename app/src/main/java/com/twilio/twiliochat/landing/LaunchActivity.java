@@ -1,10 +1,11 @@
-package com.twilio.twiliochat.activities;
+package com.twilio.twiliochat.landing;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.twilio.twiliochat.util.SessionManager;
+import com.twilio.twiliochat.chat.MainChatActivity;
+import com.twilio.twiliochat.application.SessionManager;
 
 public class LaunchActivity extends Activity {
 

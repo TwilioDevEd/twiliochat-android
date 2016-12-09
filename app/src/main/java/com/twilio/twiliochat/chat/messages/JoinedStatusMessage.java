@@ -1,4 +1,4 @@
-package com.twilio.twiliochat.messaging;
+package com.twilio.twiliochat.chat.messages;
 
 public class JoinedStatusMessage extends StatusMessage {
 

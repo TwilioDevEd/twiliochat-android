@@ -1,4 +1,4 @@
-package com.twilio.twiliochat.interfaces;
+package com.twilio.twiliochat.chat.listeners;
 
 public interface TaskCompletionListener<T, U> {
 

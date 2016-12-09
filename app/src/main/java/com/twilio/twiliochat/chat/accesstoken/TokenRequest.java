@@ -1,4 +1,4 @@
-package com.twilio.twiliochat.ipmessaging;
+package com.twilio.twiliochat.chat.accesstoken;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;

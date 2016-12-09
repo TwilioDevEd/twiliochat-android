@@ -1,4 +1,4 @@
-package com.twilio.twiliochat.interfaces;
+package com.twilio.twiliochat.chat.channels;
 
 import java.util.List;
 

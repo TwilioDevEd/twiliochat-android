@@ -1,4 +1,4 @@
-package com.twilio.twiliochat.ipmessaging;
+package com.twilio.twiliochat.chat.channels;
 
 import android.content.res.Resources;
 import android.os.Handler;
@@ -16,7 +16,7 @@ import com.twilio.chat.StatusListener;
 import com.twilio.chat.UserInfo;
 import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.application.TwilioChatApplication;
-import com.twilio.twiliochat.interfaces.LoadChannelListener;
+import com.twilio.twiliochat.chat.ChatClientManager;
 
 import java.util.ArrayList;
 import java.util.Collections;

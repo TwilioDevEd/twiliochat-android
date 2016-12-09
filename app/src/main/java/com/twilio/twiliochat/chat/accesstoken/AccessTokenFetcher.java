@@ -1,4 +1,4 @@
-package com.twilio.twiliochat.ipmessaging;
+package com.twilio.twiliochat.chat.accesstoken;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -10,8 +10,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.application.TwilioChatApplication;
-import com.twilio.twiliochat.interfaces.TaskCompletionListener;
-import com.twilio.twiliochat.util.SessionManager;
+import com.twilio.twiliochat.chat.listeners.TaskCompletionListener;
+import com.twilio.twiliochat.application.SessionManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;

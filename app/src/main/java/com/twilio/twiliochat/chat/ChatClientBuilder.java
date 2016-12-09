@@ -1,11 +1,12 @@
-package com.twilio.twiliochat.ipmessaging;
+package com.twilio.twiliochat.chat;
 
 import android.content.Context;
 
 import com.twilio.chat.CallbackListener;
 import com.twilio.chat.ChatClient;
 import com.twilio.chat.ErrorInfo;
-import com.twilio.twiliochat.interfaces.TaskCompletionListener;
+import com.twilio.twiliochat.chat.accesstoken.AccessTokenFetcher;
+import com.twilio.twiliochat.chat.listeners.TaskCompletionListener;
 
 public class ChatClientBuilder extends CallbackListener<ChatClient>{
 

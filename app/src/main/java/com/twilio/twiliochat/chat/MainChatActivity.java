@@ -1,4 +1,4 @@
-package com.twilio.twiliochat.activities;
+package com.twilio.twiliochat.chat;
 
 import java.util.List;
 
@@ -32,16 +32,15 @@ import com.twilio.chat.ChatClientListener;
 import com.twilio.chat.StatusListener;
 import com.twilio.chat.UserInfo;
 import com.twilio.twiliochat.R;
+import com.twilio.twiliochat.chat.listeners.InputOnClickListener;
+import com.twilio.twiliochat.chat.listeners.TaskCompletionListener;
+import com.twilio.twiliochat.landing.LoginActivity;
 import com.twilio.twiliochat.application.TwilioChatApplication;
-import com.twilio.twiliochat.fragments.MainChatFragment;
-import com.twilio.twiliochat.interfaces.InputOnClickListener;
-import com.twilio.twiliochat.interfaces.LoadChannelListener;
-import com.twilio.twiliochat.ipmessaging.ChannelAdapter;
-import com.twilio.twiliochat.ipmessaging.ChannelManager;
-import com.twilio.twiliochat.ipmessaging.ChatClientManager;
-import com.twilio.twiliochat.interfaces.TaskCompletionListener;
-import com.twilio.twiliochat.util.AlertDialogHandler;
-import com.twilio.twiliochat.util.SessionManager;
+import com.twilio.twiliochat.chat.channels.LoadChannelListener;
+import com.twilio.twiliochat.chat.channels.ChannelAdapter;
+import com.twilio.twiliochat.chat.channels.ChannelManager;
+import com.twilio.twiliochat.application.AlertDialogHandler;
+import com.twilio.twiliochat.application.SessionManager;
 
 public class MainChatActivity extends AppCompatActivity implements ChatClientListener {
   private Context context;
