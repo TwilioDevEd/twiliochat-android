@@ -1,4 +1,4 @@
-package com.twilio.twiliochat.activities;
+package com.twilio.twiliochat.landing;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -17,10 +17,11 @@ import android.widget.TextView;
 
 import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.application.TwilioChatApplication;
-import com.twilio.twiliochat.ipmessaging.ChatClientManager;
-import com.twilio.twiliochat.interfaces.TaskCompletionListener;
-import com.twilio.twiliochat.util.AlertDialogHandler;
-import com.twilio.twiliochat.util.SessionManager;
+import com.twilio.twiliochat.chat.ChatClientManager;
+import com.twilio.twiliochat.chat.MainChatActivity;
+import com.twilio.twiliochat.chat.listeners.TaskCompletionListener;
+import com.twilio.twiliochat.application.AlertDialogHandler;
+import com.twilio.twiliochat.application.SessionManager;
 
 public class LoginActivity extends AppCompatActivity {
   final Context context = this;

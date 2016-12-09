@@ -1,4 +1,4 @@
-package com.twilio.twiliochat.util;
+package com.twilio.twiliochat.application;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.twilio.twiliochat.R;
-import com.twilio.twiliochat.interfaces.InputOnClickListener;
+import com.twilio.twiliochat.chat.listeners.InputOnClickListener;
 
 public class AlertDialogHandler {
   public static void displayAlertWithMessage(String message, Context context) {

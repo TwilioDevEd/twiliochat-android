@@ -1,4 +1,4 @@
-package com.twilio.twiliochat.util;
+package com.twilio.twiliochat.chat.messages;
 
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;

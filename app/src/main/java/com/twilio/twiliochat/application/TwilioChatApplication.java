@@ -2,7 +2,7 @@ package com.twilio.twiliochat.application;
 
 import android.app.Application;
 
-import com.twilio.twiliochat.ipmessaging.ChatClientManager;
+import com.twilio.twiliochat.chat.ChatClientManager;
 
 public class TwilioChatApplication extends Application {
   private static TwilioChatApplication instance;

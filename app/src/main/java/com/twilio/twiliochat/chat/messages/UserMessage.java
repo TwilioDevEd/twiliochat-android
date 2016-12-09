@@ -1,4 +1,4 @@
-package com.twilio.twiliochat.messaging;
+package com.twilio.twiliochat.chat.messages;
 
 import com.twilio.chat.Message;
 

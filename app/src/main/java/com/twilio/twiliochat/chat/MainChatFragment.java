@@ -1,4 +1,4 @@
-package com.twilio.twiliochat.fragments;
+package com.twilio.twiliochat.chat;
 
 import android.app.Activity;
 import android.content.Context;
@@ -22,13 +22,12 @@ import com.twilio.chat.Message;
 import com.twilio.chat.Messages;
 import com.twilio.chat.StatusListener;
 import com.twilio.twiliochat.R;
-import com.twilio.twiliochat.messaging.JoinedStatusMessage;
-import com.twilio.twiliochat.messaging.LeftStatusMessage;
-import com.twilio.twiliochat.messaging.MessageAdapter;
-import com.twilio.twiliochat.messaging.StatusMessage;
+import com.twilio.twiliochat.chat.messages.JoinedStatusMessage;
+import com.twilio.twiliochat.chat.messages.LeftStatusMessage;
+import com.twilio.twiliochat.chat.messages.MessageAdapter;
+import com.twilio.twiliochat.chat.messages.StatusMessage;
 
 import java.util.List;
-import java.util.Map;
 
 public class MainChatFragment extends Fragment implements ChannelListener {
   Context context;
