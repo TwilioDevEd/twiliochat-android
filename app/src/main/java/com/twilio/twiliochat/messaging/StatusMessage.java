@@ -3,15 +3,11 @@ package com.twilio.twiliochat.messaging;
 
 public class StatusMessage implements ChatMessage {
   private String author = "";
-  private String timeStamp = "";
-  private String messageBody = "";
 
   public StatusMessage() {}
 
-  public StatusMessage(String author, String timeStamp, String messageBody) {
+  public StatusMessage(String author) {
     this.author = author;
-    this.timeStamp = timeStamp;
-    this.messageBody = messageBody;
   }
 
   @Override
@@ -21,11 +17,11 @@ public class StatusMessage implements ChatMessage {
 
   @Override
   public String getTimeStamp() {
-    return timeStamp;
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public String getMessageBody() {
-    return messageBody;
+    throw new UnsupportedOperationException();
   }
 }

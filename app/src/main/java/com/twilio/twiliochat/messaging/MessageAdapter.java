@@ -105,7 +105,7 @@ public class MessageAdapter extends BaseAdapter {
         convertView = layoutInflater.inflate(res, viewGroup, false);
         ChatMessage status = messages.get(position);
         TextView textViewStatus = (TextView) convertView.findViewById(R.id.textViewStatusMessage);
-        String statusMessage = status.getAuthor() + " " + status.getMessageBody() + " the channel";
+        String statusMessage = status.getMessageBody();
         textViewStatus.setText(statusMessage);
         break;
     }

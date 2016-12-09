@@ -22,6 +22,8 @@ import com.twilio.chat.Message;
 import com.twilio.chat.Messages;
 import com.twilio.chat.StatusListener;
 import com.twilio.twiliochat.R;
+import com.twilio.twiliochat.messaging.JoinedStatusMessage;
+import com.twilio.twiliochat.messaging.LeftStatusMessage;
 import com.twilio.twiliochat.messaging.MessageAdapter;
 import com.twilio.twiliochat.messaging.StatusMessage;
 
@@ -38,7 +40,6 @@ public class MainChatFragment extends Fragment implements ChannelListener {
   MessageAdapter messageAdapter;
   Channel currentChannel;
   Messages messagesObject;
-  Message[] messagesArray;
 
   public MainChatFragment() {}
 
@@ -80,31 +81,6 @@ public class MainChatFragment extends Fragment implements ChannelListener {
     super.onDetach();
   }
 
-  private void setUpListeners() {
-    sendButton.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View v) {
-        sendMessage();
-      }
-    });
-    messageTextEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-      @Override
-      public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-        return false;
-      }
-    });
-  }
-
-  private void sendMessage() {
-    String messageText = getTextInput();
-    if (messageText.length() == 0) {
-      return;
-    }
-    Message newMessage = this.messagesObject.createMessage(messageText);
-    this.messagesObject.sendMessage(newMessage, null);
-    clearTextInput();
-  }
-
   public Channel getCurrentChannel() {
     return currentChannel;
   }
@@ -134,8 +110,31 @@ public class MainChatFragment extends Fragment implements ChannelListener {
     }
   }
 
-  // TODO: messagesObject and messagesArray need to be members?
-  // TODO: onSuccess logic was done inside UIThread before, is right to take it out?
+  private void setUpListeners() {
+    sendButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        sendMessage();
+      }
+    });
+    messageTextEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+      @Override
+      public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+        return false;
+      }
+    });
+  }
+
+  private void sendMessage() {
+    String messageText = getTextInput();
+    if (messageText.length() == 0) {
+      return;
+    }
+    Message newMessage = this.messagesObject.createMessage(messageText);
+    this.messagesObject.sendMessage(newMessage, null);
+    clearTextInput();
+  }
+
   private void loadMessages(final StatusListener handler) {
     this.messagesObject = this.currentChannel.getMessages();
 
@@ -177,13 +176,13 @@ public class MainChatFragment extends Fragment implements ChannelListener {
 
   @Override
   public void onMemberJoin(Member member) {
-    StatusMessage statusMessage = new StatusMessage(member.getUserInfo().getIdentity(), "timestamp", "joined");
+    StatusMessage statusMessage = new JoinedStatusMessage(member.getUserInfo().getIdentity());
     this.messageAdapter.addStatusMessage(statusMessage);
   }
 
   @Override
   public void onMemberDelete(Member member) {
-    StatusMessage statusMessage = new StatusMessage(member.getUserInfo().getIdentity(), "timestamp", "left");
+    StatusMessage statusMessage = new LeftStatusMessage(member.getUserInfo().getIdentity());
     this.messageAdapter.addStatusMessage(statusMessage);
   }
 
