@@ -74,7 +74,6 @@ public class ChatClientManager implements AccessManager.Listener, AccessManager.
     accessManager.addTokenUpdateListener(this);
   }
 
-  /** AccessManager.Listener methods **/
   @Override
   public void onTokenWillExpire(AccessManager accessManager) {
 
@@ -106,7 +105,6 @@ public class ChatClientManager implements AccessManager.Listener, AccessManager.
     System.out.println("token updated.");
   }
 
-  /** **/
   public void shutdown() {
     chatClient.shutdown();
   }

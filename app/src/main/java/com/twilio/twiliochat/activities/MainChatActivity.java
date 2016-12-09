@@ -49,7 +49,7 @@ public class MainChatActivity extends AppCompatActivity implements ChatClientLis
   private Button logoutButton;
   private Button addChannelButton;
   private TextView usernameTextView;
-  private ChatClientManager clientManager;
+  private ChatClientManager chatClientManager;
   private ListView channelsListView;
   private ChannelAdapter channelAdapter;
   private ChannelManager channelManager;
@@ -66,7 +66,7 @@ public class MainChatActivity extends AppCompatActivity implements ChatClientLis
     new Handler().post(new Runnable() {
       @Override
       public void run() {
-        clientManager.shutdown();
+        chatClientManager.shutdown();
         TwilioChatApplication.get().getChatClientManager().setChatClient(null);
       }
     });
@@ -364,8 +364,8 @@ public class MainChatActivity extends AppCompatActivity implements ChatClientLis
 
   private void checkTwilioClient() {
     showActivityIndicator(getStringResource(R.string.loading_channels_message));
-    clientManager = TwilioChatApplication.get().getChatClientManager();
-    if (clientManager.getChatClient() == null) {
+    chatClientManager = TwilioChatApplication.get().getChatClientManager();
+    if (chatClientManager.getChatClient() == null) {
       initializeClient();
     } else {
       populateChannels();
@@ -373,7 +373,7 @@ public class MainChatActivity extends AppCompatActivity implements ChatClientLis
   }
 
   private void initializeClient() {
-    clientManager.connectClient(new TaskCompletionListener<Void, String>() {
+    chatClientManager.connectClient(new TaskCompletionListener<Void, String>() {
       @Override
       public void onSuccess(Void aVoid) {
         populateChannels();

@@ -28,7 +28,6 @@ public class ChannelManager implements ChatClientListener {
   private ChatClientManager clientManager;
   private List<Channel> channels;
   private Channels channelsObject;
-  private Channel[] channelArray;
   private ChatClientListener listener;
   private String defaultChannelName;
   private String defaultChannelUniqueName;
@@ -93,7 +92,6 @@ public class ChannelManager implements ChatClientListener {
   }
 
   public void createChannelWithName(String name, final StatusListener handler) {
-
     this.channelsObject
         .channelBuilder()
         .withFriendlyName(name)
@@ -112,8 +110,6 @@ public class ChannelManager implements ChatClientListener {
             handler.onError(errorInfo);
           }
         });
-
-
   }
 
   public void joinOrCreateGeneralChannelWithCompletion(final StatusListener listener) {
@@ -128,7 +124,6 @@ public class ChannelManager implements ChatClientListener {
         }
       }
     });
-
   }
 
   private void joinGeneralChannelWithCompletion(final StatusListener listener) {
