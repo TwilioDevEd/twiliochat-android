@@ -39,7 +39,7 @@ import com.twilio.twiliochat.interfaces.LoadChannelListener;
 import com.twilio.twiliochat.ipmessaging.ChannelAdapter;
 import com.twilio.twiliochat.ipmessaging.ChannelManager;
 import com.twilio.twiliochat.ipmessaging.ChatClientManager;
-import com.twilio.twiliochat.ipmessaging.TaskCompletionListener;
+import com.twilio.twiliochat.interfaces.TaskCompletionListener;
 import com.twilio.twiliochat.util.AlertDialogHandler;
 import com.twilio.twiliochat.util.SessionManager;
 

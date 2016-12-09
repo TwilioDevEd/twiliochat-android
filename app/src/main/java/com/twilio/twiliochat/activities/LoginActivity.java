@@ -18,7 +18,7 @@ import android.widget.TextView;
 import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.application.TwilioChatApplication;
 import com.twilio.twiliochat.ipmessaging.ChatClientManager;
-import com.twilio.twiliochat.ipmessaging.TaskCompletionListener;
+import com.twilio.twiliochat.interfaces.TaskCompletionListener;
 import com.twilio.twiliochat.util.AlertDialogHandler;
 import com.twilio.twiliochat.util.SessionManager;
 
@@ -77,7 +77,7 @@ public class LoginActivity extends AppCompatActivity {
 
     startStatusDialogWithMessage(getStringResource(R.string.login_user_progress_message));
     SessionManager.getInstance().createLoginSession(formInput.get(USERNAME_FORM_FIELD));
-    initializeMessagingClient();
+    initializeChatClient();
   }
 
   private Map<String, String> getFormInput() {
@@ -91,7 +91,7 @@ public class LoginActivity extends AppCompatActivity {
     return formInput;
   }
 
-  private void initializeMessagingClient() {
+  private void initializeChatClient() {
     clientManager.connectClient(new TaskCompletionListener<Void, String>() {
       @Override
       public void onSuccess(Void aVoid) {
