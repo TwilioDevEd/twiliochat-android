@@ -6,23 +6,16 @@ import java.util.Map;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.content.Context;
-import android.content.res.Resources;
-import android.os.Handler;
-import android.provider.Settings;
-
 import com.android.volley.Request.Method;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.twilio.common.TwilioAccessManager;
-import com.twilio.common.TwilioAccessManagerFactory;
-import com.twilio.common.TwilioAccessManagerListener;
+import com.twilio.common.AccessManager;
 import com.twilio.ipmessaging.Channel;
 import com.twilio.ipmessaging.Constants;
 import com.twilio.ipmessaging.ErrorInfo;
+import com.twilio.ipmessaging.IPMessagingClient;
 import com.twilio.ipmessaging.IPMessagingClientListener;
-import com.twilio.ipmessaging.TwilioIPMessagingClient;
 import com.twilio.ipmessaging.TwilioIPMessagingSDK;
 import com.twilio.ipmessaging.UserInfo;
 import com.twilio.twiliochat.R;
@@ -31,13 +24,18 @@ import com.twilio.twiliochat.interfaces.FetchTokenListener;
 import com.twilio.twiliochat.interfaces.LoginListener;
 import com.twilio.twiliochat.util.SessionManager;
 
-public class IPMessagingClientManager implements IPMessagingClientListener {
+import android.content.Context;
+import android.content.res.Resources;
+import android.os.Handler;
+import android.provider.Settings;
+
+public class IPMessagingClientManager extends Constants.CallbackListener<IPMessagingClient> implements IPMessagingClientListener {
   private final String TOKEN_KEY = "token";
   private final Handler handler = new Handler();
   private String capabilityToken;
-  private TwilioIPMessagingClient ipMessagingClient;
+  private IPMessagingClient ipMessagingClient;
   private Context context;
-  private TwilioAccessManager accessManager;
+  private AccessManager accessManager;
 
   public IPMessagingClientManager(Context context) {
     this.context = context;
@@ -62,11 +60,11 @@ public class IPMessagingClientManager implements IPMessagingClientListener {
     }
   }
 
-  public TwilioIPMessagingClient getIpMessagingClient() {
+  public IPMessagingClient getIpMessagingClient() {
     return this.ipMessagingClient;
   }
 
-  public void setIpMessagingClient(TwilioIPMessagingClient client) {
+  public void setIpMessagingClient(IPMessagingClient client) {
     this.ipMessagingClient = client;
   }
 
@@ -106,37 +104,37 @@ public class IPMessagingClientManager implements IPMessagingClientListener {
   }
 
   private void initializeClientWithToken(String token, final LoginListener listener) {
-    this.accessManager =
-        TwilioAccessManagerFactory.createAccessManager(token, new TwilioAccessManagerListener() {
+    this.accessManager = new AccessManager(context, token, new AccessManager.Listener() {
+      @Override
+      public void onTokenExpired(AccessManager accessManager) {
+        System.out.println("token expired.");
+        fetchAccessToken(new FetchTokenListener() {
           @Override
-          public void onTokenExpired(TwilioAccessManager twilioAccessManager) {
-            System.out.println("token expired.");
-            fetchAccessToken(new FetchTokenListener() {
-              @Override
-              public void fetchTokenSuccess(String token) {
-                IPMessagingClientManager.this.accessManager.updateToken(token);
-              }
-
-              @Override
-              public void fetchTokenFailure(Exception e) {
-                System.out.println("Error trying to fetch token: " + e.getLocalizedMessage());
-              }
-            });
+          public void fetchTokenSuccess(String token) {
+            IPMessagingClientManager.this.accessManager.updateToken(token);
           }
 
           @Override
-          public void onTokenUpdated(TwilioAccessManager twilioAccessManager) {
-            System.out.println("token updated.");
-          }
-
-          @Override
-          public void onError(TwilioAccessManager twilioAccessManager, String s) {
-            System.out.println("token error: " + s);
+          public void fetchTokenFailure(Exception e) {
+            System.out.println("Error trying to fetch token: " + e.getLocalizedMessage());
           }
         });
+      }
 
-    ipMessagingClient =
-        TwilioIPMessagingSDK.createIPMessagingClientWithAccessManager(this.accessManager, this);
+      @Override
+      public void onTokenUpdated(AccessManager accessManager) {
+        System.out.println("token updated.");
+      }
+
+      @Override
+      public void onError(AccessManager accessManager, String s) {
+        System.out.println("token error: " + s);
+      }
+    });
+
+    ipMessagingClient = IPMessagingClient.create(context, this.accessManager,
+        new IPMessagingClient.Properties.Builder().createProperties(), this);
+
     if (listener != null) {
       listener.onLoginFinished();
     }
@@ -185,6 +183,11 @@ public class IPMessagingClientManager implements IPMessagingClientListener {
   }
 
   @Override
+  public void onSuccess(IPMessagingClient ipMessagingClient) {
+    ipMessagingClient.setListener(this);
+  }
+
+  @Override
   public void onChannelAdd(Channel channel) {}
 
   @Override
@@ -210,7 +213,22 @@ public class IPMessagingClientManager implements IPMessagingClientListener {
 
   @Override
   public void onClientSynchronization(
-      TwilioIPMessagingClient.SynchronizationStatus synchronizationStatus) {
+      IPMessagingClient.SynchronizationStatus synchronizationStatus) {
+
+  }
+
+  @Override
+  public void onToastNotification(String s, String s1) {
+
+  }
+
+  @Override
+  public void onToastSubscribed() {
+
+  }
+
+  @Override
+  public void onToastFailed(ErrorInfo errorInfo) {
 
   }
 }

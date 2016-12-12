@@ -29,7 +29,6 @@ import com.twilio.ipmessaging.Channel;
 import com.twilio.ipmessaging.Constants;
 import com.twilio.ipmessaging.ErrorInfo;
 import com.twilio.ipmessaging.IPMessagingClientListener;
-import com.twilio.ipmessaging.TwilioIPMessagingClient;
 import com.twilio.ipmessaging.TwilioIPMessagingSDK;
 import com.twilio.ipmessaging.UserInfo;
 import com.twilio.twiliochat.R;
