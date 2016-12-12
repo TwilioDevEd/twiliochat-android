@@ -22,16 +22,6 @@ public class AlertDialogHandler {
     alert.show();
   }
 
-  public static void displayAlertWithHandler(String message, Context context,
-                                             DialogInterface.OnClickListener handler) {
-    AlertDialog.Builder builder =
-        new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.AlertDialogCustom));
-    builder.setMessage(message).setCancelable(false).setPositiveButton("OK", handler);
-
-    AlertDialog alert = builder.create();
-    alert.show();
-  }
-
   public static void displayCancellableAlertWithHandler(String message, Context context,
                                                         DialogInterface.OnClickListener handler) {
     AlertDialog.Builder builder =

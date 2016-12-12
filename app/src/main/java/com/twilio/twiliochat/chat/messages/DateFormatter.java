@@ -22,7 +22,7 @@ public class DateFormatter {
 
   public static String getDateTodayString(DateTime today) {
     DateTime todayMidnight = new DateTime().withTimeAtStartOfDay();
-    String stringDate = null;
+    String stringDate;
     if (todayMidnight.isEqual(today.withTimeAtStartOfDay())) {
       stringDate = "Today - ";
     } else {
