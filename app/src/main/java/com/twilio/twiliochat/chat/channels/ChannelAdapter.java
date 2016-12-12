@@ -1,8 +1,5 @@
 package com.twilio.twiliochat.chat.channels;
 
-import java.util.Collections;
-import java.util.List;
-
 import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,11 +10,15 @@ import android.widget.TextView;
 import com.twilio.chat.Channel;
 import com.twilio.twiliochat.R;
 
+import java.util.Collections;
+import java.util.List;
+
 public class ChannelAdapter extends BaseAdapter {
   private LayoutInflater layoutInflater;
   private List<Channel> channels;
 
-  public ChannelAdapter() {}
+  public ChannelAdapter() {
+  }
 
   public ChannelAdapter(Activity activity, List<Channel> channels) {
     this.layoutInflater = activity.getLayoutInflater();

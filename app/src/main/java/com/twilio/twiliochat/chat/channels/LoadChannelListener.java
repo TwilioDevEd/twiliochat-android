@@ -1,8 +1,8 @@
 package com.twilio.twiliochat.chat.channels;
 
-import java.util.List;
-
 import com.twilio.chat.Channel;
+
+import java.util.List;
 
 public interface LoadChannelListener {
   public void onChannelsFinishedLoading(List<Channel> channels);

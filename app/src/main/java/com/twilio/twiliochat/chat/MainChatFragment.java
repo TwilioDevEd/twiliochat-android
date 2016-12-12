@@ -40,7 +40,8 @@ public class MainChatFragment extends Fragment implements ChannelListener {
   Channel currentChannel;
   Messages messagesObject;
 
-  public MainChatFragment() {}
+  public MainChatFragment() {
+  }
 
   public static MainChatFragment newInstance() {
     MainChatFragment fragment = new MainChatFragment();
@@ -56,7 +57,7 @@ public class MainChatFragment extends Fragment implements ChannelListener {
 
   @Override
   public View onCreateView(LayoutInflater inflater, ViewGroup container,
-      Bundle savedInstanceState) {
+                           Bundle savedInstanceState) {
     View view = inflater.inflate(R.layout.fragment_main_chat, container, false);
     sendButton = (Button) view.findViewById(R.id.buttonSend);
     messagesListView = (ListView) view.findViewById(R.id.listViewMessages);
@@ -103,7 +104,8 @@ public class MainChatFragment extends Fragment implements ChannelListener {
           }
 
           @Override
-          public void onError(ErrorInfo errorInfo) {}
+          public void onError(ErrorInfo errorInfo) {
+          }
         });
       }
     }
@@ -186,20 +188,26 @@ public class MainChatFragment extends Fragment implements ChannelListener {
   }
 
   @Override
-  public void onMessageChange(Message message) {}
+  public void onMessageChange(Message message) {
+  }
 
   @Override
-  public void onMessageDelete(Message message) {}
+  public void onMessageDelete(Message message) {
+  }
 
   @Override
-  public void onMemberChange(Member member) {}
+  public void onMemberChange(Member member) {
+  }
 
   @Override
-  public void onTypingStarted(Member member) {}
+  public void onTypingStarted(Member member) {
+  }
 
   @Override
-  public void onTypingEnded(Member member) {}
+  public void onTypingEnded(Member member) {
+  }
 
   @Override
-  public void onSynchronizationChange(Channel channel) {}
+  public void onSynchronizationChange(Channel channel) {
+  }
 }

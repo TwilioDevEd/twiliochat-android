@@ -5,7 +5,8 @@ import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.ISODateTimeFormat;
 
 public class DateFormatter {
-  private DateFormatter() {}
+  private DateFormatter() {
+  }
 
   public static DateTime getDateFromISOString(String inputDate) {
     DateTimeFormatter isoFormatter = ISODateTimeFormat.dateTime();

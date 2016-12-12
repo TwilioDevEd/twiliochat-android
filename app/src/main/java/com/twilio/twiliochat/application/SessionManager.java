@@ -1,10 +1,10 @@
 package com.twilio.twiliochat.application;
 
-import java.util.HashMap;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+
+import java.util.HashMap;
 
 public class SessionManager {
   public static final String KEY_USERNAME = "username";

@@ -1,10 +1,10 @@
 package com.twilio.twiliochat.chat.channels;
 
-import java.util.Comparator;
-
 import com.twilio.chat.Channel;
 import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.application.TwilioChatApplication;
+
+import java.util.Comparator;
 
 public class CustomChannelComparator implements Comparator<Channel> {
   private String defaultChannelName;
