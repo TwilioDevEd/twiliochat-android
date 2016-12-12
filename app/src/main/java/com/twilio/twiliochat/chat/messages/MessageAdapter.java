@@ -1,9 +1,5 @@
 package com.twilio.twiliochat.chat.messages;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TreeSet;
-
 import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +9,10 @@ import android.widget.TextView;
 
 import com.twilio.chat.Message;
 import com.twilio.twiliochat.R;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.TreeSet;
 
 public class MessageAdapter extends BaseAdapter {
   private final int TYPE_MESSAGE = 0;

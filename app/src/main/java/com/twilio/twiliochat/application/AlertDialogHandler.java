@@ -23,7 +23,7 @@ public class AlertDialogHandler {
   }
 
   public static void displayAlertWithHandler(String message, Context context,
-      DialogInterface.OnClickListener handler) {
+                                             DialogInterface.OnClickListener handler) {
     AlertDialog.Builder builder =
         new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.AlertDialogCustom));
     builder.setMessage(message).setCancelable(false).setPositiveButton("OK", handler);
@@ -33,7 +33,7 @@ public class AlertDialogHandler {
   }
 
   public static void displayCancellableAlertWithHandler(String message, Context context,
-      DialogInterface.OnClickListener handler) {
+                                                        DialogInterface.OnClickListener handler) {
     AlertDialog.Builder builder =
         new AlertDialog.Builder(new ContextThemeWrapper(context, R.style.AlertDialogCustom));
     builder.setMessage(message).setPositiveButton("OK", handler).setNegativeButton("Cancel", null);
@@ -43,7 +43,7 @@ public class AlertDialogHandler {
   }
 
   public static void displayInputDialog(String message, Context context,
-      final InputOnClickListener handler) {
+                                        final InputOnClickListener handler) {
     LayoutInflater li = LayoutInflater.from(context);
     View promptsView = li.inflate(R.layout.input_dialog_view, null);
 

@@ -1,8 +1,5 @@
 package com.twilio.twiliochat.landing;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -16,12 +13,15 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.twilio.twiliochat.R;
+import com.twilio.twiliochat.application.AlertDialogHandler;
+import com.twilio.twiliochat.application.SessionManager;
 import com.twilio.twiliochat.application.TwilioChatApplication;
 import com.twilio.twiliochat.chat.ChatClientManager;
 import com.twilio.twiliochat.chat.MainChatActivity;
 import com.twilio.twiliochat.chat.listeners.TaskCompletionListener;
-import com.twilio.twiliochat.application.AlertDialogHandler;
-import com.twilio.twiliochat.application.SessionManager;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
   final Context context = this;

@@ -4,8 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.twilio.twiliochat.chat.MainChatActivity;
 import com.twilio.twiliochat.application.SessionManager;
+import com.twilio.twiliochat.chat.MainChatActivity;
 
 public class LaunchActivity extends Activity {
 

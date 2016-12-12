@@ -76,8 +76,7 @@ public class ChannelManager implements ChatClientListener {
 
         channelsObject.getUserChannels(new CallbackListener<Paginator<Channel>>() {
           @Override
-          public void onSuccess(Paginator<Channel> channelsPaginator)
-          {
+          public void onSuccess(Paginator<Channel> channelsPaginator) {
             channels = new ArrayList<>();
             ChannelManager.this.channels.clear();
             ChannelManager.this.channels.addAll(channelsPaginator.getItems());
@@ -99,14 +98,12 @@ public class ChannelManager implements ChatClientListener {
         .withType(ChannelType.PUBLIC)
         .build(new CallbackListener<Channel>() {
           @Override
-          public void onSuccess(final Channel newChannel)
-          {
+          public void onSuccess(final Channel newChannel) {
             handler.onSuccess();
           }
 
           @Override
-          public void onError(ErrorInfo errorInfo)
-          {
+          public void onError(ErrorInfo errorInfo) {
             handler.onError(errorInfo);
           }
         });
@@ -148,16 +145,14 @@ public class ChannelManager implements ChatClientListener {
         .withType(ChannelType.PUBLIC)
         .build(new CallbackListener<Channel>() {
           @Override
-          public void onSuccess(final Channel channel)
-          {
+          public void onSuccess(final Channel channel) {
             ChannelManager.this.generalChannel = channel;
             ChannelManager.this.channels.add(channel);
             joinGeneralChannelWithCompletion(listener);
           }
 
           @Override
-          public void onError(ErrorInfo errorInfo)
-          {
+          public void onError(ErrorInfo errorInfo) {
             listener.onError(errorInfo);
           }
         });

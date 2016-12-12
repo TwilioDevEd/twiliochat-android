@@ -1,7 +1,5 @@
 package com.twilio.twiliochat.chat;
 
-import java.util.List;
-
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -27,20 +25,22 @@ import android.widget.TextView;
 
 import com.twilio.chat.Channel;
 import com.twilio.chat.ChatClient;
-import com.twilio.chat.ErrorInfo;
 import com.twilio.chat.ChatClientListener;
+import com.twilio.chat.ErrorInfo;
 import com.twilio.chat.StatusListener;
 import com.twilio.chat.UserInfo;
 import com.twilio.twiliochat.R;
+import com.twilio.twiliochat.application.AlertDialogHandler;
+import com.twilio.twiliochat.application.SessionManager;
+import com.twilio.twiliochat.application.TwilioChatApplication;
+import com.twilio.twiliochat.chat.channels.ChannelAdapter;
+import com.twilio.twiliochat.chat.channels.ChannelManager;
+import com.twilio.twiliochat.chat.channels.LoadChannelListener;
 import com.twilio.twiliochat.chat.listeners.InputOnClickListener;
 import com.twilio.twiliochat.chat.listeners.TaskCompletionListener;
 import com.twilio.twiliochat.landing.LoginActivity;
-import com.twilio.twiliochat.application.TwilioChatApplication;
-import com.twilio.twiliochat.chat.channels.LoadChannelListener;
-import com.twilio.twiliochat.chat.channels.ChannelAdapter;
-import com.twilio.twiliochat.chat.channels.ChannelManager;
-import com.twilio.twiliochat.application.AlertDialogHandler;
-import com.twilio.twiliochat.application.SessionManager;
+
+import java.util.List;
 
 public class MainChatActivity extends AppCompatActivity implements ChatClientListener {
   private Context context;
@@ -197,23 +197,23 @@ public class MainChatActivity extends AppCompatActivity implements ChatClientLis
         channelsListView.setAdapter(channelAdapter);
         MainChatActivity.this.channelManager
             .joinOrCreateGeneralChannelWithCompletion(new StatusListener() {
-          @Override
-          public void onSuccess() {
-            runOnUiThread(new Runnable() {
               @Override
-              public void run() {
-                channelAdapter.notifyDataSetChanged();
-                stopActivityIndicator();
-                setChannel(0);
+              public void onSuccess() {
+                runOnUiThread(new Runnable() {
+                  @Override
+                  public void run() {
+                    channelAdapter.notifyDataSetChanged();
+                    stopActivityIndicator();
+                    setChannel(0);
+                  }
+                });
+              }
+
+              @Override
+              public void onError(ErrorInfo errorInfo) {
+                showAlertWithMessage(getStringResource(R.string.generic_error));
               }
             });
-          }
-
-          @Override
-          public void onError(ErrorInfo errorInfo) {
-            showAlertWithMessage(getStringResource(R.string.generic_error));
-          }
-        });
       }
     });
   }
@@ -266,7 +266,8 @@ public class MainChatActivity extends AppCompatActivity implements ChatClientLis
           }
 
           @Override
-          public void onError(ErrorInfo errorInfo) {}
+          public void onError(ErrorInfo errorInfo) {
+          }
         });
         setTitle(selectedChannel.getFriendlyName());
         drawer.closeDrawer(GravityCompat.START);
@@ -333,7 +334,8 @@ public class MainChatActivity extends AppCompatActivity implements ChatClientLis
     Channel currentChannel = chatFragment.getCurrentChannel();
     channelManager.deleteChannelWithHandler(currentChannel, new StatusListener() {
       @Override
-      public void onSuccess() {}
+      public void onSuccess() {
+      }
 
       @Override
       public void onError(ErrorInfo errorInfo) {
@@ -393,12 +395,12 @@ public class MainChatActivity extends AppCompatActivity implements ChatClientLis
       public void run() {
         AlertDialogHandler.displayCancellableAlertWithHandler(message, context,
             new DialogInterface.OnClickListener() {
-          @Override
-          public void onClick(DialogInterface dialog, int which) {
-            SessionManager.getInstance().logoutUser();
-            showLoginActivity();
-          }
-        });
+              @Override
+              public void onClick(DialogInterface dialog, int which) {
+                SessionManager.getInstance().logoutUser();
+                showLoginActivity();
+              }
+            });
       }
     });
 
@@ -513,5 +515,6 @@ public class MainChatActivity extends AppCompatActivity implements ChatClientLis
   }
 
   @Override
-  public void onChannelChange(Channel channel) {}
+  public void onChannelChange(Channel channel) {
+  }
 }
