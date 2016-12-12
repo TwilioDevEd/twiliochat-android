@@ -33,10 +33,6 @@
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_main_chat"
             android:theme="@style/AppTheme.NoActionBar"/>
-
-        <service
-            android:name="com.twilio.ipmessaging.TwilioIPMessagingClientService"
-            android:exported="false"/>
     </application>
 
 </manifest>
