@@ -94,8 +94,7 @@ public class ChannelManager implements ChatClientListener {
     this.channelsObject
         .channelBuilder()
         .withFriendlyName(name)
-        .withUniqueName(name)
-        .withType(ChannelType.PUBLIC)
+        .withType(ChannelType.PRIVATE)
         .build(new CallbackListener<Channel>() {
           @Override
           public void onSuccess(final Channel newChannel) {
