@@ -8,12 +8,6 @@ public class UserMessage implements ChatMessage {
   private String timeStamp = "";
   private String messageBody = "";
 
-  public UserMessage(String author, String timeStamp, String messageBody) {
-    this.author = author;
-    this.timeStamp = timeStamp;
-    this.messageBody = messageBody;
-  }
-
   public UserMessage(Message message) {
     this.author = message.getAuthor();
     this.timeStamp = message.getTimeStamp();

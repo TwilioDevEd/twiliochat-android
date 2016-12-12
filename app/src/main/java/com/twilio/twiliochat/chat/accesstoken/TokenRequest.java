@@ -20,10 +20,6 @@ public class TokenRequest {
     return mInstance;
   }
 
-  public RequestQueue getRequestQueue() {
-    return mRequestQueue;
-  }
-
   public <T> void addToRequestQueue(Request<T> req) {
     mRequestQueue.add(req);
   }

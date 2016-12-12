@@ -17,16 +17,9 @@ public class ChannelAdapter extends BaseAdapter {
   private LayoutInflater layoutInflater;
   private List<Channel> channels;
 
-  public ChannelAdapter() {
-  }
-
   public ChannelAdapter(Activity activity, List<Channel> channels) {
     this.layoutInflater = activity.getLayoutInflater();
     this.channels = channels;
-  }
-
-  public List<Channel> getChannels() {
-    return channels;
   }
 
   public void setChannels(List<Channel> channels) {
