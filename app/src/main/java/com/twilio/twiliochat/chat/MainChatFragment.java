@@ -111,6 +111,22 @@ public class MainChatFragment extends Fragment implements ChannelListener {
     }
   }
 
+  private void loadMessages(final StatusListener handler) {
+    this.messagesObject = this.currentChannel.getMessages();
+
+    if (messagesObject != null) {
+      messagesObject.getLastMessages(100, new CallbackListener<List<Message>>() {
+        @Override
+        public void onSuccess(List<Message> messageList) {
+          messageAdapter.setMessages(messageList);
+          setMessageInputEnabled(true);
+          messageTextEdit.requestFocus();
+          handler.onSuccess();
+        }
+      });
+    }
+  }
+
   private void setUpListeners() {
     sendButton.setOnClickListener(new View.OnClickListener() {
       @Override
@@ -134,22 +150,6 @@ public class MainChatFragment extends Fragment implements ChannelListener {
     Message newMessage = this.messagesObject.createMessage(messageText);
     this.messagesObject.sendMessage(newMessage, null);
     clearTextInput();
-  }
-
-  private void loadMessages(final StatusListener handler) {
-    this.messagesObject = this.currentChannel.getMessages();
-
-    if (messagesObject != null) {
-      messagesObject.getLastMessages(100, new CallbackListener<List<Message>>() {
-        @Override
-        public void onSuccess(List<Message> messageList) {
-          messageAdapter.setMessages(messageList);
-          setMessageInputEnabled(true);
-          messageTextEdit.requestFocus();
-          handler.onSuccess();
-        }
-      });
-    }
   }
 
   private void setMessageInputEnabled(final boolean enabled) {

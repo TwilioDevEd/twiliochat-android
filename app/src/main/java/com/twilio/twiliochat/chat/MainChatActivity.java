@@ -459,11 +459,6 @@ public class MainChatActivity extends AppCompatActivity implements ChatClientLis
   }
 
   @Override
-  public void onChannelInvite(Channel channel) {
-
-  }
-
-  @Override
   public void onChannelDelete(final Channel channel) {
     System.out.println("Channel Deleted");
     Channel currentChannel = chatFragment.getCurrentChannel();
@@ -472,6 +467,11 @@ public class MainChatActivity extends AppCompatActivity implements ChatClientLis
       setChannel(0);
     }
     refreshChannels();
+  }
+
+  @Override
+  public void onChannelInvite(Channel channel) {
+
   }
 
   @Override

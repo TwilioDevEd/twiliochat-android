@@ -5,17 +5,14 @@ import android.content.Context;
 import com.twilio.chat.CallbackListener;
 import com.twilio.chat.ChatClient;
 import com.twilio.chat.ErrorInfo;
-import com.twilio.twiliochat.chat.accesstoken.AccessTokenFetcher;
 import com.twilio.twiliochat.chat.listeners.TaskCompletionListener;
 
 public class ChatClientBuilder extends CallbackListener<ChatClient> {
 
-  private AccessTokenFetcher accessTokenFetcher;
   private Context context;
   private TaskCompletionListener<ChatClient, String> buildListener;
 
   public ChatClientBuilder(Context context) {
-    this.accessTokenFetcher = new AccessTokenFetcher(context);
     this.context = context;
   }
 
