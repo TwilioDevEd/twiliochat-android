@@ -7,6 +7,8 @@
 
 Learn to implement a simple chat application using Twilio Programmable Chat Client
 
+[Read the full tutorial here!](https://www.twilio.com/docs/tutorials/walkthrough/chat/android/java)
+
 ### Local development
 
 1. Clone the repository.
