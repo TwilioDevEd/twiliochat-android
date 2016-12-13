@@ -18,6 +18,7 @@ import com.twilio.chat.UserInfo;
 import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.application.TwilioChatApplication;
 import com.twilio.twiliochat.chat.ChatClientManager;
+import com.twilio.twiliochat.chat.listeners.TaskCompletionListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,6 +28,7 @@ public class ChannelManager implements ChatClientListener {
   private static ChannelManager sharedManager = new ChannelManager();
   public Channel generalChannel;
   private ChatClientManager chatClientManager;
+  private ChannelExtractor channelExtractor;
   private List<Channel> channels;
   private Channels channelsObject;
   private ChatClientListener listener;
@@ -37,6 +39,7 @@ public class ChannelManager implements ChatClientListener {
 
   private ChannelManager() {
     this.chatClientManager = TwilioChatApplication.get().getChatClientManager();
+    this.channelExtractor = new ChannelExtractor();
     this.listener = this;
     defaultChannelName = getStringResource(R.string.default_channel_name);
     defaultChannelUniqueName = getStringResource(R.string.default_channel_unique_name);
@@ -72,21 +75,35 @@ public class ChannelManager implements ChatClientListener {
     handler.post(new Runnable() {
       @Override
       public void run() {
-
         channelsObject = chatClientManager.getChatClient().getChannels();
 
-        channelsObject.getUserChannels(new CallbackListener<Paginator<Channel>>() {
+        channelsObject.getPublicChannels(new CallbackListener<Paginator<ChannelDescriptor>>() {
           @Override
-          public void onSuccess(Paginator<Channel> channelsPaginator) {
-            channels = new ArrayList<>();
-            ChannelManager.this.channels.clear();
-            ChannelManager.this.channels.addAll(channelsPaginator.getItems());
-            Collections.sort(ChannelManager.this.channels, new CustomChannelComparator());
-            ChannelManager.this.isRefreshingChannels = false;
-            chatClientManager.setClientListener(ChannelManager.this);
-            listener.onChannelsFinishedLoading(ChannelManager.this.channels);
+          public void onSuccess(Paginator<ChannelDescriptor> channelDescriptorPaginator) {
+            extractChannelsFromPaginatorAndPopulate(channelDescriptorPaginator, listener);
           }
         });
+
+      }
+    });
+  }
+
+  private void extractChannelsFromPaginatorAndPopulate(final Paginator<ChannelDescriptor> channelsPaginator, final LoadChannelListener listener) {
+    channels = new ArrayList<>();
+    ChannelManager.this.channels.clear();
+    channelExtractor.extractAndSortFromChannelDescriptor(channelsPaginator, new TaskCompletionListener<List<Channel>, String>() {
+      @Override
+      public void onSuccess(List<Channel> channels) {
+        ChannelManager.this.channels.addAll(channels);
+        Collections.sort(ChannelManager.this.channels, new CustomChannelComparator());
+        ChannelManager.this.isRefreshingChannels = false;
+        chatClientManager.setClientListener(ChannelManager.this);
+        listener.onChannelsFinishedLoading(ChannelManager.this.channels);
+      }
+
+      @Override
+      public void onError(String errorText) {
+        System.out.println("Error populating channels: " + errorText);
       }
     });
   }
@@ -95,7 +112,7 @@ public class ChannelManager implements ChatClientListener {
     this.channelsObject
         .channelBuilder()
         .withFriendlyName(name)
-        .withType(ChannelType.PRIVATE)
+        .withType(ChannelType.PUBLIC)
         .build(new CallbackListener<Channel>() {
           @Override
           public void onSuccess(final Channel newChannel) {
