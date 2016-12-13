@@ -14,7 +14,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ChannelExtractor {
 
-  public void extractAndSortFromChannelDescriptor(Paginator<ChannelDescriptor> paginator, final TaskCompletionListener<List<Channel>, String> listener) {
+  public void extractAndSortFromChannelDescriptor(Paginator<ChannelDescriptor> paginator,
+                                                  final TaskCompletionListener<List<Channel>, String> listener) {
+
     extractFromChannelDescriptor(paginator, new TaskCompletionListener<List<Channel>, String>() {
       @Override
       public void onSuccess(List<Channel> channels) {
@@ -29,7 +31,9 @@ public class ChannelExtractor {
     });
   }
 
-  private void extractFromChannelDescriptor(Paginator<ChannelDescriptor> paginator, final TaskCompletionListener<List<Channel>, String> listener) {
+  private void extractFromChannelDescriptor(Paginator<ChannelDescriptor> paginator,
+                                            final TaskCompletionListener<List<Channel>, String> listener) {
+
     final List<Channel> channels = new ArrayList<>();
     final AtomicInteger channelDescriptorCount = new AtomicInteger(paginator.getItems().size());
     for (ChannelDescriptor channelDescriptor : paginator.getItems()) {

@@ -72,6 +72,6 @@ Learn to implement a simple chat application using Twilio Programmable Chat Clie
 
 
  ## Meta
-* No warranty expressed or implied. Software is as is. Diggity.
-* [MIT License](http://www.opensource.org/licenses/mit-license.html)
-* Lovingly crafted by Twilio Developer Education.
+  * No warranty expressed or implied. Software is as is. Diggity.
+  * [MIT License](http://www.opensource.org/licenses/mit-license.html)
+  * Lovingly crafted by Twilio Developer Education.
