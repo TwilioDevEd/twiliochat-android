@@ -28,6 +28,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
 //    compile files('libs/twilio-common-android-0.3.1.jar')
 //    compile files('libs/twilio-ip-messaging-android.jar')
-    compile "com.twilio:chat-android:0.11.0"
+    compile "com.twilio:chat-android:0.11.2"
     compile 'com.twilio:accessmanager-android:0.1.0'
 }

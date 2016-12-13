@@ -7,6 +7,7 @@ import android.os.Looper;
 import com.twilio.chat.CallbackListener;
 import com.twilio.chat.Channel;
 import com.twilio.chat.Channel.ChannelType;
+import com.twilio.chat.ChannelDescriptor;
 import com.twilio.chat.Channels;
 import com.twilio.chat.ChatClient;
 import com.twilio.chat.ChatClientListener;
@@ -25,7 +26,7 @@ import java.util.List;
 public class ChannelManager implements ChatClientListener {
   private static ChannelManager sharedManager = new ChannelManager();
   public Channel generalChannel;
-  private ChatClientManager clientManager;
+  private ChatClientManager chatClientManager;
   private List<Channel> channels;
   private Channels channelsObject;
   private ChatClientListener listener;
@@ -35,7 +36,7 @@ public class ChannelManager implements ChatClientListener {
   private Boolean isRefreshingChannels = false;
 
   private ChannelManager() {
-    this.clientManager = TwilioChatApplication.get().getChatClientManager();
+    this.chatClientManager = TwilioChatApplication.get().getChatClientManager();
     this.listener = this;
     defaultChannelName = getStringResource(R.string.default_channel_name);
     defaultChannelUniqueName = getStringResource(R.string.default_channel_unique_name);
@@ -63,7 +64,7 @@ public class ChannelManager implements ChatClientListener {
   }
 
   public void populateChannels(final LoadChannelListener listener) {
-    if (this.clientManager == null || this.isRefreshingChannels) {
+    if (this.chatClientManager == null || this.isRefreshingChannels) {
       return;
     }
     this.isRefreshingChannels = true;
@@ -72,7 +73,7 @@ public class ChannelManager implements ChatClientListener {
       @Override
       public void run() {
 
-        channelsObject = clientManager.getChatClient().getChannels();
+        channelsObject = chatClientManager.getChatClient().getChannels();
 
         channelsObject.getUserChannels(new CallbackListener<Paginator<Channel>>() {
           @Override
@@ -82,7 +83,7 @@ public class ChannelManager implements ChatClientListener {
             ChannelManager.this.channels.addAll(channelsPaginator.getItems());
             Collections.sort(ChannelManager.this.channels, new CustomChannelComparator());
             ChannelManager.this.isRefreshingChannels = false;
-            clientManager.setClientListener(ChannelManager.this);
+            chatClientManager.setClientListener(ChannelManager.this);
             listener.onChannelsFinishedLoading(ChannelManager.this.channels);
           }
         });
