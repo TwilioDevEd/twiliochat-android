@@ -107,6 +107,8 @@ public class ChatClientManager implements AccessManager.Listener, AccessManager.
   }
 
   public void shutdown() {
-    chatClient.shutdown();
+    if(chatClient != null) {
+      chatClient.shutdown();
+    }
   }
 }
