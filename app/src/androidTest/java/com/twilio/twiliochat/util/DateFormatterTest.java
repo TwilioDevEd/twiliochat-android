@@ -9,6 +9,8 @@ import org.joda.time.format.ISODateTimeFormat;
 
 import android.test.suitebuilder.annotation.SmallTest;
 
+import com.twilio.twiliochat.chat.messages.DateFormatter;
+
 public class DateFormatterTest extends TestCase {
   @SmallTest
   public void testGetDateFromISOString() {

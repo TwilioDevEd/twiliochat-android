@@ -3,38 +3,39 @@
     :markdown
       ## Introduction
 
-      Ready to implement a chat application using Twilio IP Messaging Client?
+      Ready to implement a chat application using Twilio Programmable Chat Client?
       Here is how it works at a high level:
 
-      1. [Twilio IP Messaging](//www.twilio.com/ip-messaging) is the core product
+      1. [Twilio Programmable Chat](//www.twilio.com/chat) is the core product
       we'll be using to handle all the chat functionality.
 
       1. We use a server side app to generate [user access
-      tokens](//www.twilio.com/docs/api/ip-messaging/guides/identity) which contains
-      all your Twilio account information. The IP Messaging Client uses this token
+      tokens](//www.twilio.com/docs/api/chat/guides/identity) which contains
+      all your Twilio account information. The Programmable chat Client uses this token
       to connect with the API
 
-      1. [Twilio Common](//media.twiliocdn.com/sdk/rtc/android/common/releases/0.1.10.b62-b0c2c3f/docs)
+      1. [Twilio Access Manager](//media.twiliocdn.com/sdk/android/common/releases/0.6.1/docs/)
       is the part of the SDK than handles access tokens and even refreshes them upon token
       expiration.
 
       ---
 
       **See Also:**
-      * [IP Messaging API](//www.twilio.com/docs/api/ip-messaging)
-      * [Channels and Messages](//www.twilio.com/docs/api/ip-messaging/guides/channels)
-      * [User Identity & Access Tokens](//www.twilio.com/docs/api/ip-messaging/guides/channels)
-      * [Twilio IP Messaging Client Reference](//media.twiliocdn.com/sdk/rtc/android/ip-messaging/releases/0.4.10.b204-57cc05a/docs)
-      * [Twilio Common Reference](//media.twiliocdn.com/sdk/rtc/android/common/releases/0.1.10.b62-b0c2c3f/docs)
+      * [Programmable Chat API](//www.twilio.com/docs/api/chat)
+      * [Channels and Messages](//www.twilio.com/docs/api/chat/guides/channels)
+      * [User Identity & Access Tokens](//www.twilio.com/docs/api/chat/guides/create-tokens)
+      * [Twilio Programmable Chat Client Reference](//media.twiliocdn.com/sdk/android/chat/releases/0.11.2/docs/)
+      * [Twilio Access Manager Reference](//media.twiliocdn.com/sdk/android/common/releases/0.6.1/docs/)
+      * [Programmable Chat migration guide](//www.twilio.com/docs/api/chat/guides/migration-guide-android-0110)
 
-  .step(data-title='Initializing the Client',
-        data-file='app/src/main/java/com/twilio/twiliochat/ipmessaging/IPMessagingClientManager.java',
-        data-highlight='106-141')
+  .step(data-title='Initializing the Client - Part 1',
+        data-file='app/src/main/java/com/twilio/twiliochat/chat/accesstoken/AccessTokenFetcher.java',
+        data-highlight='30-58')
     :markdown
-      ## Initializing the IP Messaging Client
+      ## Initializing the Client - Part 1: Fetch access token
 
-      The only thing you need to create a client is an access token. This token
-      holds information about your Twilio account and IP Messaging API keys. We have created a web
+      The first thing you need to create a client is an access token. This token
+      holds information about your Twilio account and Programmable Chat API keys. We have created a web
       version of Twilio chat in different languages. You can use any of these to generate the token:
 
       * [PHP - Laravel](//github.com/TwilioDevEd/twiliochat-laravel)
@@ -50,81 +51,94 @@
       **See Also:**
       * [Set up a request queue with Volley](//developer.android.com/training/volley/requestqueue.html)
 
+  .step(data-title='Initializing the Client - Part 2',
+        data-file='app/src/main/java/com/twilio/twiliochat/chat/ChatClientBuilder.java',
+        data-highlight='19-31')
+    :markdown
+      ## Initializing the Client - Part 2: Build the client
+
+      Before creating a Programmable Chat Client instance we need to decide the
+      [region](//www.twilio.com/docs/api/client/regions) it will connect to and the
+      [synchronization strategy](//www.twilio.com/docs/api/chat/guides/initializing-sdk-clients#mobile-sdks)
+      used to initialize it.
+
+      We can then pass this information along with the access token generated in the previous step and wait for the
+      client to be ready.
+
+      Once the client has initialized, we can use it to get a list of available channels. Let's see
+       how to do this on the next step.
+
+
   .step(data-title='Getting the Channel List',
-        data-file='app/src/main/java/com/twilio/twiliochat/ipmessaging/ChannelManager.java',
-        data-highlight='64-98')
+        data-file='app/src/main/java/com/twilio/twiliochat/chat/channels/ChannelManager.java',
+        data-highlight='69-109')
     :markdown
       ## Getting the Channel List
 
       Our `ChannelManager` class takes care of everything related to channels.
       The first thing we need to do, when the class is initialized, is to store
-      a list of channels of type `Channels` that we get by calling the method `getChannels`
-      from the IP Messaging Client.
-
-      Once we have a `Channels` object, we can fetch the actual channels using the
-      `Channels'` method `loadChannelsWithListener`. When the operation
-      finishes successfully, in order to get an array of channels, call the
-      method `getChannels` on the same object.
+      a list of channels of type `Channels`. For this we call the method `getChannels`
+      from the Programmable Chat Client and extract a `Channel` object from each
+      `ChannelDescriptor` returned.
 
   .step(data-title='Listen to Client Events',
-        data-file='app/src/main/java/com/twilio/twiliochat/activities/MainChatActivity.java',
-        data-highlight='452-467')
+        data-file='app/src/main/java/com/twilio/twiliochat/chat/MainChatActivity.java',
+        data-highlight='455-470')
     :markdown
       ## Listen to Client Events
 
-      The IP Messaging Client will trigger events such as `onChannelAdd` or `onChannelDelete`
+      The Programmable Chat Client will trigger events such as `onChannelAdd` or `onChannelDelete`
       on our application. Given the creation or deletion of a channel we'll reload the
       channel list in the sliding panel. If a channel is deleted and we were currently joined to that
       channel, the application will automatically join the general channel.
 
-      You must set your `IPMessagingClient` to listen to events using a
-      [IPMessagingClientListener](https://media.twiliocdn.com/sdk/rtc/android/ip-messaging/releases/0.4.10.b204-57cc05a/docs/com/twilio/ipmessaging/IPMessagingClientListener.html).
-      In this particular case, `MainChatActivity` implements IPMessagingClientListener, but it's methods
-      are called from the ChannelManager class that also implements IPMessagingClientListener (who actually is the
+      You must set your `ChatClient` to listen to events using a
+      [ChatClientListener](//media.twiliocdn.com/sdk/android/chat/releases/0.11.2/docs/com/twilio/chat/ChatClientListener.html).
+      In this particular case, `MainChatActivity` implements ChatClientListener, but it's methods
+      are called from the `ChannelManager` class that also implements ChatClientListener (who actually is the
       client's listener).
-      Channel manager is used as an event handler proxy.
+      `ChannelManager` is used as an event handler proxy.
       Twilio chat sets the listener when loading the channels.
 
       ---
 
       **See Also:**
-      * [IPMessagingClientListener available event](//media.twiliocdn.com/sdk/rtc/android/ip-messaging/releases/0.4.10.b204-57cc05a/docs/com/twilio/ipmessaging/IPMessagingClientListener.html)
-      * [ChannelManager as an event proxy](//github.com/TwilioDevEd/twiliochat-android/blob/1bcde08d53ad6ddc3a738ed254346e269e655922/app/src/main/java/com/twilio/twiliochat/ipmessaging/ChannelManager.java#L177-L217)
+      * [ChatClientListener available events](//media.twiliocdn.com/sdk/android/chat/releases/0.11.2/docs/com/twilio/chat/ChatClientListener.html)
 
   .step(data-title='Join the General Channel',
-        data-file='app/src/main/java/com/twilio/twiliochat/ipmessaging/ChannelManager.java',
-        data-highlight='117-166')
+        data-file='app/src/main/java/com/twilio/twiliochat/chat/channels/ChannelManager.java',
+        data-highlight='131-178')
     :markdown
       ## Join the General Channel
 
       This application will try to join a channel called "General Channel" when it starts.
       If the channel doesn't exist it'll create one with that name. The scope of
       this example application will show you how to work only with public channels
-      but the IP Messaging client allows you to create private channels and handle
+      but the Programmable Chat Client allows you to create private channels and handle
       invitations.
 
       Notice we set a unique name for the general channel as we don't want to
       create a new general channel every time we start the application.
 
   .step(data-title='Listen to Channel Events',
-        data-file='app/src/main/java/com/twilio/twiliochat/fragments/MainChatFragment.java',
-        data-highlight='166-181')
+        data-file='app/src/main/java/com/twilio/twiliochat/chat/MainChatFragment.java',
+        data-highlight='173-188')
     :markdown
       ## Listen to Channel Events
 
       We set a channel's listener to `MainChatFragment` that implements `ChannelListener`,
       and here we implemented the following methods that listen to channel events:
 
-      * `messageAdded`: When someone sends a message to the channel you are connected to.
-      * `memberJoined`: When someone joins the channel.
-      * `memberLeft`: When someone leaves the channel.
+      * `onMessageAdded`: When someone sends a message to the channel you are connected to.
+      * `onMemberJoined`: When someone joins the channel.
+      * `onMemberDelete`: When someone leaves the channel.
 
       As you may have noticed, each one of these methods include useful objects
       as parameters. One example is the actual message that was added to the channel.
 
   .step(data-title='Joining Other Channels',
-        data-file='app/src/main/java/com/twilio/twiliochat/fragments/MainChatFragment.java',
-        data-highlight='109-146')
+        data-file='app/src/main/java/com/twilio/twiliochat/chat/MainChatFragment.java',
+        data-highlight='88-128')
     :markdown
       ## Joining Other Channels
 
@@ -136,27 +150,23 @@
       to the selected channel and loading the messages.
 
   .step(data-title='Creating a Channel',
-        data-file='app/src/main/java/com/twilio/twiliochat/ipmessaging/ChannelManager.java',
-        data-highlight='100-115')
+        data-file='app/src/main/java/com/twilio/twiliochat/chat/channels/ChannelManager.java',
+        data-highlight='113-129')
     :markdown
       ## Creating a Channel
 
       We use an input dialog so the user can type the name of the new channel.
       The only restriction here is that the user can't create a channel called
-      "General Channel". Other than that, creating a channel is as simple as calling
-      `createChannel(Map<String, Object> options, CreateChannelListener listener)`
-      where `options` has the following required keys:
+      "General Channel". Other than that, creating a channel is as simple as using
+      the `channelBuilder` as shown and providing at the very least a channel type.
 
-      * Constants.CHANNEL_FRIENDLY_NAME
-      * Constants.CHANNEL_TYPE
-
-      You can use additional keys to create a channel with more details as we did
-      with general channel to set a unique name. There's a list of keys you can use
-      [here](//media.twiliocdn.com/sdk/rtc/android/ip-messaging/releases/0.4.10.b204-57cc05a/docs/com/twilio/ipmessaging/Constants.html).
+      You can provide additional parameters to the builder as we did
+      with general channel to set a unique name. There's a list of methods you can use
+      [in the client library API docs](//media.twiliocdn.com/sdk/android/chat/releases/0.11.2/docs/).
 
   .step(data-title='Deleting a Channel',
-        data-file='app/src/main/java/com/twilio/twiliochat/ipmessaging/ChannelManager.java',
-        data-highlight='60-62')
+        data-file='app/src/main/java/com/twilio/twiliochat/chat/channels/ChannelManager.java',
+        data-highlight='65-67')
     :markdown
       ## Deleting a Channel
 
@@ -168,10 +178,10 @@
 
   .step(data-title='Where to Next?')
     :markdown
-      ## Where to Next?
-
       That's it! We've just implemented a simple chat application for Android.
 
-      Thanks for checking out this tutorial! If you have any feedback
-      to share with us, we'd love to hear it.
-      [Contact support](//www.twilio.com/help/contact) to let us know what you think.
+      ## Did this help?
+
+      Thanks for checking out this tutorial! If you have any feedback to share
+      with us, we'd love to hear it. Tweet
+      [@twilio](//twitter.com/twilio) to let us know what you think.
