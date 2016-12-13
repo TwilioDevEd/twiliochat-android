@@ -88,10 +88,12 @@ public class ChannelManager implements ChatClientListener {
     });
   }
 
-  private void extractChannelsFromPaginatorAndPopulate(final Paginator<ChannelDescriptor> channelsPaginator, final LoadChannelListener listener) {
+  private void extractChannelsFromPaginatorAndPopulate(final Paginator<ChannelDescriptor> channelsPaginator,
+                                                       final LoadChannelListener listener) {
     channels = new ArrayList<>();
     ChannelManager.this.channels.clear();
-    channelExtractor.extractAndSortFromChannelDescriptor(channelsPaginator, new TaskCompletionListener<List<Channel>, String>() {
+    channelExtractor.extractAndSortFromChannelDescriptor(channelsPaginator,
+        new TaskCompletionListener<List<Channel>, String>() {
       @Override
       public void onSuccess(List<Channel> channels) {
         ChannelManager.this.channels.addAll(channels);
