@@ -62,7 +62,7 @@ used to initialize it.</p>
 client to be ready.</p>
 <p>Once the client has initialized, we can use it to get a list of available channels. Let&#39;s see
  how to do this on the next step.</p>
-</div><div data-title="Getting the Channel List" data-file="app/src/main/java/com/twilio/twiliochat/chat/channels/ChannelManager.java" data-highlight="69-109" class="step"><h2 id="getting-the-channel-list">Getting the Channel List</h2>
+</div><div data-title="Getting the Channel List" data-file="app/src/main/java/com/twilio/twiliochat/chat/channels/ChannelManager.java" data-highlight="69-111" class="step"><h2 id="getting-the-channel-list">Getting the Channel List</h2>
 <p>Our <code>ChannelManager</code> class takes care of everything related to channels.
 The first thing we need to do, when the class is initialized, is to store
 a list of channels of type <code>Channels</code>. For this we call the method <code>getChannels</code>
@@ -97,8 +97,8 @@ create a new general channel every time we start the application.</p>
 <p>We set a channel&#39;s listener to <code>MainChatFragment</code> that implements <code>ChannelListener</code>,
 and here we implemented the following methods that listen to channel events:</p>
 <ul>
-<li><code>onMessageAdded</code>: When someone sends a message to the channel you are connected to.</li>
-<li><code>onMemberJoined</code>: When someone joins the channel.</li>
+<li><code>onMessageAdd</code>: When someone sends a message to the channel you are connected to.</li>
+<li><code>onMemberJoin</code>: When someone joins the channel.</li>
 <li><code>onMemberDelete</code>: When someone leaves the channel.</li>
 </ul>
 <p>As you may have noticed, each one of these methods include useful objects

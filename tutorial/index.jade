@@ -71,7 +71,7 @@
 
   .step(data-title='Getting the Channel List',
         data-file='app/src/main/java/com/twilio/twiliochat/chat/channels/ChannelManager.java',
-        data-highlight='69-109')
+        data-highlight='69-111')
     :markdown
       ## Getting the Channel List
 
@@ -129,8 +129,8 @@
       We set a channel's listener to `MainChatFragment` that implements `ChannelListener`,
       and here we implemented the following methods that listen to channel events:
 
-      * `onMessageAdded`: When someone sends a message to the channel you are connected to.
-      * `onMemberJoined`: When someone joins the channel.
+      * `onMessageAdd`: When someone sends a message to the channel you are connected to.
+      * `onMemberJoin`: When someone joins the channel.
       * `onMemberDelete`: When someone leaves the channel.
 
       As you may have noticed, each one of these methods include useful objects
