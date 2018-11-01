@@ -3,7 +3,7 @@ package com.twilio.twiliochat.application;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.support.v7.view.ContextThemeWrapper;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
