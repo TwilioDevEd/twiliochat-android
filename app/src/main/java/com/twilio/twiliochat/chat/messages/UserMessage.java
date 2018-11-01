@@ -5,12 +5,12 @@ import com.twilio.chat.Message;
 public class UserMessage implements ChatMessage {
 
   private String author = "";
-  private String timeStamp = "";
+  private String dateCreated = "";
   private String messageBody = "";
 
   public UserMessage(Message message) {
     this.author = message.getAuthor();
-    this.timeStamp = message.getTimeStamp();
+    this.dateCreated = message.getDateCreated();
     this.messageBody = message.getMessageBody();
   }
 
@@ -25,7 +25,7 @@ public class UserMessage implements ChatMessage {
   }
 
   @Override
-  public String getTimeStamp() {
-    return timeStamp;
+  public String getDateCreated() {
+    return dateCreated;
   }
 }

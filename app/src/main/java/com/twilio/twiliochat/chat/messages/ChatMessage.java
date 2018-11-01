@@ -6,5 +6,5 @@ public interface ChatMessage {
 
   String getAuthor();
 
-  String getTimeStamp();
+  String getDateCreated();
 }

@@ -14,7 +14,7 @@ public class StatusMessage implements ChatMessage {
   }
 
   @Override
-  public String getTimeStamp() {
+  public String getDateCreated() {
     throw new UnsupportedOperationException();
   }
 

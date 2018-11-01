@@ -14,7 +14,7 @@ import com.twilio.chat.ChatClientListener;
 import com.twilio.chat.ErrorInfo;
 import com.twilio.chat.Paginator;
 import com.twilio.chat.StatusListener;
-import com.twilio.chat.UserInfo;
+import com.twilio.chat.User;
 import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.application.TwilioChatApplication;
 import com.twilio.twiliochat.chat.ChatClientManager;
@@ -77,7 +77,7 @@ public class ChannelManager implements ChatClientListener {
       public void run() {
         channelsObject = chatClientManager.getChatClient().getChannels();
 
-        channelsObject.getPublicChannels(new CallbackListener<Paginator<ChannelDescriptor>>() {
+        channelsObject.getPublicChannelsList(new CallbackListener<Paginator<ChannelDescriptor>>() {
           @Override
           public void onSuccess(Paginator<ChannelDescriptor> channelDescriptorPaginator) {
             extractChannelsFromPaginatorAndPopulate(channelDescriptorPaginator, listener);
@@ -187,28 +187,23 @@ public class ChannelManager implements ChatClientListener {
   }
 
   @Override
-  public void onChannelAdd(Channel channel) {
+  public void onChannelAdded(Channel channel) {
     if (listener != null) {
-      listener.onChannelAdd(channel);
+      listener.onChannelAdded(channel);
     }
   }
 
   @Override
-  public void onChannelInvite(Channel channel) {
-
-  }
-
-  @Override
-  public void onChannelChange(Channel channel) {
+  public void onChannelUpdated(Channel channel, Channel.UpdateReason updateReason) {
     if (listener != null) {
-      listener.onChannelChange(channel);
+      listener.onChannelUpdated(channel, updateReason);
     }
   }
 
   @Override
-  public void onChannelDelete(Channel channel) {
+  public void onChannelDeleted(Channel channel) {
     if (listener != null) {
-      listener.onChannelDelete(channel);
+      listener.onChannelDeleted(channel);
     }
   }
 
@@ -227,29 +222,64 @@ public class ChannelManager implements ChatClientListener {
   }
 
   @Override
-  public void onUserInfoChange(UserInfo userInfo, UserInfo.UpdateReason updateReason) {
-    if (listener != null) {
-      listener.onUserInfoChange(userInfo, updateReason);
-    }
-  }
-
-  @Override
   public void onClientSynchronization(ChatClient.SynchronizationStatus synchronizationStatus) {
 
   }
 
   @Override
-  public void onToastNotification(String s, String s1) {
+  public void onChannelJoined(Channel channel) {
 
   }
 
   @Override
-  public void onToastSubscribed() {
+  public void onChannelInvited(Channel channel) {
 
   }
 
   @Override
-  public void onToastFailed(ErrorInfo errorInfo) {
+  public void onUserUpdated(User user, User.UpdateReason updateReason) {
+    if (listener != null) {
+      listener.onUserUpdated(user, updateReason);
+    }
+  }
+
+  @Override
+  public void onUserSubscribed(User user) {
+
+  }
+
+  @Override
+  public void onUserUnsubscribed(User user) {
+
+  }
+
+  @Override
+  public void onNewMessageNotification(String s, String s1, long l) {
+
+  }
+
+  @Override
+  public void onAddedToChannelNotification(String s) {
+
+  }
+
+  @Override
+  public void onInvitedToChannelNotification(String s) {
+
+  }
+
+  @Override
+  public void onRemovedFromChannelNotification(String s) {
+
+  }
+
+  @Override
+  public void onNotificationSubscribed() {
+
+  }
+
+  @Override
+  public void onNotificationFailed(ErrorInfo errorInfo) {
 
   }
 

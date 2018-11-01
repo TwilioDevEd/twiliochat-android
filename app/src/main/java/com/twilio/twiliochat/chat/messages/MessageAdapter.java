@@ -20,7 +20,7 @@ public class MessageAdapter extends BaseAdapter {
 
   private List<ChatMessage> messages;
   private LayoutInflater layoutInflater;
-  private TreeSet statusMessageSet = new TreeSet();
+  private TreeSet<Integer> statusMessageSet = new TreeSet<>();
 
   public MessageAdapter(Activity activity) {
     layoutInflater = activity.getLayoutInflater();
@@ -96,7 +96,7 @@ public class MessageAdapter extends BaseAdapter {
         TextView textViewDate = (TextView) convertView.findViewById(R.id.textViewDate);
         textViewMessage.setText(message.getMessageBody());
         textViewAuthor.setText(message.getAuthor());
-        textViewDate.setText(DateFormatter.getFormattedDateFromISOString(message.getTimeStamp()));
+        textViewDate.setText(DateFormatter.getFormattedDateFromISOString(message.getDateCreated()));
         break;
       case TYPE_STATUS:
         res = R.layout.status_message;
