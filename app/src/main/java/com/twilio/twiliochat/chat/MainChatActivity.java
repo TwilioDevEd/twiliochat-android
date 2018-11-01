@@ -28,7 +28,7 @@ import com.twilio.chat.ChatClient;
 import com.twilio.chat.ChatClientListener;
 import com.twilio.chat.ErrorInfo;
 import com.twilio.chat.StatusListener;
-import com.twilio.chat.UserInfo;
+import com.twilio.chat.User;
 import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.application.AlertDialogHandler;
 import com.twilio.twiliochat.application.SessionManager;
@@ -452,14 +452,16 @@ public class MainChatActivity extends AppCompatActivity implements ChatClientLis
     });
   }
 
+
+
   @Override
-  public void onChannelAdd(Channel channel) {
+  public void onChannelAdded(Channel channel) {
     System.out.println("Channel Added");
     refreshChannels();
   }
 
   @Override
-  public void onChannelDelete(final Channel channel) {
+  public void onChannelDeleted(final Channel channel) {
     System.out.println("Channel Deleted");
     Channel currentChannel = chatFragment.getCurrentChannel();
     if (channel.getSid().contentEquals(currentChannel.getSid())) {
@@ -470,7 +472,7 @@ public class MainChatActivity extends AppCompatActivity implements ChatClientLis
   }
 
   @Override
-  public void onChannelInvite(Channel channel) {
+  public void onChannelInvited(Channel channel) {
 
   }
 
@@ -485,27 +487,7 @@ public class MainChatActivity extends AppCompatActivity implements ChatClientLis
   }
 
   @Override
-  public void onUserInfoChange(UserInfo userInfo, UserInfo.UpdateReason updateReason) {
-
-  }
-
-  @Override
   public void onClientSynchronization(ChatClient.SynchronizationStatus synchronizationStatus) {
-
-  }
-
-  @Override
-  public void onToastNotification(String s, String s1) {
-
-  }
-
-  @Override
-  public void onToastSubscribed() {
-
-  }
-
-  @Override
-  public void onToastFailed(ErrorInfo errorInfo) {
 
   }
 
@@ -515,6 +497,57 @@ public class MainChatActivity extends AppCompatActivity implements ChatClientLis
   }
 
   @Override
-  public void onChannelChange(Channel channel) {
+  public void onChannelJoined(Channel channel) {
+
+  }
+
+  @Override
+  public void onChannelUpdated(Channel channel, Channel.UpdateReason updateReason) {
+
+  }
+
+  @Override
+  public void onUserUpdated(User user, User.UpdateReason updateReason) {
+
+  }
+
+  @Override
+  public void onUserSubscribed(User user) {
+
+  }
+
+  @Override
+  public void onUserUnsubscribed(User user) {
+
+  }
+
+  @Override
+  public void onNewMessageNotification(String s, String s1, long l) {
+
+  }
+
+  @Override
+  public void onAddedToChannelNotification(String s) {
+
+  }
+
+  @Override
+  public void onInvitedToChannelNotification(String s) {
+
+  }
+
+  @Override
+  public void onRemovedFromChannelNotification(String s) {
+
+  }
+
+  @Override
+  public void onNotificationSubscribed() {
+
+  }
+
+  @Override
+  public void onNotificationFailed(ErrorInfo errorInfo) {
+
   }
 }

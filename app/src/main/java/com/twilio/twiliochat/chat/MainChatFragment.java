@@ -147,8 +147,8 @@ public class MainChatFragment extends Fragment implements ChannelListener {
     if (messageText.length() == 0) {
       return;
     }
-    Message newMessage = this.messagesObject.createMessage(messageText);
-    this.messagesObject.sendMessage(newMessage, null);
+    Message.Options messageOptions = Message.options().withBody(messageText);
+    this.messagesObject.sendMessage(messageOptions, null);
     clearTextInput();
   }
 
@@ -171,43 +171,45 @@ public class MainChatFragment extends Fragment implements ChannelListener {
   }
 
   @Override
-  public void onMessageAdd(Message message) {
+  public void onMessageAdded(Message message) {
     messageAdapter.addMessage(message);
   }
 
   @Override
-  public void onMemberJoin(Member member) {
-    StatusMessage statusMessage = new JoinedStatusMessage(member.getUserInfo().getIdentity());
+  public void onMemberAdded(Member member) {
+    StatusMessage statusMessage = new JoinedStatusMessage(member.getIdentity());
     this.messageAdapter.addStatusMessage(statusMessage);
   }
 
   @Override
-  public void onMemberDelete(Member member) {
-    StatusMessage statusMessage = new LeftStatusMessage(member.getUserInfo().getIdentity());
+  public void onMemberDeleted(Member member) {
+    StatusMessage statusMessage = new LeftStatusMessage(member.getIdentity());
     this.messageAdapter.addStatusMessage(statusMessage);
   }
 
   @Override
-  public void onMessageChange(Message message) {
+  public void onMessageUpdated(Message message, Message.UpdateReason updateReason) {
   }
 
   @Override
-  public void onMessageDelete(Message message) {
+  public void onMessageDeleted(Message message) {
   }
 
   @Override
-  public void onMemberChange(Member member) {
+  public void onMemberUpdated(Member member, Member.UpdateReason updateReason) {
   }
 
   @Override
-  public void onTypingStarted(Member member) {
+  public void onTypingStarted(Channel channel, Member member) {
   }
 
   @Override
-  public void onTypingEnded(Member member) {
+  public void onTypingEnded(Channel channel, Member member) {
   }
 
   @Override
-  public void onSynchronizationChange(Channel channel) {
+  public void onSynchronizationChanged(Channel channel) {
   }
+
+
 }

@@ -49,7 +49,7 @@ public class ChannelExtractor {
 
         @Override
         public void onError(ErrorInfo errorInfo) {
-          listener.onError(errorInfo.getErrorText());
+          listener.onError(errorInfo.getMessage());
         }
       });
     }
