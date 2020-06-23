@@ -8,13 +8,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +16,14 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.twilio.chat.Channel;
 import com.twilio.chat.ChatClient;
@@ -251,7 +253,7 @@ public class MainChatActivity extends AppCompatActivity implements ChatClientLis
     } else {
       stopActivityIndicator();
       showAlertWithMessage(getStringResource(R.string.generic_error));
-      System.out.println("Selected channel out of range");
+      Log.e(TwilioChatApplication.TAG,"Selected channel out of range");
     }
   }
 
@@ -383,7 +385,7 @@ public class MainChatActivity extends AppCompatActivity implements ChatClientLis
       @Override
       public void onError(String errorMessage) {
         stopActivityIndicator();
-        showAlertWithMessage("Client connection error");
+        showAlertWithMessage("Client connection error: " + errorMessage);
       }
     });
   }
@@ -456,13 +458,13 @@ public class MainChatActivity extends AppCompatActivity implements ChatClientLis
 
   @Override
   public void onChannelAdded(Channel channel) {
-    System.out.println("Channel Added");
+    Log.d(TwilioChatApplication.TAG,"Channel Added");
     refreshChannels();
   }
 
   @Override
   public void onChannelDeleted(final Channel channel) {
-    System.out.println("Channel Deleted");
+    Log.d(TwilioChatApplication.TAG,"Channel Deleted");
     Channel currentChannel = chatFragment.getCurrentChannel();
     if (channel.getSid().contentEquals(currentChannel.getSid())) {
       chatFragment.setCurrentChannel(null, null);
@@ -493,6 +495,16 @@ public class MainChatActivity extends AppCompatActivity implements ChatClientLis
 
   @Override
   public void onConnectionStateChange(ChatClient.ConnectionState connectionState) {
+
+  }
+
+  @Override
+  public void onTokenExpired() {
+
+  }
+
+  @Override
+  public void onTokenAboutToExpire() {
 
   }
 

@@ -2,7 +2,7 @@ package com.twilio.twiliochat.chat.accesstoken;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.provider.Settings;
+import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -29,10 +29,12 @@ public class AccessTokenFetcher {
 
   public void fetch(final TaskCompletionListener<String, String> listener) {
     JSONObject obj = new JSONObject(getTokenRequestParams(context));
-    String requestUrl = getStringResource(R.string.token_url);
+    String identity = SessionManager.getInstance().getUsername();
+    String requestUrl = getStringResource(R.string.token_url) + "?identity=" + identity;
+    Log.d(TwilioChatApplication.TAG, "Requesting access token from: " + requestUrl);
 
     JsonObjectRequest jsonObjReq =
-        new JsonObjectRequest(Request.Method.POST, requestUrl, obj, new Response.Listener<JSONObject>() {
+        new JsonObjectRequest(Request.Method.GET, requestUrl, obj, new Response.Listener<JSONObject>() {
 
           @Override
           public void onResponse(JSONObject response) {
@@ -40,7 +42,7 @@ public class AccessTokenFetcher {
             try {
               token = response.getString("token");
             } catch (JSONException e) {
-              e.printStackTrace();
+              Log.e(TwilioChatApplication.TAG, e.getLocalizedMessage(), e);
               listener.onError("Failed to parse token JSON response");
             }
             listener.onSuccess(token);
@@ -49,7 +51,7 @@ public class AccessTokenFetcher {
 
           @Override
           public void onErrorResponse(VolleyError error) {
-
+            Log.e(TwilioChatApplication.TAG, error.getLocalizedMessage(), error);
             listener.onError("Failed to fetch token");
           }
         });
@@ -58,10 +60,7 @@ public class AccessTokenFetcher {
   }
 
   private Map<String, String> getTokenRequestParams(Context context) {
-    String androidId =
-        Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ANDROID_ID);
     Map<String, String> params = new HashMap<>();
-    params.put("deviceId", androidId);
     params.put("identity", SessionManager.getInstance().getUsername());
     return params;
   }
