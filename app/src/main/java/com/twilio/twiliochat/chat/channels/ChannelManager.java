@@ -19,6 +19,7 @@ import com.twilio.chat.User;
 import com.twilio.twiliochat.R;
 import com.twilio.twiliochat.application.TwilioChatApplication;
 import com.twilio.twiliochat.chat.ChatClientManager;
+import com.twilio.twiliochat.chat.accesstoken.AccessTokenFetcher;
 import com.twilio.twiliochat.chat.listeners.TaskCompletionListener;
 
 import java.util.ArrayList;
@@ -287,6 +288,36 @@ public class ChannelManager implements ChatClientListener {
   @Override
   public void onConnectionStateChange(ChatClient.ConnectionState connectionState) {
 
+  }
+
+  @Override
+  public void onTokenExpired() {
+    refreshAccessToken();
+  }
+
+  @Override
+  public void onTokenAboutToExpire() {
+    refreshAccessToken();
+  }
+
+  private void refreshAccessToken() {
+    AccessTokenFetcher accessTokenFetcher = chatClientManager.getAccessTokenFetcher();
+    accessTokenFetcher.fetch(new TaskCompletionListener<String, String>() {
+      @Override
+      public void onSuccess(String token) {
+        ChannelManager.this.chatClientManager.getChatClient().updateToken(token, new StatusListener() {
+          @Override
+          public void onSuccess() {
+            Log.d(TwilioChatApplication.TAG, "Successfully updated access token.");
+          }
+        });
+      }
+
+      @Override
+      public void onError(String message) {
+        Log.e(TwilioChatApplication.TAG,"Error trying to fetch token: " + message);
+      }
+    });
   }
 
   private Handler setupListenerHandler() {

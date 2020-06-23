@@ -1,19 +1,15 @@
 package com.twilio.twiliochat.chat;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.twilio.accessmanager.AccessManager;
 import com.twilio.chat.ChatClient;
 import com.twilio.chat.ChatClientListener;
-import com.twilio.twiliochat.application.TwilioChatApplication;
 import com.twilio.twiliochat.chat.accesstoken.AccessTokenFetcher;
 import com.twilio.twiliochat.chat.listeners.TaskCompletionListener;
 
-public class ChatClientManager implements AccessManager.Listener, AccessManager.TokenUpdateListener {
+public class ChatClientManager {
   private ChatClient chatClient;
   private Context context;
-  private AccessManager accessManager;
   private AccessTokenFetcher accessTokenFetcher;
   private ChatClientBuilder chatClientBuilder;
 
@@ -44,7 +40,6 @@ public class ChatClientManager implements AccessManager.Listener, AccessManager.
     accessTokenFetcher.fetch(new TaskCompletionListener<String, String>() {
       @Override
       public void onSuccess(String token) {
-        createAccessManager(token);
         buildClient(token, listener);
       }
 
@@ -72,45 +67,13 @@ public class ChatClientManager implements AccessManager.Listener, AccessManager.
     });
   }
 
-  private void createAccessManager(String token) {
-    this.accessManager = new AccessManager(token, this);
-    accessManager.addTokenUpdateListener(this);
-  }
-
-  @Override
-  public void onTokenWillExpire(AccessManager accessManager) {
-
-  }
-
-  @Override
-  public void onTokenExpired(AccessManager accessManager) {
-    Log.d(TwilioChatApplication.TAG,"token expired.");
-    accessTokenFetcher.fetch(new TaskCompletionListener<String, String>() {
-      @Override
-      public void onSuccess(String token) {
-        ChatClientManager.this.accessManager.updateToken(token);
-      }
-
-      @Override
-      public void onError(String message) {
-        Log.e(TwilioChatApplication.TAG,"Error trying to fetch token: " + message);
-      }
-    });
-  }
-
-  @Override
-  public void onError(AccessManager accessManager, String s) {
-    Log.e(TwilioChatApplication.TAG,"token error: " + s);
-  }
-
-  @Override
-  public void onTokenUpdated(String s) {
-    Log.d(TwilioChatApplication.TAG,"token updated.");
-  }
-
   public void shutdown() {
     if(chatClient != null) {
       chatClient.shutdown();
     }
+  }
+
+  public AccessTokenFetcher getAccessTokenFetcher() {
+    return accessTokenFetcher;
   }
 }

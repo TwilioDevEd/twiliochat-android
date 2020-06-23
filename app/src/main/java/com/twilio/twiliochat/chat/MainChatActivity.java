@@ -8,13 +8,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.Handler;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +16,14 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.twilio.chat.Channel;
 import com.twilio.chat.ChatClient;
@@ -494,6 +495,16 @@ public class MainChatActivity extends AppCompatActivity implements ChatClientLis
 
   @Override
   public void onConnectionStateChange(ChatClient.ConnectionState connectionState) {
+
+  }
+
+  @Override
+  public void onTokenExpired() {
+
+  }
+
+  @Override
+  public void onTokenAboutToExpire() {
 
   }
 
