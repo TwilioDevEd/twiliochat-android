@@ -1,10 +1,12 @@
 package com.twilio.twiliochat.chat;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.twilio.accessmanager.AccessManager;
 import com.twilio.chat.ChatClient;
 import com.twilio.chat.ChatClientListener;
+import com.twilio.twiliochat.application.TwilioChatApplication;
 import com.twilio.twiliochat.chat.accesstoken.AccessTokenFetcher;
 import com.twilio.twiliochat.chat.listeners.TaskCompletionListener;
 
@@ -82,7 +84,7 @@ public class ChatClientManager implements AccessManager.Listener, AccessManager.
 
   @Override
   public void onTokenExpired(AccessManager accessManager) {
-    System.out.println("token expired.");
+    Log.d(TwilioChatApplication.TAG,"token expired.");
     accessTokenFetcher.fetch(new TaskCompletionListener<String, String>() {
       @Override
       public void onSuccess(String token) {
@@ -91,19 +93,19 @@ public class ChatClientManager implements AccessManager.Listener, AccessManager.
 
       @Override
       public void onError(String message) {
-        System.out.println("Error trying to fetch token: " + message);
+        Log.e(TwilioChatApplication.TAG,"Error trying to fetch token: " + message);
       }
     });
   }
 
   @Override
   public void onError(AccessManager accessManager, String s) {
-    System.out.println("token error: " + s);
+    Log.e(TwilioChatApplication.TAG,"token error: " + s);
   }
 
   @Override
   public void onTokenUpdated(String s) {
-    System.out.println("token updated.");
+    Log.d(TwilioChatApplication.TAG,"token updated.");
   }
 
   public void shutdown() {

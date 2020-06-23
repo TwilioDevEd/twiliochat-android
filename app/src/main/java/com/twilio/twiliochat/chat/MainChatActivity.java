@@ -15,6 +15,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -251,7 +252,7 @@ public class MainChatActivity extends AppCompatActivity implements ChatClientLis
     } else {
       stopActivityIndicator();
       showAlertWithMessage(getStringResource(R.string.generic_error));
-      System.out.println("Selected channel out of range");
+      Log.e(TwilioChatApplication.TAG,"Selected channel out of range");
     }
   }
 
@@ -383,7 +384,7 @@ public class MainChatActivity extends AppCompatActivity implements ChatClientLis
       @Override
       public void onError(String errorMessage) {
         stopActivityIndicator();
-        showAlertWithMessage("Client connection error");
+        showAlertWithMessage("Client connection error: " + errorMessage);
       }
     });
   }
@@ -456,13 +457,13 @@ public class MainChatActivity extends AppCompatActivity implements ChatClientLis
 
   @Override
   public void onChannelAdded(Channel channel) {
-    System.out.println("Channel Added");
+    Log.d(TwilioChatApplication.TAG,"Channel Added");
     refreshChannels();
   }
 
   @Override
   public void onChannelDeleted(final Channel channel) {
-    System.out.println("Channel Deleted");
+    Log.d(TwilioChatApplication.TAG,"Channel Deleted");
     Channel currentChannel = chatFragment.getCurrentChannel();
     if (channel.getSid().contentEquals(currentChannel.getSid())) {
       chatFragment.setCurrentChannel(null, null);

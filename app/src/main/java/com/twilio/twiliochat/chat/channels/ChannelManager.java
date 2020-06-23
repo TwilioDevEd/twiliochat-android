@@ -3,6 +3,7 @@ package com.twilio.twiliochat.chat.channels;
 import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.twilio.chat.CallbackListener;
 import com.twilio.chat.Channel;
@@ -105,7 +106,7 @@ public class ChannelManager implements ChatClientListener {
 
       @Override
       public void onError(String errorText) {
-        System.out.println("Error populating channels: " + errorText);
+        Log.e(TwilioChatApplication.TAG,"Error populating channels: " + errorText);
       }
     });
   }

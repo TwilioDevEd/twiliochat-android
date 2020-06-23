@@ -16,6 +16,8 @@ public class TwilioChatApplication extends Application {
     return this.basicClient;
   }
 
+  public static final String TAG = "TwilioChat";
+
   @Override
   public void onCreate() {
     super.onCreate();
