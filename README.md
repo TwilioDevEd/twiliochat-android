@@ -24,7 +24,7 @@ Learn to implement a simple chat application using Twilio Programmable Chat Clie
    using the IDE.
 
 1. [Twilio's Programmable Chat Client](https://www.twilio.com/docs/api/chat) requires an
-   [access token](https://www.twilio.com/docs/api/ip-messaging/guides/identity) generated using your
+   [access token](https://www.twilio.com/docs/chat/identity) generated using your
    Twilio credentials in order to connect. First we need to setup a server that will generate this token
    for the mobile application to use. We have created web versions of Twilio Chat, you can use any of these
    applications to generate the token that this mobile app requires, just pick you favorite flavor:
@@ -66,9 +66,6 @@ Learn to implement a simple chat application using Twilio Programmable Chat Clie
    <string name="token_url">"http://<your_subdomain>.ngrok.io/token"</string>
    ```
    No need to specify the port in this url, as ngrok will forward the request to the specified port.
-
- ***Note:*** The current version of the app uses a fixed version of Twilio SDK (included in the
- repository). This version only works for ARM devices as the SDK includes some native code.
 
 
  ## Meta
