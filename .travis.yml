@@ -1,11 +1,14 @@
 language: android
+dist: trusty
 android:
   components:
     - platform-tools
     - tools
     - build-tools-29.0.2
     - android-28
-    - sys-img-armeabi-v7a-android-28
+    - sys-img-armeabi-v7a-android-22
     - extra-google-google_play_services
     - extra-google-m2repository
     - extra-android-m2repository
+script:
+  - ./gradlew build

@@ -213,7 +213,7 @@ public class MainChatActivity extends AppCompatActivity implements ChatClientLis
 
               @Override
               public void onError(ErrorInfo errorInfo) {
-                showAlertWithMessage(getStringResource(R.string.generic_error));
+                showAlertWithMessage(getStringResource(R.string.generic_error) + " - " + errorInfo.getMessage());
               }
             });
       }
@@ -316,7 +316,7 @@ public class MainChatActivity extends AppCompatActivity implements ChatClientLis
 
       @Override
       public void onError(ErrorInfo errorInfo) {
-        showAlertWithMessage(getStringResource(R.string.generic_error));
+        showAlertWithMessage(getStringResource(R.string.generic_error) + " - " + errorInfo.getMessage());
       }
     });
   }

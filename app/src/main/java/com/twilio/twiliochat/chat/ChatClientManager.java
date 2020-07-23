@@ -20,9 +20,9 @@ public class ChatClientManager {
     this.chatClientBuilder = new ChatClientBuilder(this.context);
   }
 
-  public void setClientListener(ChatClientListener listener) {
+  public void addClientListener(ChatClientListener listener) {
     if (this.chatClient != null) {
-      this.chatClient.setListener(listener);
+      this.chatClient.addListener(listener);
     }
   }
 

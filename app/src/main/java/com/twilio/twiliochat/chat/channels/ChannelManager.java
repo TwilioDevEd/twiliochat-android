@@ -101,7 +101,7 @@ public class ChannelManager implements ChatClientListener {
         ChannelManager.this.channels.addAll(channels);
         Collections.sort(ChannelManager.this.channels, new CustomChannelComparator());
         ChannelManager.this.isRefreshingChannels = false;
-        chatClientManager.setClientListener(ChannelManager.this);
+        chatClientManager.addClientListener(ChannelManager.this);
         listener.onChannelsFinishedLoading(ChannelManager.this.channels);
       }
 
@@ -145,6 +145,10 @@ public class ChannelManager implements ChatClientListener {
   }
 
   private void joinGeneralChannelWithCompletion(final StatusListener listener) {
+    if (generalChannel.getStatus() == Channel.ChannelStatus.JOINED) {
+      listener.onSuccess();
+      return;
+    }
     this.generalChannel.join(new StatusListener() {
       @Override
       public void onSuccess() {
