@@ -25,5 +25,5 @@ dependencies {
     implementation 'joda-time:joda-time:2.9.1'
     implementation 'com.mcxiaoke.volley:library-aar:1.0.1'
     testImplementation 'junit:junit:4.12'
-    implementation "com.twilio:chat-android:6.0.0"
+    implementation "com.twilio:chat-android:6.2.2"
 }
