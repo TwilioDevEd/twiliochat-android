@@ -1,0 +1,40 @@
+version: 2
+updates:
+- package-ecosystem: gradle
+  directory: "/app"
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: com.twilio:chat-android
+    versions:
+    - 6.2.0
+    - 6.2.1
+  - dependency-name: joda-time:joda-time
+    versions:
+    - 2.10.9
+  - dependency-name: junit:junit
+    versions:
+    - 4.13.1
+- package-ecosystem: gradle
+  directory: "/."
+  schedule:
+    interval: daily
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: com.twilio:chat-android
+    versions:
+    - 6.2.0
+    - 6.2.1
+  - dependency-name: com.android.tools.build:gradle
+    versions:
+    - 4.1.2
+  - dependency-name: joda-time:joda-time
+    versions:
+    - 2.10.9
+  - dependency-name: junit:junit
+    versions:
+    - 4.13.1
+  - dependency-name: com.google.android.material:material
+    versions:
+    - 1.2.1
